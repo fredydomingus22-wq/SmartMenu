@@ -1,0 +1,329 @@
+"use client";
+
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetDescription,
+    SheetFooter,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Plus, Minus, ChevronLeft, ChevronRight, Loader2, Check } from "lucide-react";
+import Image from "next/image";
+import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useCart } from "@/components/cart/cart-context";
+import { formatCurrency } from "@/lib/utils";
+
+interface ProductOptionValue {
+    id: string;
+    name: string;
+    price: number;
+    isAvailable: boolean;
+}
+
+interface ProductOption {
+    id: string;
+    name: string;
+    minChoices: number;
+    maxChoices: number;
+    isRequired: boolean;
+    values: ProductOptionValue[];
+}
+
+interface Product {
+    id: string;
+    name: string;
+    description: string | null;
+    price: number;
+    imageUrl: string | null;
+    images?: { url: string; order: number }[];
+    options?: ProductOption[];
+}
+
+interface ProductDetailSheetProps {
+    product: Product | null;
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+}
+
+export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetailSheetProps) {
+    const { addItem } = useCart();
+    const [quantity, setQuantity] = useState(1);
+    const [selectedOptions, setSelectedOptions] = useState<Record<string, string[]>>({});
+    const [removals, setRemovals] = useState<string[]>([]);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [isAdding, setIsAdding] = useState(false);
+    const [success, setSuccess] = useState(false);
+
+    const allImages = useMemo(() => {
+        if (!product) return [];
+        const imgs = product.imageUrl ? [product.imageUrl] : [];
+        if (product.images) {
+            imgs.push(...product.images.sort((a, b) => a.order - b.order).map(img => img.url));
+        }
+        return Array.from(new Set(imgs));
+    }, [product]);
+
+    const totalPrice = useMemo(() => {
+        if (!product) return 0;
+        let extra = 0;
+        Object.values(selectedOptions).flat().forEach(valId => {
+            const optValue = product.options?.flatMap(o => o.values).find(v => v.id === valId);
+            if (optValue) extra += Number(optValue.price);
+        });
+        return (Number(product.price) + extra) * quantity;
+    }, [product, selectedOptions, quantity]);
+
+    if (!product) return null;
+
+    const handleAddToCart = () => {
+        setIsAdding(true);
+
+        try {
+            // Haptic Feedback for Mobile
+            if (typeof navigator !== 'undefined' && navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+
+            const flatOptions = Object.entries(selectedOptions).flatMap(([optionId, valueIds]) => {
+                const option = product.options?.find(o => o.id === optionId);
+                return valueIds.map(vId => {
+                    const val = option?.values.find(v => v.id === vId);
+                    return {
+                        valueId: vId,
+                        name: val?.name || "",
+                        price: Number(val?.price) || 0
+                    };
+                });
+            });
+
+            const notes = removals.length > 0 ? `Remover: ${removals.join(", ")}` : undefined;
+            addItem({
+                productId: product.id,
+                name: product.name,
+                price: Number(product.price),
+                imageUrl: product.imageUrl || undefined,
+                quantity,
+                notes,
+                options: flatOptions
+            });
+
+            // Show Success State
+            setIsAdding(false);
+            setSuccess(true);
+            setTimeout(() => {
+                setSuccess(false);
+                onOpenChange(false);
+                // Reset state
+                setQuantity(1);
+                setSelectedOptions({});
+                setRemovals([]);
+            }, 1000);
+
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            setIsAdding(false);
+            // Haptic Error Feedback
+            if (typeof navigator !== 'undefined' && navigator.vibrate) {
+                navigator.vibrate([100, 50, 100]);
+            }
+        }
+    };
+
+    const toggleOption = (optionId: string, valueId: string, maxChoices: number) => {
+        setSelectedOptions(prev => {
+            const current = prev[optionId] || [];
+            if (current.includes(valueId)) {
+                return { ...prev, [optionId]: current.filter(id => id !== valueId) };
+            }
+            if (maxChoices === 1) {
+                return { ...prev, [optionId]: [valueId] };
+            }
+            if (current.length < maxChoices) {
+                return { ...prev, [optionId]: [...current, valueId] };
+            }
+            return prev;
+        });
+    };
+
+    return (
+        <Sheet open={open} onOpenChange={onOpenChange}>
+            <SheetContent side="right" className="w-full sm:max-w-lg p-0 flex flex-col gap-0 border-l-0 sm:border-l overflow-hidden bg-background">
+                <SheetHeader className="p-4 border-b shrink-0 flex flex-row items-center justify-between space-y-0">
+                    <div>
+                        <SheetTitle className="text-xl font-bold">{product.name}</SheetTitle>
+                        <SheetDescription className="text-xs">Personalize seu pedido</SheetDescription>
+                    </div>
+                </SheetHeader>
+
+                <ScrollArea className="flex-grow">
+                    {/* Gallery Section */}
+                    <div className="relative aspect-video bg-muted overflow-hidden group">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={currentImageIndex}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="absolute inset-0"
+                            >
+                                <Image
+                                    src={allImages[currentImageIndex] || "/placeholder-food.jpg"}
+                                    alt={product.name}
+                                    fill
+                                    className="object-cover"
+                                    unoptimized
+                                />
+                            </motion.div>
+                        </AnimatePresence>
+
+                        {allImages.length > 1 && (
+                            <>
+                                <button
+                                    onClick={() => setCurrentImageIndex(prev => (prev - 1 + allImages.length) % allImages.length)}
+                                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/20 backdrop-blur-md p-2 rounded-full text-white hover:bg-black/40 transition-colors"
+                                >
+                                    <ChevronLeft className="h-4 w-4" />
+                                </button>
+                                <button
+                                    onClick={() => setCurrentImageIndex(prev => (prev + 1) % allImages.length)}
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/20 backdrop-blur-md p-2 rounded-full text-white hover:bg-black/40 transition-colors"
+                                >
+                                    <ChevronRight className="h-4 w-4" />
+                                </button>
+                                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+                                    {allImages.map((_, i) => (
+                                        <div
+                                            key={i}
+                                            className={`h-1.5 w-1.5 rounded-full transition-all ${i === currentImageIndex ? "bg-primary w-4" : "bg-white/50"}`}
+                                        />
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                    </div>
+
+                    <div className="p-6 space-y-8">
+                        {/* Description */}
+                        <div>
+                            <p className="text-muted-foreground leading-relaxed">
+                                {product.description || "Nenhuma descrição disponível."}
+                            </p>
+                            <div className="mt-4 text-3xl font-black text-primary">
+                                {formatCurrency(product.price)}
+                            </div>
+                        </div>
+
+                        {/* Customization Options */}
+                        {product.options?.map((option) => (
+                            <div key={option.id} className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <h4 className="font-bold text-lg flex items-center gap-2">
+                                        {option.name}
+                                        {option.isRequired && <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider">Obrigatório</span>}
+                                    </h4>
+                                    <span className="text-xs text-muted-foreground">
+                                        Escolha {option.maxChoices > 1 ? `até ${option.maxChoices}` : "1"}
+                                    </span>
+                                </div>
+                                <div className="grid gap-3">
+                                    {option.values.map((val) => (
+                                        <button
+                                            key={val.id}
+                                            disabled={!val.isAvailable}
+                                            onClick={() => toggleOption(option.id, val.id, option.maxChoices)}
+                                            className={`flex items-center justify-between p-4 rounded-lg border transition-all text-left ${selectedOptions[option.id]?.includes(val.id)
+                                                ? "border-primary bg-primary/5 shadow-sm"
+                                                : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-200 dark:hover:border-zinc-700"
+                                                } ${!val.isAvailable ? "opacity-30 cursor-not-allowed" : ""}`}
+                                        >
+                                            <span className="font-medium">{val.name}</span>
+                                            {val.price > 0 && (
+                                                <span className="text-xs font-bold text-primary">
+                                                    + {formatCurrency(val.price)}
+                                                </span>
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Removals Section */}
+                        <div className="space-y-4">
+                            <h4 className="font-bold text-lg">Retirar algo?</h4>
+                            <div className="flex flex-wrap gap-2">
+                                {["Cebola", "Ketchup", "Maionese", "Alface", "Tomate"].map((item) => (
+                                    <button
+                                        key={item}
+                                        onClick={() => setRemovals(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item])}
+                                        className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all ${removals.includes(item)
+                                            ? "bg-red-50 text-red-600 border-red-200"
+                                            : "bg-zinc-50 dark:bg-zinc-900 border-transparent hover:border-zinc-200"
+                                            }`}
+                                    >
+                                        Sem {item}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </ScrollArea>
+
+                <SheetFooter className="p-6 border-t bg-zinc-50/50 dark:bg-zinc-900/50 shrink-0">
+                    <div className="w-full flex flex-col gap-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4 bg-white dark:bg-zinc-800 p-1.5 rounded-lg border">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-10 w-10 rounded-xl"
+                                    onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                                >
+                                    <Minus className="h-4 w-4" />
+                                </Button>
+                                <span className="font-bold w-6 text-center">{quantity}</span>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-10 w-10 rounded-md"
+                                    onClick={() => setQuantity(q => q + 1)}
+                                >
+                                    <Plus className="h-4 w-4" />
+                                </Button>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Total</div>
+                                <div className="text-2xl font-black text-primary">
+                                    {formatCurrency(totalPrice)}
+                                </div>
+                            </div>
+                        </div>
+                        <Button
+                            className="w-full h-14 rounded-lg text-lg font-bold shadow-xl shadow-primary/20 hover:scale-[1.01] active:scale-[0.99] transition-all"
+                            onClick={handleAddToCart}
+                            disabled={isAdding || success}
+                        >
+                            {success ? (
+                                <>
+                                    <Check className="mr-2 h-5 w-5" />
+                                    Adicionado!
+                                </>
+                            ) : isAdding ? (
+                                <>
+                                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                    Adicionando...
+                                </>
+                            ) : (
+                                "Adicionar ao Carrinho"
+                            )}
+                        </Button>
+                    </div>
+                </SheetFooter>
+            </SheetContent>
+        </Sheet>
+    );
+}

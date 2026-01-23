@@ -1,0 +1,23 @@
+-- Adicionar campos detalhados à tabela de organizações
+ALTER TABLE "organizations" 
+ADD COLUMN IF NOT EXISTS "tax_id" TEXT,
+ADD COLUMN IF NOT EXISTS "address" TEXT,
+ADD COLUMN IF NOT EXISTS "city" TEXT,
+ADD COLUMN IF NOT EXISTS "country" TEXT,
+ADD COLUMN IF NOT EXISTS "phone" TEXT,
+ADD COLUMN IF NOT EXISTS "email" TEXT;
+
+-- Adicionar campos detalhados à tabela de tenants (restaurantes)
+ALTER TABLE "tenants"
+ADD COLUMN IF NOT EXISTS "description" TEXT,
+ADD COLUMN IF NOT EXISTS "address" TEXT,
+ADD COLUMN IF NOT EXISTS "city" TEXT,
+ADD COLUMN IF NOT EXISTS "phone" TEXT,
+ADD COLUMN IF NOT EXISTS "email" TEXT,
+ADD COLUMN IF NOT EXISTS "whatsapp" TEXT,
+ADD COLUMN IF NOT EXISTS "instagram" TEXT,
+ADD COLUMN IF NOT EXISTS "facebook" TEXT,
+ADD COLUMN IF NOT EXISTS "website" TEXT,
+ADD COLUMN IF NOT EXISTS "images" TEXT[] DEFAULT ARRAY[]::TEXT[],
+ADD COLUMN IF NOT EXISTS "fiscal_name" TEXT,
+ADD COLUMN IF NOT EXISTS "nif" TEXT;

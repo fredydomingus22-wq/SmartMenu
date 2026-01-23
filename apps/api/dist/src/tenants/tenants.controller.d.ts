@@ -1,0 +1,120 @@
+import { TenantsService } from './tenants.service';
+import { UpdateTenantDto } from './dto/update-tenant.dto';
+import { UpdateOrganizationDto } from './dto/update-organization.dto';
+import { UpdateBrandingDto } from './dto/update-branding.dto';
+import { UpdateMenuConfigDto } from './dto/update-menu-config.dto';
+import { AuthenticatedRequest } from '../common/types/authenticated-request.interface';
+export declare class TenantsController {
+    private readonly tenantsService;
+    constructor(tenantsService: TenantsService);
+    getTenant(req: AuthenticatedRequest): Promise<{
+        organization: {
+            id: string;
+            name: string;
+            createdAt: Date;
+            updatedAt: Date;
+            address: string | null;
+            city: string | null;
+            phone: string | null;
+            email: string | null;
+            taxId: string | null;
+            country: string | null;
+        };
+    } & {
+        id: string;
+        slug: string;
+        organizationId: string;
+        name: string;
+        plan: import(".prisma/client").$Enums.PlanTier;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        address: string | null;
+        city: string | null;
+        phone: string | null;
+        email: string | null;
+        whatsapp: string | null;
+        instagram: string | null;
+        facebook: string | null;
+        website: string | null;
+        images: string[];
+        fiscalName: string | null;
+        nif: string | null;
+    }>;
+    updateTenant(req: AuthenticatedRequest, updateTenantDto: UpdateTenantDto): Promise<{
+        id: string;
+        slug: string;
+        organizationId: string;
+        name: string;
+        plan: import(".prisma/client").$Enums.PlanTier;
+        createdAt: Date;
+        updatedAt: Date;
+        description: string | null;
+        address: string | null;
+        city: string | null;
+        phone: string | null;
+        email: string | null;
+        whatsapp: string | null;
+        instagram: string | null;
+        facebook: string | null;
+        website: string | null;
+        images: string[];
+        fiscalName: string | null;
+        nif: string | null;
+    }>;
+    getOrganization(req: AuthenticatedRequest): Promise<{
+        id: string;
+        name: string;
+        createdAt: Date;
+        updatedAt: Date;
+        address: string | null;
+        city: string | null;
+        phone: string | null;
+        email: string | null;
+        taxId: string | null;
+        country: string | null;
+    }>;
+    updateOrganization(req: AuthenticatedRequest, updateOrganizationDto: UpdateOrganizationDto): Promise<{
+        id: string;
+        name: string;
+        createdAt: Date;
+        updatedAt: Date;
+        address: string | null;
+        city: string | null;
+        phone: string | null;
+        email: string | null;
+        taxId: string | null;
+        country: string | null;
+    }>;
+    getBranding(id: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        tenantId: string;
+        tenantName: string | null;
+        logoUrl: string | null;
+        primaryColor: string | null;
+        secondaryColor: string | null;
+        borderRadius: string | null;
+        fontFamily: string | null;
+    } | {
+        tenantId: string;
+        tenantName: string;
+        primaryColor: string;
+        borderRadius: string;
+        fontFamily: string;
+    }>;
+    updateBranding(req: AuthenticatedRequest, updateBrandingDto: UpdateBrandingDto): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        tenantId: string;
+        tenantName: string | null;
+        logoUrl: string | null;
+        primaryColor: string | null;
+        secondaryColor: string | null;
+        borderRadius: string | null;
+        fontFamily: string | null;
+    }>;
+    updateMenuConfig(req: AuthenticatedRequest, updateMenuConfigDto: UpdateMenuConfigDto): Promise<import(".prisma/client").Prisma.BatchPayload>;
+}
