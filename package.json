@@ -15,7 +15,7 @@
     "dev:analytics": "cd apps/analytics && uvicorn main:app --reload",
     "build": "npm run build --workspaces",
     "lint": "npm run lint --workspaces",
-    "postinstall": "prisma generate",
+    "postinstall": "npx prisma generate",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
