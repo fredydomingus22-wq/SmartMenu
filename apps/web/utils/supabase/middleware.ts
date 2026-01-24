@@ -7,14 +7,17 @@ export async function updateSession(request: NextRequest) {
     })
 
     try {
-        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://ykjkdyesejssidyqwqpc.supabase.co";
+        const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlramtkeWVzZWpzc2lkeXF3cXBjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzODUyNzcsImV4cCI6MjA4Mzk2MTI3N30.W5xyrkspeSSuDsqGOBA8VhckJak9IzyqfJnu0-kN20s";
+
+        if (!supabaseUrl || !supabaseKey) {
             console.error('[Middleware] Missing environment variables for Supabase');
             return supabaseResponse;
         }
 
         const supabase = createServerClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+            supabaseUrl,
+            supabaseKey,
             {
                 cookies: {
                     getAll() {
