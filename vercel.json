@@ -1,0 +1,7 @@
+{
+    "buildCommand": "cd apps/consumer && npm run build",
+    "devCommand": "cd apps/consumer && npm run dev",
+    "installCommand": "npm install",
+    "framework": null,
+    "outputDirectory": "apps/consumer/.next"
+}
