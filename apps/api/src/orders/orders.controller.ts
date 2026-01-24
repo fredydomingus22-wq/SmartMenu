@@ -6,6 +6,7 @@ import {
   Param,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
@@ -15,14 +16,15 @@ import { AuthenticatedRequest } from '../common/interfaces/request.interface';
 @Controller('orders')
 @UseGuards(SupabaseAuthGuard)
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+  constructor(private readonly ordersService: OrdersService) { }
 
   @Get()
-  async findAll(@Request() req: AuthenticatedRequest) {
+  async findAll(@Request() req: AuthenticatedRequest, @Query('scope') scope?: string) {
     try {
       return await this.ordersService.findAll(
         req.user.tenantId,
         req.user.organizationId,
+        scope,
       );
     } catch (error) {
       console.error('[OrdersController] Error in findAll:', error);

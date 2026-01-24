@@ -27,6 +27,8 @@ export function UserNav({ user }: { user: User }) {
 
     const handleSignOut = async () => {
         await supabase.auth.signOut();
+        await supabase.auth.signOut();
+        router.replace('/login');
         router.refresh();
     };
 

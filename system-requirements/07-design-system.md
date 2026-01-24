@@ -172,9 +172,13 @@ Table, Card, Accordion
 - **Footer:** Botão "Adicionar ao Carrinho" fixo com somatório (Preço Base + Extras).
 
 ### KDSOrderCard
-- Resumo do pedido: Itens, Quantidade, Observações críticas.
-- Timer de cronometragem (tempo desde a criação).
-- Botões de ação rápida indexados por status.
+- **Layout Mobile:** Full-width (100%), empilhado verticalmente.
+- **Layout Tablet:** Grid de 3 ou 4 colunas dependendo da orientação.
+- **Touch Targets:** Botões de ação com altura mínima de **48px** (padrão "Fat Finger").
+- **Tipografia:** Tamanhos aumentados em 20% para legibilidade à distância (3 metros).
+- **Contraste:** Fundo de card de pedido com borda colorida grossa (4px) indicando status (Amarelo=Atrasado).
+- **Conteúdo:** Resumo do pedido: Itens, Quantidade, Observações críticas.
+- **Timer:** Cronômetro com mudança de cor (Verde -> Amarelo -> Vermelho).
 
 ### ProductOptionGroup
 - Seletor visual para opções (Rádio para escolha única, Checkbox para múltipla).

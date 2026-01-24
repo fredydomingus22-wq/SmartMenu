@@ -26,7 +26,7 @@ export default async function KDSPage() {
     // Buscar pedidos iniciais via api-client
     let orders: Order[] = [];
     try {
-        const response = await apiClient<Order[]>('/orders', {
+        const response = await apiClient<Order[]>('/orders?scope=active', {
             headers: {
                 Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
             },

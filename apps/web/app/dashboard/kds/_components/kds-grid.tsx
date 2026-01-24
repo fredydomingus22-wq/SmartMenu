@@ -37,7 +37,20 @@ export function KDSGrid({ initialOrders, tenantId }: KDSGridProps) {
             .on('broadcast', { event: 'STATUS_UPDATED' }, (payload) => {
                 console.log('Pedido Atualizado:', payload);
                 const updatedOrder = payload.payload;
-                setOrders(prev => prev.map(o => o.id === updatedOrder.id ? updatedOrder : o));
+
+                // Real-time Filtering: Remove se status for finalizado/entregue
+                if (['DELIVERED', 'COMPLETED', 'CANCELLED'].includes(updatedOrder.status)) {
+                    setOrders(prev => prev.filter(o => o.id !== updatedOrder.id));
+                } else {
+                    // Update or Add (se novo via mudança de status)
+                    setOrders(prev => {
+                        const exists = prev.find(o => o.id === updatedOrder.id);
+                        if (exists) {
+                            return prev.map(o => o.id === updatedOrder.id ? updatedOrder : o);
+                        }
+                        return [...prev, updatedOrder];
+                    });
+                }
             })
             .subscribe();
 
@@ -161,7 +174,7 @@ export function KDSGrid({ initialOrders, tenantId }: KDSGridProps) {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-8">
                         {activeOrders.map(order => (
-                            <div key={order.id} className="min-w-[320px]">
+                            <div key={order.id} className="w-full">
                                 <KDSOrderCard
                                     order={order}
                                     activeSector={activeSector}

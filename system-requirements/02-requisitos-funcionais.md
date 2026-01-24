@@ -60,11 +60,15 @@
 
 ### 3.3 Cozinha / Produção (KDS)
 
-- Tela dedicada (Kitchen Display System)
-- Pedidos filtrados por setor
-- Ordem cronológica e por prioridade
-- Marcação de etapas concluídas
-- Tempo médio de preparo
+### 3.3 Cozinha / Produção (KDS)
+
+- **Tela dedicada (Kitchen Display System):** Interface otimizada para tablets e monitores touch.
+- **Workflow de Estados:** Controle granular de fases (Pendente -> Em Preparo -> Pronto).
+- **Filtragem Automática:** Pedidos com status 'Finalizado', 'Entregue' ou 'Cancelado' **NÃO** devem aparecer na fila ativa. (Zero Distraction Policy).
+- **Responsividade Crítica:** A interface deve adaptar-se perfeitamente a dispositivos móveis (smartphones de chefs) e tablets, sem perda de funcionalidade.
+- **Gestão de Prioridade:** Visualização clara de pedidos atrasados ou VIP.
+- **Organização por Setor:** Filtragem opcional para ver apenas "Bar" ou "Cozinha".
+- **Métricas:** Tempo médio de preparo visível.
 
 ---
 

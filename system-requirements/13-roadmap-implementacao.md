@@ -51,7 +51,11 @@
 - [x] **Internationalization (i18n):** Migração completa de UI strings para `pt.json` e suporte a tradução básica no cliente.
 - [ ] **Backend i18n Strategy:** Migrar campos `name/description` para JSONB para suporte total a múltiplos idiomas. (High Priority)
 - [ ] **E-commerce Showcase Refactor:** Implementar vitrine por seções (Shopify-style), recomendações, upsells e rodapé global na PDP e Home Cliente. (High Priority)
-- [ ] **KDS Basic:** Tela de preparação. (Next Step)
+- [ ] **KDS 2.0 Hardening (P0):**
+    - [ ] **Backend Filtering:** Implementar `?scope=active` para remover pedidos finalizados/entregues.
+    - [ ] **Mobile Retrofit:** Auditoria de UI para garantir uso em smartphones (1-col grid, 48px buttons).
+    - [ ] **Workflow Logic:** Validar transições de estado no backend (`PATCH /status`).
+    - [ ] **Zero Distraction:** Garantir que o KDS limpa pedidos concluídos em tempo real.
 - [ ] **Marketing Management UI:** Painel para o gerente configurar Upsells e Recomendações vinculadas a produtos.
 - [x] **Technical Sweep:** Implementação de Error Boundaries, Type Safety e eliminação de `any` (Dashboard & Menu).
 - [ ] **UI Refactor:** Implementar `ScrollArea` em todos os forms e Migrar Cadastro de Produto para Página Dedicada (Framer Motion).

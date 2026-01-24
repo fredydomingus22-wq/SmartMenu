@@ -35,6 +35,8 @@ Este documento define a estratégia de garantia de qualidade para o SmartMenu, g
 | Loyalty Engine | Logic | Alto | Pontos calculados corretamente após `DELIVERED` e validados no resgate. |
 | Customization Logic | Logic | Alto | Preço final (Base + Extras * Qty) calculado no server bate com o esperado. |
 | KDS Logic | Operational | Alto | Pedidos aparecem em < 2s na cozinha e filtros de setor funcionam. |
+| **KDS Filtering** | Operational | Crítico | Pedidos 'DELIVERED' ou 'CANCELLED' desaparecem imediatamente da tela. |
+| **KDS Mobile** | UX | Alto | Layout adapta-se a 1 coluna em mobile (<768px) e botões têm >48px. |
 | Tenant Branding | UX | Médio | Injeção de CSS Vars por tenant e fallback para estilos padrão. |
 | **Recommendations** | UX | Médio | Itens sugeridos são do mesmo tenant e relevantes à categoria. |
 | **Upsell Logic** | Business | Alto | Preço do combo/upsell é adicionado corretamente ao total. |

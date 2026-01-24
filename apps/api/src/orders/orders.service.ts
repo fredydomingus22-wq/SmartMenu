@@ -215,9 +215,17 @@ export class OrdersService {
     return order;
   }
 
-  async findAll(tenantId: string, organizationId: string) {
+  async findAll(tenantId: string, organizationId: string, scope?: string) {
+    const where: any = { tenantId, organizationId };
+
+    if (scope === 'active') {
+      where.status = {
+        in: ['PENDING', 'CONFIRMED', 'PREPARING', 'READY'],
+      };
+    }
+
     return this.prisma.order.findMany({
-      where: { tenantId, organizationId },
+      where,
       include: {
         items: {
           include: {

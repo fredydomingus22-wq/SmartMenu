@@ -97,6 +97,20 @@ Para suportar múltiplos idiomas de forma escalável e sem a complexidade de tab
 
 ---
 
+### 6.3 Arquitetura KDS (Kitchen Display System)
+
+Para garantir performance e "Zero Distraction" em cozinhas movimentadas, a arquitetura do KDS deve seguir regras estritas de dados:
+
+1.  **Active Orders Scope:** O endpoint `GET /orders` deve suportar o filtro `?scope=active` que retorna apenas pedidos com status: `PENDING`, `PREPARING`, `READY`.
+    - **Database Index:** `CREATE INDEX idx_orders_status_tenant ON orders(tenant_id, status) WHERE status NOT IN ('DELIVERED', 'CANCELLED');`
+2.  **State Machine:** As transições de estado devem ser validadas no backend.
+    - `PATCH /orders/:id/status` -> Body: `{ status: 'PREPARING' }`
+3.  **Real-Time Optimistic UI:**
+    - O frontend KDS deve subscrever a eventos `UPDATE` na tabela `orders`.
+    - Ao receber um evento com `new.status = 'DELIVERED'`, o item deve ser removido da lista local imediatamente.
+
+---
+
 ## 13. Próximos Passos Técnicos
 
 1. Definir schema SQL
