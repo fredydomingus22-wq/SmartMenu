@@ -1,6 +1,6 @@
 'use server'
 
-import { apiClient } from '@/utils/api-client'
+import { apiClient } from '@/utils/api-client-server'
 import { revalidatePath } from 'next/cache'
 
 // --- Categories ---
@@ -157,7 +157,7 @@ export async function updateProduct(id: string, formData: FormData) {
         const recommendationsStr = formData.get('recommendations') as string
         const recommendations = recommendationsStr ? JSON.parse(recommendationsStr) : undefined
 
-        await apiClient.put(`/products/${id}`, {
+        await apiClient.patch(`/products/${id}`, {
             name,
             description,
             price,

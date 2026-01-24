@@ -161,6 +161,8 @@ export function ProductForm({ categories, initialData, products = [] }: {
     initialData?: ProductInitialData,
     products?: { id: string; name: string | Record<string, string> }[]
 }) {
+    const router = useRouter();
+    const { t, locale } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [preview, setPreview] = useState<string | null>(initialData?.imageUrl || null);
     const [gallery, setGallery] = useState<{ url: string; file?: File }[]>(
@@ -183,8 +185,6 @@ export function ProductForm({ categories, initialData, products = [] }: {
     const [recommendations, setRecommendations] = useState<string[]>(
         initialData?.recommendations?.map(r => r.recommended.id) || []
     );
-    const router = useRouter();
-    const { t, locale } = useTranslation();
 
     async function handleSubmit(formData: FormData) {
         setLoading(true);
@@ -459,7 +459,7 @@ export function ProductForm({ categories, initialData, products = [] }: {
                                                     <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{t('dashboard.products.form.group_name')}</Label>
                                                     <Input
                                                         placeholder={t('dashboard.products.form.group_placeholder')}
-                                                        value={group.name as string}
+                                                        value={typeof group.name === 'string' ? group.name : ''}
                                                         onChange={(e) => {
                                                             const newOptions = [...productOptions];
                                                             newOptions[groupIdx].name = e.target.value;
@@ -488,7 +488,7 @@ export function ProductForm({ categories, initialData, products = [] }: {
                                                     <div key={valIdx} className="flex gap-2 items-center">
                                                         <Input
                                                             placeholder={t('dashboard.products.form.value_placeholder')}
-                                                            value={val.name as string}
+                                                            value={typeof val.name === 'string' ? val.name : ''}
                                                             onChange={(e) => {
                                                                 const newOptions = [...productOptions];
                                                                 newOptions[groupIdx].values[valIdx].name = e.target.value;

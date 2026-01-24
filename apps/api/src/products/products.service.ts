@@ -8,12 +8,12 @@ import { UpdateProductDto } from './dto/update-product.dto';
 export class ProductsService {
   constructor(private prisma: PrismaService) { }
 
-  private normalizeJson(value: Prisma.JsonValue | string | undefined): Prisma.JsonValue {
-    if (!value) return null;
+  private normalizeJson(value: any): Prisma.InputJsonValue {
+    if (!value) return null as unknown as Prisma.InputJsonValue;
     if (typeof value === 'string') {
-      return { pt: value };
+      return { pt: value } as Prisma.InputJsonValue;
     }
-    return value as Prisma.JsonValue;
+    return value as Prisma.InputJsonValue;
   }
 
   async create(
@@ -32,7 +32,7 @@ export class ProductsService {
       data: {
         ...data,
         name: this.normalizeJson(data.name),
-        description: this.normalizeJson(data.description),
+        description: this.normalizeJson(data.description) as Prisma.InputJsonValue,
         tenantId,
         organizationId,
         images: {
@@ -150,8 +150,8 @@ export class ProductsService {
         where: { id, tenantId, organizationId },
         data: {
           ...data,
-          name: this.normalizeJson(data.name as Prisma.JsonValue),
-          description: this.normalizeJson(data.description as Prisma.JsonValue),
+          name: this.normalizeJson(data.name),
+          description: this.normalizeJson(data.description) as Prisma.InputJsonValue,
           ...(categoryId ? { categoryId } : {}),
           ...(images
             ? {

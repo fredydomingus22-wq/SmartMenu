@@ -40,10 +40,8 @@
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",
-    "add": "^2.0.6",
     "jsonwebtoken": "^9.0.3",
     "radix-ui": "^1.4.3",
-    "react-slider": "^2.0.6",
     "shadcn": "^3.7.0",
     "ts-node": "^10.9.2"
   }

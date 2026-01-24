@@ -66,7 +66,7 @@ export default async function EditProductPage({
             <ProductForm
                 categories={categories}
                 initialData={initialData}
-                products={productsList.filter(p => p.id !== id)}
+                products={productsList.filter(p => p.id !== id && p.id).map(p => ({ id: p.id!, name: p.name }))}
             />
         </div>
     );

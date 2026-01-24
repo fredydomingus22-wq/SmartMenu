@@ -2,24 +2,27 @@
 
 import { createContext, useContext, ReactNode, useState } from 'react';
 import pt from '../locales/pt.json';
-
-type TranslationKeys = typeof pt;
+import en from '../locales/en.json';
+import es from '../locales/es.json';
 
 interface I18nContextType {
     t: (path: string, params?: Record<string, string | number>) => string;
     locale: string;
+    setLocale: (locale: string) => void;
 }
 
-const translations: Record<string, any> = { pt };
+const translations: Record<string, any> = { pt, en, es };
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
-export function I18nProvider({ children, locale = 'pt' }: { children: ReactNode; locale?: string }) {
+export function I18nProvider({ children, locale: initialLocale = 'pt' }: { children: ReactNode; locale?: string }) {
+    const [locale, setLocale] = useState(initialLocale);
+
     const t = (path: string, params?: Record<string, string | number>) => {
         const keys = path.split('.');
-        let current: any = translations[locale];
+        let current: any = translations[locale] || translations['pt'];
 
         for (const key of keys) {
-            if (current[key] === undefined) return path;
+            if (!current || current[key] === undefined) return path;
             current = current[key];
         }
 
@@ -33,7 +36,7 @@ export function I18nProvider({ children, locale = 'pt' }: { children: ReactNode;
     };
 
     return (
-        <I18nContext.Provider value={{ t, locale }}>
+        <I18nContext.Provider value={{ t, locale, setLocale }}>
             {children}
         </I18nContext.Provider>
     );
