@@ -2,6 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Bike, ChevronLeft, ShoppingBag, Utensils, Smartphone } from "lucide-react";
 import Link from "next/link";
 
+export const viewport = {
+    width: "device-width",
+    initialScale: 1,
+};
+
 export default function ContextOrderingPage() {
     return (
         <div className="min-h-screen bg-background text-foreground">

@@ -2,11 +2,9 @@ export const dynamic = "force-dynamic";
 
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
 import { DashboardSidebar } from "./_components/dashboard-sidebar";
 import { ContentTransition } from "./_components/content-transition";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { DashboardHeader } from "./_components/dashboard-header";
 
 export default async function DashboardLayout({
     children,
@@ -52,36 +50,8 @@ export default async function DashboardLayout({
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
-                <header className="flex h-16 shrink-0 items-center justify-between border-b bg-white/80 backdrop-blur-md px-8 dark:border-zinc-800 dark:bg-zinc-950/80">
-                    <div className="flex items-center gap-4">
-                        <Sheet>
-                            <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" className="md:hidden">
-                                    <Menu className="h-5 w-5" />
-                                    <span className="sr-only">Menu</span>
-                                </Button>
-                            </SheetTrigger>
-                            <SheetContent side="left" className="p-0 border-r-0 w-72">
-                                <SheetTitle className="sr-only">Menu de Navegação</SheetTitle>
-                                <DashboardSidebar navItems={navItems} className="w-full border-none shadow-none" />
-                            </SheetContent>
-                        </Sheet>
-                        {/* Placeholder for Breadcrumbs or Search */}
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="text-right">
-                            <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100 leading-none">
-                                {user.email?.split('@')[0]}
-                            </p>
-                            <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-widest">
-                                Admin
-                            </span>
-                        </div>
-                        <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 text-white flex items-center justify-center font-bold shadow-lg shadow-orange-500/20">
-                            {user.email?.[0].toUpperCase()}
-                        </div>
-                    </div>
-                </header>
+                <DashboardHeader user={user} />
+
                 <main className="flex-1 overflow-y-auto p-8 scrollbar-hide">
                     <div className="mx-auto max-w-5xl">
                         <ContentTransition>
