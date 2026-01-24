@@ -16,10 +16,11 @@ type Story = StoryObj<typeof PublicMenuHeader>;
 export const Default: Story = {
     args: {
         branding: {
-            colors: {
-                primary: '#f97316',
-                secondary: '#18181b',
-            }
+            primaryColor: '#f97316',
+            secondaryColor: '#18181b',
+            tenantId: '1',
+            logoUrl: null,
+            bannerUrl: null
         }
     },
 };
@@ -27,10 +28,11 @@ export const Default: Story = {
 export const CustomColors: Story = {
     args: {
         branding: {
-            colors: {
-                primary: '#0ea5e9',
-                secondary: '#0f172a',
-            }
+            primaryColor: '#0ea5e9',
+            secondaryColor: '#0f172a',
+            tenantId: '1',
+            logoUrl: null,
+            bannerUrl: null
         }
     },
 };
@@ -38,10 +40,11 @@ export const CustomColors: Story = {
 export const WithTable: Story = {
     args: {
         branding: {
-            colors: {
-                primary: '#e11d48',
-                secondary: '#4c0519',
-            }
+            primaryColor: '#e11d48',
+            secondaryColor: '#4c0519',
+            tenantId: '1',
+            logoUrl: null,
+            bannerUrl: null
         },
         tableId: '12'
     },

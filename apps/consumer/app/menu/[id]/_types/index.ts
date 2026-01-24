@@ -89,7 +89,7 @@ export interface FooterConfig {
 export interface MenuSection {
     id?: string;
     name?: string;
-    type: "hero" | "featured" | "category_grid" | "promotions" | "loyalty" | "global_upsell";
+    type: "hero" | "featured" | "category_grid" | "promotions" | "loyalty" | "global_upsell" | "best_sellers" | "new_arrivals";
     title?: string;
     subtitle?: string;
     isActive: boolean;
