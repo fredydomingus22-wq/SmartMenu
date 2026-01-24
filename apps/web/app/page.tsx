@@ -116,17 +116,17 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* AI & Automation Features */}
+        {/* Core Features */}
         <section id="features" className="py-24 px-6 bg-zinc-50 dark:bg-zinc-950/40 border-y">
           <div className="max-w-7xl mx-auto space-y-16">
             <div className="text-center space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-500 text-xs font-bold border border-blue-500/20 mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold border border-primary/20 mb-4">
                 <Zap className="h-3 w-3 fill-current" />
-                <span>POWERED BY AI & AUTOMATION</span>
+                <span>EXPERIÊNCIA COMPLETA</span>
               </div>
               <h2 className="text-3xl md:text-5xl font-bold">O Seu Restaurante em Piloto Automático</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Enquanto você foca na qualidade da comida, nossa Inteligência Artificial cuida da operação e das vendas.
+                Tecnologia invisível que organiza a sua operação e fideliza os seus clientes, sem complexidade.
               </p>
             </div>
 
@@ -142,10 +142,22 @@ export default function LandingPage() {
                 <div className="h-12 w-12 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors relative z-10">
                   <TrendingUp className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold relative z-10">Upsell com IA</h3>
+                <h3 className="text-xl font-bold relative z-10">Vendas Sugestivas</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
-                  O nosso motor de IA analisa o pedido em tempo real e sugere ("Que tal um vinho?") no momento exato de maior conversão.
+                  O sistema sugere ("Que tal um vinho?") no momento certo, aumentando o consumo de forma natural e não intrusiva.
                   <span className="block mt-2 font-medium text-blue-500">+15% Ticket Médio</span>
+                </p>
+              </motion.div>
+
+              <motion.div variants={item} className="p-8 bg-background border rounded-3xl space-y-4 hover:shadow-xl transition-shadow group relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />
+                <div className="h-12 w-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-colors relative z-10">
+                  <QrCode className="h-6 w-6" />
+                </div>
+                <h3 className="text-xl font-bold relative z-10">O Seu Clube de Pontos</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
+                  Crie regras próprias (ex: 100 KZ = 1 ponto). Os clientes acumulam saldo e voltam para trocar por prémios que você define.
+                  <span className="block mt-2 font-medium text-purple-500">100% Configurável por Si</span>
                 </p>
               </motion.div>
 
@@ -154,22 +166,10 @@ export default function LandingPage() {
                 <div className="h-12 w-12 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors relative z-10">
                   <ClipboardList className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold relative z-10">Estoque Inteligente</h3>
+                <h3 className="text-xl font-bold relative z-10">Gestão de Estoque Real</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
-                  Acabou o bife? O sistema esconde o item do menu automaticamente e avisa o gerente. Sem pedidos frustrados, sem "temos que cancelar".
-                  <span className="block mt-2 font-medium text-orange-500">Zero Erros de Estoque</span>
-                </p>
-              </motion.div>
-
-              <motion.div variants={item} className="p-8 bg-background border rounded-3xl space-y-4 hover:shadow-xl transition-shadow group relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-green-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />
-                <div className="h-12 w-12 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-500 group-hover:bg-green-500 group-hover:text-white transition-colors relative z-10">
-                  <QrCode className="h-6 w-6" />
-                </div>
-                <h3 className="text-xl font-bold relative z-10">Fidelidade Automática</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
-                  Os clientes acumulam pontos a cada pedido automaticamente. O sistema envia notificações para eles voltarem.
-                  <span className="block mt-2 font-medium text-green-500">Retenção de Clientes</span>
+                  Acabou o bife? O sistema esconde o item do menu automaticamente e avisa o gerente. Sem pedidos frustrados.
+                  <span className="block mt-2 font-medium text-orange-500">Zero Erros de Cozinha</span>
                 </p>
               </motion.div>
             </motion.div>
@@ -364,6 +364,7 @@ export default function LandingPage() {
           </div>
           <p className="text-muted-foreground text-sm">© 2026 SmartMenu. Proudly built for the future of dining.</p>
           <div className="flex gap-6 text-sm font-medium text-muted-foreground">
+            <Link href="/features/technology" className="hover:text-foreground transition-colors">Tecnologia</Link>
             <Link href="#" className="hover:text-foreground transition-colors">Termos</Link>
             <Link href="#" className="hover:text-foreground transition-colors">Privacidade</Link>
           </div>
