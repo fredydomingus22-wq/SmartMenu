@@ -137,41 +137,56 @@ export default function LandingPage() {
               viewport={{ once: true }}
               className="grid md:grid-cols-3 gap-8"
             >
-              <motion.div variants={item} className="p-8 bg-background border rounded-3xl space-y-4 hover:shadow-xl transition-shadow group relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />
-                <div className="h-12 w-12 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors relative z-10">
-                  <TrendingUp className="h-6 w-6" />
-                </div>
-                <h3 className="text-xl font-bold relative z-10">Vendas Sugestivas</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
-                  O sistema sugere ("Que tal um vinho?") no momento certo, aumentando o consumo de forma natural e não intrusiva.
-                  <span className="block mt-2 font-medium text-blue-500">+15% Ticket Médio</span>
-                </p>
-              </motion.div>
+              {/* Feature 1: Vendas Sugestivas */}
+              <Link href="/features/upsell" className="block h-full no-underline">
+                <motion.div variants={item} className="p-8 bg-background border rounded-3xl space-y-4 hover:shadow-xl transition-all hover:border-blue-500/50 group h-full relative overflow-hidden cursor-pointer">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />
+                  <div className="h-12 w-12 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors relative z-10">
+                    <TrendingUp className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold relative z-10 flex items-center gap-2">
+                    Vendas Sugestivas <ChevronRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
+                    O sistema sugere ("Que tal um vinho?") no momento certo, aumentando o consumo de forma natural.
+                    <span className="block mt-2 font-medium text-blue-500">+15% Ticket Médio</span>
+                  </p>
+                </motion.div>
+              </Link>
 
-              <motion.div variants={item} className="p-8 bg-background border rounded-3xl space-y-4 hover:shadow-xl transition-shadow group relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />
-                <div className="h-12 w-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-colors relative z-10">
-                  <QrCode className="h-6 w-6" />
-                </div>
-                <h3 className="text-xl font-bold relative z-10">O Seu Clube de Pontos</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
-                  Crie regras próprias (ex: 100 KZ = 1 ponto). Os clientes acumulam saldo e voltam para trocar por prémios que você define.
-                  <span className="block mt-2 font-medium text-purple-500">100% Configurável por Si</span>
-                </p>
-              </motion.div>
+              {/* Feature 2: Club de Pontos */}
+              <Link href="/features/loyalty" className="block h-full no-underline">
+                <motion.div variants={item} className="p-8 bg-background border rounded-3xl space-y-4 hover:shadow-xl transition-all hover:border-purple-500/50 group h-full relative overflow-hidden cursor-pointer">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />
+                  <div className="h-12 w-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-colors relative z-10">
+                    <QrCode className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold relative z-10 flex items-center gap-2">
+                    O Seu Clube de Pontos <ChevronRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
+                    Crie regras próprias (ex: 100 KZ = 1 ponto). Os clientes acumulam saldo e voltam para trocar por prémios.
+                    <span className="block mt-2 font-medium text-purple-500">100% Configurável</span>
+                  </p>
+                </motion.div>
+              </Link>
 
-              <motion.div variants={item} className="p-8 bg-background border rounded-3xl space-y-4 hover:shadow-xl transition-shadow group relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />
-                <div className="h-12 w-12 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors relative z-10">
-                  <ClipboardList className="h-6 w-6" />
-                </div>
-                <h3 className="text-xl font-bold relative z-10">Gestão de Estoque Real</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
-                  Acabou o bife? O sistema esconde o item do menu automaticamente e avisa o gerente. Sem pedidos frustrados.
-                  <span className="block mt-2 font-medium text-orange-500">Zero Erros de Cozinha</span>
-                </p>
-              </motion.div>
+              {/* Feature 3: Context Ordering (Replaced Stock) */}
+              <Link href="/features/context-ordering" className="block h-full no-underline">
+                <motion.div variants={item} className="p-8 bg-background border rounded-3xl space-y-4 hover:shadow-xl transition-all hover:border-orange-500/50 group h-full relative overflow-hidden cursor-pointer">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />
+                  <div className="h-12 w-12 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors relative z-10">
+                    <ClipboardList className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold relative z-10 flex items-center gap-2">
+                    Pedidos Multi-Canal <ChevronRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
+                    Gerencie pedidos de <strong>Dine-in, Takeaway e Delivery</strong> numa única plataforma centralizada.
+                    <span className="block mt-2 font-medium text-orange-500">Gestão 360º</span>
+                  </p>
+                </motion.div>
+              </Link>
             </motion.div>
           </div>
         </section>
