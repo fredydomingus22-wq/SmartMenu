@@ -19,44 +19,44 @@ export default function ContextOrderingPage() {
                 <div className="text-center space-y-6">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 text-orange-500 text-xs font-bold border border-orange-500/20">
                         <Smartphone className="h-3 w-3 fill-current" />
-                        <span>OMNICHANNEL REAL</span>
+                        <span>LIBERDADE OPERACIONAL</span>
                     </div>
                     <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
-                        Venda em Qualquer <br />
-                        <span className="text-orange-500">Contexto</span>
+                        O Seu Restaurante <br />
+                        <span className="text-orange-500">Sem Paredes</span>
                     </h1>
-                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                        O SmartMenu adapta-se à jornada do cliente. Seja na mesa, em casa ou a caminho, a experiência é fluida e unificada.
+                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                        As suas mesas estão cheias? Ótimo. Mas porquê limitar o seu faturamento ao espaço físico? O SmartMenu permite-lhe vender para quem está no escritório, em casa ou no trânsito.
                     </p>
                 </div>
 
                 {/* Benefits Grid */}
                 <div className="grid md:grid-cols-3 gap-8">
-                    <div className="p-8 bg-zinc-50 dark:bg-zinc-900 rounded-3xl space-y-4 border hover:border-orange-500/30 transition-colors">
+                    <div className="p-8 bg-zinc-50 dark:bg-zinc-900 rounded-3xl space-y-4 border hover:border-orange-500/30 transition-colors shadow-sm hover:shadow-xl">
                         <div className="h-12 w-12 bg-orange-100 dark:bg-orange-900/30 rounded-2xl flex items-center justify-center text-orange-600 dark:text-orange-400">
                             <Utensils className="h-6 w-6" />
                         </div>
-                        <h3 className="text-xl font-bold">Dine-In (Na Mesa)</h3>
-                        <p className="text-muted-foreground">
-                            O clássico QR Code na mesa. O cliente senta, escaneia e o pedido vai direto para a cozinha com o número da mesa identificado. Sem erros.
+                        <h3 className="text-xl font-bold">Dine-In (A Base)</h3>
+                        <p className="text-muted-foreground leading-relaxed">
+                            O cliente senta e pede. Sem esperar pelo garçom, sem erros de anotação. A rotação das mesas aumenta em <strong>30%</strong> porque o processo é instantâneo.
                         </p>
                     </div>
-                    <div className="p-8 bg-zinc-50 dark:bg-zinc-900 rounded-3xl space-y-4 border hover:border-orange-500/30 transition-colors">
+                    <div className="p-8 bg-zinc-50 dark:bg-zinc-900 rounded-3xl space-y-4 border hover:border-orange-500/30 transition-colors shadow-sm hover:shadow-xl">
                         <div className="h-12 w-12 bg-orange-100 dark:bg-orange-900/30 rounded-2xl flex items-center justify-center text-orange-600 dark:text-orange-400">
                             <ShoppingBag className="h-6 w-6" />
                         </div>
-                        <h3 className="text-xl font-bold">Takeaway (Levantar)</h3>
-                        <p className="text-muted-foreground">
-                            O cliente encomenda antes de chegar. O sistema avisa quando está pronto para levantar. Ideal para almoços rápidos ou café on-the-go.
+                        <h3 className="text-xl font-bold">Takeaway (A Conveniência)</h3>
+                        <p className="text-muted-foreground leading-relaxed">
+                            Luanda corre. Os seus clientes também. Permita que encomendem o almoço às 12:30 para levantar às 13:00. Eles poupam tempo, você ganha volume.
                         </p>
                     </div>
-                    <div className="p-8 bg-zinc-50 dark:bg-zinc-900 rounded-3xl space-y-4 border hover:border-orange-500/30 transition-colors">
+                    <div className="p-8 bg-zinc-50 dark:bg-zinc-900 rounded-3xl space-y-4 border hover:border-orange-500/30 transition-colors shadow-sm hover:shadow-xl">
                         <div className="h-12 w-12 bg-orange-100 dark:bg-orange-900/30 rounded-2xl flex items-center justify-center text-orange-600 dark:text-orange-400">
                             <Bike className="h-6 w-6" />
                         </div>
-                        <h3 className="text-xl font-bold">Delivery Próprio</h3>
-                        <p className="text-muted-foreground">
-                            Receba encomendas para entrega direta. Faça a gestão dos estafetas e taxas de entrega sem pagar comissões abusivas a terceiros.
+                        <h3 className="text-xl font-bold">Delivery (A Expansão)</h3>
+                        <p className="text-muted-foreground leading-relaxed">
+                            Fuja das comissões de 30% das apps de entrega. Gerencie a sua própria frota ou parceiros e mantenha o lucro do lado de cá do balcão.
                         </p>
                     </div>
                 </div>

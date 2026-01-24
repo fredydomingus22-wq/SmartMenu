@@ -19,40 +19,40 @@ export default function UpsellPage() {
                 <div className="text-center space-y-6">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-500 text-xs font-bold border border-blue-500/20">
                         <TrendingUp className="h-3 w-3 fill-current" />
-                        <span>LUCRO AUTOMÁTICO</span>
+                        <span>PARE DE PERDER DINHEIRO</span>
                     </div>
                     <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
-                        Venda Mais em <br />
-                        <span className="text-blue-500">Cada Pedido</span>
+                        O Vendedor que <br />
+                        <span className="text-blue-500">Nunca Dorme</span>
                     </h1>
-                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                        O nosso motor de sugestão inteligente funciona como o seu melhor garçom: nunca se esquece de oferecer uma bebida, entrada ou sobremesa.
+                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                        Cada pedido que sai da cozinha sem uma bebida ou sobremesa é <strong className="text-foreground">dinheiro deixado na mesa</strong>. O SmartMenu elimina esse prejuízo invisível usando psicologia de consumo avançada.
                     </p>
                 </div>
 
                 {/* Benefits Grid */}
                 <div className="grid md:grid-cols-2 gap-12 items-center">
-                    <div className="space-y-8">
+                    <div className="space-y-12">
                         <div className="space-y-4">
-                            <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
-                                    <Sparkles className="h-5 w-5" />
+                            <div className="flex items-center gap-4">
+                                <div className="h-12 w-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 shadow-lg shadow-blue-500/10">
+                                    <Sparkles className="h-6 w-6" />
                                 </div>
-                                <h3 className="text-xl font-bold">Sugestões Contextuais</h3>
+                                <h3 className="text-2xl font-bold">O Poder do "Sim, aceito"</h3>
                             </div>
-                            <p className="text-muted-foreground pl-13">
-                                Se o cliente pede um hambúrguer, sugerimos batatas. Se pede café, sugerimos um bolo. A lógica é simples, o resultado é poderoso.
+                            <p className="text-muted-foreground pl-16 text-lg leading-relaxed">
+                                Humanos odeiam pressão, mas amam conveniência. A nossa IA sabe que sugerir uma "Coca-Cola gelada" com o hambúrguer aumenta a conversão em <strong>40%</strong> comparado a uma pergunta genérica do garçom.
                             </p>
                         </div>
                         <div className="space-y-4">
-                            <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
-                                    <Zap className="h-5 w-5" />
+                            <div className="flex items-center gap-4">
+                                <div className="h-12 w-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 shadow-lg shadow-blue-500/10">
+                                    <Zap className="h-6 w-6" />
                                 </div>
-                                <h3 className="text-xl font-bold">Timing Perfeito</h3>
+                                <h3 className="text-2xl font-bold">Timing Cirúrgico</h3>
                             </div>
-                            <p className="text-muted-foreground pl-13">
-                                As sugestões aparecem no momento da decisão (checkout), quando a probabilidade de aceitação é máxima.
+                            <p className="text-muted-foreground pl-16 text-lg leading-relaxed">
+                                Sugerir cedo demais irrita. Sugerir tarde demais é inútil. O SmartMenu apresenta a oferta irresistível no <strong>microssegundo exato</strong> em que o cliente está com o dedo no botão de "Confirmar".
                             </p>
                         </div>
                     </div>

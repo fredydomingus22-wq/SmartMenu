@@ -148,7 +148,7 @@ export default function LandingPage() {
                     Vendas Sugestivas <ChevronRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                   </h3>
                   <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
-                    O sistema sugere ("Que tal um vinho?") no momento certo, aumentando o consumo de forma natural.
+                    O sistema sugere (&quot;Que tal um vinho?&quot;) no momento certo, aumentando o consumo de forma natural.
                     <span className="block mt-2 font-medium text-blue-500">+15% Ticket Médio</span>
                   </p>
                 </motion.div>
