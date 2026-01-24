@@ -86,14 +86,14 @@ export function KDSGrid({ initialOrders, tenantId }: KDSGridProps) {
 
     return (
         <div className="flex flex-col h-full bg-zinc-50/50">
-            {/* Toolbar - Estilo Dashboard / OlaClick */}
-            <div className="px-8 py-5 bg-white border-b border-zinc-200 flex items-center justify-between sticky top-0 z-20 shadow-sm">
+            {/* Toolbar - Estilo Dashboard / OlaClick - RESPONSIVE */}
+            <div className="px-4 md:px-8 py-4 md:py-5 bg-white border-b border-zinc-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4 sticky top-0 z-20 shadow-sm">
                 <div className="flex items-center gap-4">
                     <div className="p-2 bg-orange-100 rounded-lg">
-                        <ChefHat className="w-6 h-6 text-orange-600" />
+                        <ChefHat className="w-5 h-5 md:w-6 md:h-6 text-orange-600" />
                     </div>
                     <div>
-                        <h2 className="text-xl font-black text-zinc-900 leading-none">
+                        <h2 className="text-lg md:text-xl font-black text-zinc-900 leading-none">
                             {t('kds.title')}
                         </h2>
                         <div className="flex items-center gap-2 mt-1">
@@ -108,8 +108,8 @@ export function KDSGrid({ initialOrders, tenantId }: KDSGridProps) {
                     </div>
                 </div>
 
-                {/* Sector Switcher */}
-                <div className="flex bg-zinc-100 p-1 rounded-xl border border-zinc-200">
+                {/* Sector Switcher - Responsive */}
+                <div className="flex bg-zinc-100 p-1 rounded-xl border border-zinc-200 w-full md:w-auto">
                     {(['KITCHEN', 'BAR', 'ALL'] as const).map((s) => (
                         <Button
                             key={s}
@@ -117,7 +117,7 @@ export function KDSGrid({ initialOrders, tenantId }: KDSGridProps) {
                             size="sm"
                             onClick={() => setActiveSector(s)}
                             className={cn(
-                                "h-9 px-6 font-bold rounded-lg transition-all",
+                                "h-9 px-4 md:px-6 font-bold rounded-lg transition-all flex-1 md:flex-none",
                                 activeSector === s
                                     ? "bg-white text-orange-600 shadow-sm"
                                     : "text-zinc-500 hover:text-zinc-900"
@@ -131,13 +131,13 @@ export function KDSGrid({ initialOrders, tenantId }: KDSGridProps) {
                     ))}
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 w-full md:w-auto">
                     <Button
                         variant="ghost"
                         size="sm"
                         onClick={initAudio}
                         className={cn(
-                            "h-10 px-4 font-bold rounded-lg border-2 transition-all",
+                            "h-10 px-4 font-bold rounded-lg border-2 transition-all flex-1 md:flex-none",
                             isSoundEnabled
                                 ? "border-green-500 bg-green-50 text-green-700"
                                 : "border-zinc-200 text-zinc-500"
@@ -153,7 +153,7 @@ export function KDSGrid({ initialOrders, tenantId }: KDSGridProps) {
                         variant="secondary"
                         size="sm"
                         onClick={handleRefresh}
-                        className="h-10 px-4 font-bold border-2 border-zinc-200 bg-white"
+                        className="h-10 px-4 font-bold border-2 border-zinc-200 bg-white flex-1 md:flex-none"
                     >
                         <RefreshCw className="w-5 h-5 mr-2" />
                         {t('kds.refresh')}

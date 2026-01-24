@@ -180,7 +180,15 @@ export function KDSOrderCard({ order, activeSector = 'ALL', onUpdateStatus, onTo
 
             {/* Rodapé - Botões GRANDES (Spec 14.10) */}
             <CardFooter className="pt-2 pb-4 px-4 border-t border-zinc-100">
-                {order.status !== 'READY' ? (
+                {order.status === 'READY' ? (
+                    <Button
+                        size="lg"
+                        className="w-full h-14 text-base font-black uppercase tracking-widest transition-all bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/20"
+                        onClick={() => onUpdateStatus(order.id, 'DELIVERED')}
+                    >
+                        ✓ {t('kds.deliver')}
+                    </Button>
+                ) : (
                     <Button
                         size="lg"
                         className={cn(
@@ -194,11 +202,6 @@ export function KDSOrderCard({ order, activeSector = 'ALL', onUpdateStatus, onTo
                     >
                         {allItemsDone ? t('kds.order_ready') : t('kds.items_missing')}
                     </Button>
-                ) : (
-                    <div className="w-full h-14 flex items-center justify-center gap-3 text-green-700 font-black text-sm bg-green-50 rounded-xl border-2 border-green-200 uppercase tracking-widest shadow-inner">
-                        <CheckCircle2 className="w-6 h-6" />
-                        {t('kds.ready')}
-                    </div>
                 )}
             </CardFooter>
         </Card>
