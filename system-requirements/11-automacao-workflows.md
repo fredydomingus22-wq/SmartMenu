@@ -84,6 +84,7 @@ Este módulo transforma o sistema num **orquestrador operacional inteligente**, 
 
 ### ✍️ IA para Conteúdo de Menu
 - Gera descrições atrativas, sugere nomes de combos
+- **Auto-Translation (IA):** Tradução automática para idiomas ativados.
 
 ---
 

@@ -56,6 +56,7 @@ A segurança do SmartMenu é baseada num modelo "Zero Trust" entre tenants e pro
 - **Segurança de Aplicação (OWASP):**
   - **Trustless Logic:** O servidor recalcula todos os preços de produtos e extras (`ProductOptionValue`), ignorando valores enviados pelo cliente.
   - **Sanitização de Notas:** Todas as observações e remoções ("Remover Ketchup") devem ser limpas contra XSS/Injection antes de exibição no KDS/Dashboard.
+  - **AI Content Protection:** Traduções geradas automaticamente devem passar por um filtro de sanitização para evitar que prompts injetados no nome do produto gerem scripts maliciosos nas traduções resultantes.
   - **Rate Limiting:** Proteção contra spam e abuso em endpoints públicos (`/public/orders`).
   - **Sanitização:** Proteção contra SQL Injection (Prisma) e XSS (Next.js).
 

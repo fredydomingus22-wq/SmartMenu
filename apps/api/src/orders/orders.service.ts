@@ -43,7 +43,25 @@ export class OrdersService {
     organizationId: string,
     userId?: string,
   ) {
-    const { tableId, items } = createOrderDto;
+    const { tableId, items, orderType, deliveryAddress } = createOrderDto;
+
+    // Resolve Table UUID if manual number provided
+    let finalTableId = tableId;
+    if (orderType === 'DINE_IN_GENERAL' && tableId) {
+      const tableNumber = parseInt(tableId, 10);
+      if (!isNaN(tableNumber)) {
+        const table = await this.prisma.table.findFirst({
+          where: {
+            tenantId,
+            number: tableNumber,
+          },
+        });
+        if (!table) {
+          throw new Error(`Table ${tableNumber} not found in this restaurant`);
+        }
+        finalTableId = table.id;
+      }
+    }
 
     // 1. Fetch products & option values to get official prices
     const productIds = items.map((i) => i.productId);
@@ -86,6 +104,24 @@ export class OrdersService {
       );
     }
 
+    const { loyaltyRewardId } = createOrderDto;
+    let appliedReward = null;
+
+    if (loyaltyRewardId && userId) {
+      appliedReward = await this.prisma.loyaltyReward.findUnique({
+        where: { id: loyaltyRewardId, tenantId, isActive: true },
+      });
+
+      if (!appliedReward) {
+        throw new Error('Loyalty reward not found or inactive');
+      }
+
+      const points = await this.loyaltyService.getCustomerPoints(userId, tenantId);
+      if (points < appliedReward.pointsRequired) {
+        throw new Error('Insufficient loyalty points');
+      }
+    }
+
     let total = 0;
 
     const order = await this.prisma.$transaction(async (tx) => {
@@ -109,7 +145,16 @@ export class OrdersService {
           };
         });
 
-        total += itemSubtotal * item.quantity;
+        // Handle Free Product Reward (applies only once)
+        let finalItemSubtotal = itemSubtotal;
+        if (appliedReward?.productId === item.productId) {
+          // Effectively subtract one product price (base + options) from total
+          total += (itemSubtotal * (item.quantity - 1));
+          // Resetting appliedReward.productId so it only applies to ONE item
+          (appliedReward as any).productId = null;
+        } else {
+          total += itemSubtotal * item.quantity;
+        }
 
         return {
           productId: item.productId,
@@ -123,14 +168,22 @@ export class OrdersService {
         };
       });
 
+      // Apply Fixed Discount Reward
+      if (appliedReward?.discountAmount) {
+        total = Math.max(0, total - Number(appliedReward.discountAmount));
+      }
+
       const newOrder = await tx.order.create({
         data: {
           tenantId,
           organizationId,
-          tableId,
+          tableId: finalTableId,
           userId,
           total,
           status: 'PENDING',
+          orderType: orderType || 'DINE_IN',
+          deliveryAddress: deliveryAddress || null,
+          loyaltyRewardId: loyaltyRewardId || null,
           items: {
             create: orderItemsData,
           },
@@ -147,6 +200,12 @@ export class OrdersService {
           table: true,
         },
       });
+
+      // 4. Trigger points deduction
+      if (loyaltyRewardId && userId) {
+        await this.loyaltyService.redeemReward(userId, tenantId, loyaltyRewardId, tx);
+      }
+
       return newOrder;
     });
 
@@ -161,7 +220,11 @@ export class OrdersService {
       where: { tenantId, organizationId },
       include: {
         items: {
-          include: { product: true },
+          include: {
+            product: {
+              include: { category: true },
+            },
+          },
         },
         table: true,
       },
@@ -198,15 +261,15 @@ export class OrdersService {
         items: {
           include: {
             product: {
-              select: { id: true, name: true, imageUrl: true }
+              select: { id: true, name: true, imageUrl: true },
             },
             options: {
               include: {
                 optionValue: {
-                  select: { id: true, name: true, price: true }
-                }
-              }
-            }
+                  select: { id: true, name: true, price: true },
+                },
+              },
+            },
           },
         },
         table: true,
@@ -269,7 +332,9 @@ export class OrdersService {
       include: {
         items: {
           include: {
-            product: true,
+            product: {
+              include: { category: true },
+            },
             options: {
               include: { optionValue: true },
             },

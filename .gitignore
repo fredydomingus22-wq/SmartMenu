@@ -1,5 +1,14 @@
 node_modules
 # Keep environment variables out of version control
 .env
+.env.local
+
+# Build artifacts
+dist
+.next
+.turbo
 
 /generated/prisma
+
+*storybook.log
+storybook-static

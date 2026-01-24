@@ -8,6 +8,7 @@ Esta pasta contém os procedimentos operacionais padrão do projeto SmartMenu.
 |-----|-----------|
 | [resolucao_erro_500.md](./resolucao_erro_500.md) | Procedimento para resolver erros 500 (Internal Server Error) entre Frontend e Backend |
 | [fronteira_client_server.md](./fronteira_client_server.md) | Procedimento para resolver erros de fronteira Client/Server no Next.js |
+| [i18n_consumer_app.md](./i18n_consumer_app.md) | Procedimento para o sistema de internacionalização no Consumer App |
 
 ## Quando criar um novo SOP
 

@@ -38,6 +38,7 @@ Este documento define a estratégia de garantia de qualidade para o SmartMenu, g
 | Tenant Branding | UX | Médio | Injeção de CSS Vars por tenant e fallback para estilos padrão. |
 | **Recommendations** | UX | Médio | Itens sugeridos são do mesmo tenant e relevantes à categoria. |
 | **Upsell Logic** | Business | Alto | Preço do combo/upsell é adicionado corretamente ao total. |
+| **Localization** | UX | Médio | Tradução correta de produtos/categorias ao trocar o idioma. |
 | **Responsive Grid** | UX | Médio | Layout sections (featured/standard) se comportam bem em mobile/desktop. |
 
 ---

@@ -1,23 +1,27 @@
 export interface Product {
     id: string;
     organizationId?: string;
-    name: string;
-    description: string | null;
+    name: string | Record<string, string>;
+    description: string | Record<string, string> | null;
     price: number | string;
     imageUrl: string | null;
     isAvailable: boolean;
     isFeatured?: boolean;
+    isNew?: boolean;
+    isBestSeller?: boolean;
     images?: { url: string; order: number }[];
     options?: ProductOption[];
     recommendations?: ProductRecommendation[];
     upsells?: ProductUpsell[];
     category?: Category;
+    minPrepTime?: number;
+    maxPrepTime?: number;
 }
 
 export interface ProductOption {
     id: string;
-    name: string;
-    description: string | null;
+    name: string | Record<string, string>;
+    description: string | Record<string, string> | null;
     minChoices: number;
     maxChoices: number;
     isRequired: boolean;
@@ -26,7 +30,7 @@ export interface ProductOption {
 
 export interface ProductOptionValue {
     id: string;
-    name: string;
+    name: string | Record<string, string>;
     price: number | string;
     isAvailable: boolean;
 }
@@ -45,6 +49,7 @@ export interface Category {
     id: string;
     organizationId?: string;
     name: string;
+    preparationSector?: 'KITCHEN' | 'BAR';
     products: Product[];
 }
 
@@ -84,7 +89,7 @@ export interface FooterConfig {
 export interface MenuSection {
     id?: string;
     name?: string;
-    type: "hero" | "featured" | "category_grid" | "promotions" | "loyalty" | "global_upsell";
+    type: "hero" | "featured" | "category_grid" | "promotions" | "loyalty" | "global_upsell" | "best_sellers" | "new_arrivals";
     title?: string;
     subtitle?: string;
     isActive: boolean;
@@ -104,6 +109,12 @@ export interface MenuConfig {
     tenantId: string;
     branding?: TenantBranding;
     footer?: FooterConfig;
+    settings?: {
+        enableRecommendations: boolean;
+        enableUpsells: boolean;
+        homeLayoutType: string;
+        enabledLanguages: string[];
+    };
     sections: MenuSection[];
 }
 export interface Tenant {

@@ -12,6 +12,8 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { motion, AnimatePresence } from "framer-motion";
 import { InteractiveCard } from "@/components/ui/interactive-card";
+import { getTranslatedValue } from "@/lib/utils";
+import { useTranslation } from "@/hooks/use-translation";
 
 const container = {
     hidden: { opacity: 0 },
@@ -33,6 +35,7 @@ import { Order } from "../_types";
 export function OrdersClient({ orders: initialOrders, tenantId }: { orders: Order[], tenantId: string }) {
     const [orders, setOrders] = useState(initialOrders);
     const { lastEvent } = useOrderRealtime(tenantId);
+    const { locale } = useTranslation();
 
     useEffect(() => {
         if (lastEvent) {
@@ -126,7 +129,7 @@ export function OrdersClient({ orders: initialOrders, tenantId }: { orders: Orde
                                                 <div key={item.id} className="flex justify-between items-start gap-4 p-2 rounded-lg bg-zinc-50/50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800/50">
                                                     <div className="flex flex-col">
                                                         <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                                                            {item.quantity}x {item.product.name}
+                                                            {item.quantity}x {getTranslatedValue(item.product.name, locale)}
                                                         </span>
                                                         {item.notes && (
                                                             <span className="text-[11px] text-orange-600 dark:text-orange-400 font-medium mt-0.5">Note: {item.notes}</span>

@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-import { LayoutGrid, UtensilsCrossed, Package } from 'lucide-react';
+import { LayoutGrid, Package, ExternalLink } from 'lucide-react';
+import prisma from "@/utils/prisma";
 
 export default async function MenuDashboardPage() {
     const supabase = await createClient();
@@ -11,11 +12,27 @@ export default async function MenuDashboardPage() {
 
     if (!session) return redirect("/login");
 
+    const userProfile = await prisma.userProfile.findUnique({
+        where: { id: session.user.id }
+    });
+
+    const tenantId = userProfile?.tenantId;
+
     return (
         <div className="space-y-8">
-            <div>
-                <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">Gerenciar Menu</h2>
-                <p className="text-zinc-600 dark:text-zinc-400">Configure as categorias e produtos do seu cardápio.</p>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">Gerenciar Menu</h2>
+                    <p className="text-zinc-600 dark:text-zinc-400">Configure as categorias e produtos do seu cardápio.</p>
+                </div>
+                {tenantId && (
+                    <Link href={`/menu/${tenantId}?preview=true`} target="_blank">
+                        <Button variant="outline" className="gap-2 border-primary/20 hover:border-primary text-primary">
+                            <ExternalLink className="h-4 w-4" />
+                            Visualizar Cardápio
+                        </Button>
+                    </Link>
+                )}
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">

@@ -1,6 +1,6 @@
 "use server";
 
-import { apiClient } from "@/utils/api-client";
+import { apiClient } from "@/utils/api-client-server";
 import { revalidatePath } from "next/cache";
 import { BrandingData } from "../dashboard/settings/_components/branding-form";
 import { MenuSection } from "../menu/[id]/_types";

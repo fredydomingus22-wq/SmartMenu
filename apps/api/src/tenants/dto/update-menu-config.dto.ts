@@ -1,30 +1,37 @@
-import { IsString, IsOptional, IsBoolean, IsArray, ValidateNested, IsObject } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsBoolean,
+  IsArray,
+  ValidateNested,
+  IsObject,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class MenuSectionDto {
-    @IsString()
-    @IsOptional()
-    id?: string;
+  @IsString()
+  @IsOptional()
+  id?: string;
 
-    @IsString()
-    type: string;
+  @IsString()
+  type!: string;
 
-    @IsString()
-    @IsOptional()
-    name?: string;
+  @IsString()
+  @IsOptional()
+  name?: string;
 
-    @IsBoolean()
-    @IsOptional()
-    isActive?: boolean;
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
 
-    @IsObject()
-    @IsOptional()
-    config?: Record<string, any>;
+  @IsObject()
+  @IsOptional()
+  config?: Record<string, any>;
 }
 
 export class UpdateMenuConfigDto {
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => MenuSectionDto)
-    sections: MenuSectionDto[];
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => MenuSectionDto)
+  sections!: MenuSectionDto[];
 }

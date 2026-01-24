@@ -10,6 +10,7 @@ interface OnboardingData {
     restaurantName: string;
     restaurantAddress?: string;
     restaurantPhone?: string;
+    tableCount: string;
 }
 
 export async function createOnboardingData(data: OnboardingData) {
@@ -67,7 +68,27 @@ export async function createOnboardingData(data: OnboardingData) {
                 },
             });
 
+            // 4. Create Initial Tables
+            const tableCount = parseInt(data.tableCount) || 5;
+            const tables = [];
+            for (let i = 1; i <= tableCount; i++) {
+                tables.push({
+                    number: i,
+                    tenantId: tenant.id,
+                    organizationId: organization.id
+                });
+            }
+
+            if (tables.length > 0) {
+                await tx.table.createMany({
+                    data: tables,
+                });
+            }
+
             return { organization, tenant };
+        }, {
+            maxWait: 5000, // wait for 5s to start tx
+            timeout: 10000 // allow tx to run for 10s
         });
 
         // 4. Update Supabase Metadata (so middleware stops redirecting)
@@ -75,6 +96,7 @@ export async function createOnboardingData(data: OnboardingData) {
             data: {
                 organization_id: result.organization.id,
                 tenant_id: result.tenant.id,
+                restaurant_name: result.tenant.name,
                 role: 'OWNER',
             },
         });

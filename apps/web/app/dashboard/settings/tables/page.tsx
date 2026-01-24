@@ -1,5 +1,5 @@
 import { getAuthorizedClient } from "@/utils/auth-server";
-import { apiClient } from "@/utils/api-client";
+import { apiClient } from "@/utils/api-client-server";
 import { redirect } from "next/navigation";
 import TablesClientPage from "./client";
 
@@ -10,14 +10,19 @@ export default async function TablesPage() {
         return redirect("/login");
     }
 
-    let tables: any[] = [];
+    interface Table {
+        id: string;
+        number: number;
+        tenantId: string;
+        _count?: {
+            orders: number;
+        };
+    }
+
+    let tables: Table[] = [];
     try {
-        tables = await apiClient.get<any[]>("/tables", {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        if (!tables) tables = [];
+        const response = await apiClient.get<Table[]>("/tables");
+        tables = Array.isArray(response) ? response : [];
     } catch (e) {
         console.error("Error fetching tables:", e);
     }

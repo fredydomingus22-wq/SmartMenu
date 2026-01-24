@@ -1,14 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Plus } from "lucide-react";
+import { Plus, Timer } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/components/cart/cart-context";
 import { useCartAnimation } from "@/components/cart/cart-animation-context";
 import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, getTranslatedValue } from "@/lib/utils";
 import { useRef } from "react";
+import { useTranslation } from "@/hooks/use-translation";
 import { Product } from "../_types";
 
 interface ProductCardProps {
@@ -19,6 +20,7 @@ interface ProductCardProps {
 export function ProductCard({ product, tenantId }: ProductCardProps) {
     const { addItem } = useCart();
     const { startAnimation } = useCartAnimation();
+    const { t, locale } = useTranslation();
     const imageRef = useRef<HTMLImageElement>(null);
 
     // Handle price conversion to number (Prisma Decimal comes as string over the wire)
@@ -40,7 +42,7 @@ export function ProductCard({ product, tenantId }: ProductCardProps) {
                 <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-muted shadow-sm group-hover:shadow-md transition-all duration-500 ease-in-out">
                     <Image
                         src={product.imageUrl || product.images?.[0]?.url || "/placeholder-food.jpg"}
-                        alt={product.name}
+                        alt={getTranslatedValue(product.name, locale)}
                         fill
                         sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
                         ref={imageRef}
@@ -52,16 +54,16 @@ export function ProductCard({ product, tenantId }: ProductCardProps) {
                     {!product.isAvailable && (
                         <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px] flex items-center justify-center">
                             <span className="text-white font-bold uppercase tracking-widest text-[10px] sm:text-xs border border-white/30 px-3 py-1.5 bg-black/20 rounded-sm">
-                                Esgotado
+                                {t('menu.out_of_stock')}
                             </span>
                         </div>
                     )}
 
                     {/* Best Seller Badge - Manual or based on rating if available */}
-                    {product.isAvailable && (product.isFeatured || product.name.toLowerCase().includes("royal") || product.name.toLowerCase().includes("classic")) && (
+                    {product.isAvailable && (product.isFeatured || getTranslatedValue(product.name, locale).toLowerCase().includes("royal") || getTranslatedValue(product.name, locale).toLowerCase().includes("classic")) && (
                         <div className="absolute top-3 left-3 z-10">
                             <span className="bg-primary text-white text-[10px] font-black uppercase tracking-tighter px-2 py-1 rounded shadow-lg ring-1 ring-white/20">
-                                Best Seller
+                                {t('menu.best_seller')}
                             </span>
                         </div>
                     )}
@@ -81,7 +83,7 @@ export function ProductCard({ product, tenantId }: ProductCardProps) {
                                 const addToCartLogic = () => {
                                     addItem({
                                         productId: product.id,
-                                        name: product.name,
+                                        name: getTranslatedValue(product.name, locale),
                                         price: price,
                                         imageUrl: imageUrl || undefined,
                                     });
@@ -99,7 +101,8 @@ export function ProductCard({ product, tenantId }: ProductCardProps) {
                                     addToCartLogic();
                                 }
                             }}
-                            aria-label={`Adicionar ${product.name} ao carrinho`}
+
+                            aria-label={t('menu.add_to_cart', { name: getTranslatedValue(product.name, locale) })}
                         >
                             <Plus className="h-6 w-6" />
                         </Button>
@@ -115,7 +118,7 @@ export function ProductCard({ product, tenantId }: ProductCardProps) {
                 <div className="mt-3 flex flex-col gap-0.5 sm:gap-1">
                     <div className="flex justify-between items-start gap-2">
                         <h3 className="font-bold text-sm sm:text-base leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                            {product.name}
+                            {getTranslatedValue(product.name, locale)}
                         </h3>
                         <span className="font-black text-sm sm:text-base whitespace-nowrap text-foreground/90">
                             {formatCurrency(price)}
@@ -123,11 +126,19 @@ export function ProductCard({ product, tenantId }: ProductCardProps) {
                     </div>
                     {product.description && (
                         <p className="text-[11px] sm:text-xs text-muted-foreground line-clamp-1 italic font-medium">
-                            {product.description}
+                            {getTranslatedValue(product.description, locale)}
                         </p>
+                    )}
+                    {product.minPrepTime && product.maxPrepTime && (
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                            <Timer className="h-3 w-3 text-primary/60" />
+                            <span className="text-[10px] sm:text-[11px] font-bold text-zinc-500 uppercase tracking-tighter">
+                                {product.minPrepTime}-{product.maxPrepTime} min
+                            </span>
+                        </div>
                     )}
                 </div>
             </Link>
-        </motion.article>
+        </motion.article >
     );
 }

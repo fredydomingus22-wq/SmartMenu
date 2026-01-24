@@ -19,7 +19,7 @@ import { AuthenticatedRequest } from '../common/types/authenticated-request.inte
 @Controller('tenants')
 @UseGuards(SupabaseAuthGuard)
 export class TenantsController {
-  constructor(private readonly tenantsService: TenantsService) { }
+  constructor(private readonly tenantsService: TenantsService) {}
 
   @Get('me')
   getTenant(@Request() req: AuthenticatedRequest) {

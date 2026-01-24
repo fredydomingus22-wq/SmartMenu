@@ -6,7 +6,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateLoyaltyConfigDto } from './dto/update-loyalty-config.dto';
 import { CreateLoyaltyRewardDto } from './dto/create-loyalty-reward.dto';
-import { TransactionType } from '@prisma/client';
+import { TransactionType, Prisma } from '@prisma/client';
 
 @Injectable()
 export class LoyaltyService {
@@ -99,6 +99,7 @@ export class LoyaltyService {
     tenantId: string,
     orderTotal: number,
     orderId: string,
+    externalTx?: Prisma.TransactionClient,
   ) {
     const config = await this.getOrCreateConfig(tenantId);
     if (!config.isActive) return null;
@@ -110,27 +111,31 @@ export class LoyaltyService {
     if (pointsToEarn <= 0) return null;
 
     const profile = await this.getCustomerProfile(userId, tenantId);
+    const tx = externalTx || this.prisma;
 
-    return this.prisma.$transaction(async (tx) => {
-      await tx.customerProfile.update({
-        where: { id: profile.id },
-        data: { pointsBalance: { increment: pointsToEarn } },
-      });
+    await tx.customerProfile.update({
+      where: { id: profile.id },
+      data: { pointsBalance: { increment: pointsToEarn } },
+    });
 
-      return tx.pointsTransaction.create({
-        data: {
-          customerProfileId: profile.id,
-          tenantId,
-          amount: pointsToEarn,
-          type: TransactionType.EARNED,
-          orderId,
-          description: `Pontos ganhos no pedido #${orderId.slice(0, 8)}`,
-        },
-      });
+    return tx.pointsTransaction.create({
+      data: {
+        customerProfileId: profile.id,
+        tenantId,
+        amount: pointsToEarn,
+        type: TransactionType.EARNED,
+        orderId,
+        description: `Pontos ganhos no pedido #${orderId.slice(0, 8)}`,
+      },
     });
   }
 
-  async redeemReward(userId: string, tenantId: string, rewardId: string) {
+  async redeemReward(
+    userId: string,
+    tenantId: string,
+    rewardId: string,
+    externalTx?: Prisma.TransactionClient,
+  ) {
     const reward = await this.prisma.loyaltyReward.findFirst({
       where: { id: rewardId, tenantId, isActive: true },
     });
@@ -144,21 +149,21 @@ export class LoyaltyService {
       throw new BadRequestException('Pontos insuficientes para este resgate');
     }
 
-    return this.prisma.$transaction(async (tx) => {
-      await tx.customerProfile.update({
-        where: { id: profile.id },
-        data: { pointsBalance: { decrement: reward.pointsRequired } },
-      });
+    const tx = externalTx || this.prisma;
 
-      return tx.pointsTransaction.create({
-        data: {
-          customerProfileId: profile.id,
-          tenantId,
-          amount: -reward.pointsRequired,
-          type: TransactionType.REDEEMED,
-          description: `Resgate de recompensa: ${reward.name}`,
-        },
-      });
+    await tx.customerProfile.update({
+      where: { id: profile.id },
+      data: { pointsBalance: { decrement: reward.pointsRequired } },
+    });
+
+    return tx.pointsTransaction.create({
+      data: {
+        customerProfileId: profile.id,
+        tenantId,
+        amount: -reward.pointsRequired,
+        type: TransactionType.REDEEMED,
+        description: `Resgate de recompensa: ${reward.name}`,
+      },
     });
   }
 

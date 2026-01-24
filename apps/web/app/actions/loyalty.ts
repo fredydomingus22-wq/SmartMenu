@@ -1,6 +1,6 @@
 "use server";
 
-import { apiClient } from "@/utils/api-client";
+import { apiClient } from "@/utils/api-client-server";
 import { revalidatePath } from "next/cache";
 
 export async function getLoyaltyConfig() {

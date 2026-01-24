@@ -1,5 +1,10 @@
 "use client";
 
+const DEFAULT_PRIMARY_COLOR = "#2563EB";
+const DEFAULT_SECONDARY_COLOR = "#F97316";
+const DEFAULT_BORDER_RADIUS = "0.5rem";
+const DEFAULT_FONT_FAMILY = "Inter";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -43,10 +48,10 @@ export function BrandingForm({ initialData }: BrandingFormProps) {
         resolver: zodResolver(brandingSchema),
         defaultValues: {
             tenantName: initialData?.tenantName || "",
-            primaryColor: initialData?.primaryColor || "#2563EB",
-            secondaryColor: initialData?.secondaryColor || "#F97316",
-            borderRadius: initialData?.borderRadius || "0.5rem",
-            fontFamily: initialData?.fontFamily || "Inter",
+            primaryColor: initialData?.primaryColor || DEFAULT_PRIMARY_COLOR,
+            secondaryColor: initialData?.secondaryColor || DEFAULT_SECONDARY_COLOR,
+            borderRadius: initialData?.borderRadius || DEFAULT_BORDER_RADIUS,
+            fontFamily: initialData?.fontFamily || DEFAULT_FONT_FAMILY,
         },
     });
 

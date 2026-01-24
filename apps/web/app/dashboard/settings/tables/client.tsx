@@ -147,7 +147,8 @@ export default function TablesClientPage({ initialTables }: { initialTables: Tab
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {tables.map((table) => {
-                    const qrUrl = `${window.location.origin}/q/${table.tenantId}/${table.id}`; // Construct Client-Side URL
+                    const consumerUrl = process.env.NEXT_PUBLIC_CONSUMER_APP_URL || 'http://localhost:3002';
+                    const qrUrl = `${consumerUrl}/menu/${table.tenantId}?table=${table.id}`;
                     return (
                         <div key={table.id} className="rounded-xl border bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 flex flex-col items-center space-y-4">
                             <div className="text-center">

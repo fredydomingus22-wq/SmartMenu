@@ -6,8 +6,9 @@
 
 - **Frontend:** Web Apps (Cliente, Atendente, Cozinha, Gerente)
 - **Backend:** API central + serviços em tempo real
-- **Banco de Dados:** Relacional + Cache
-- **Comunicação em tempo real:** WebSockets
+- **Banco de Dados:** Relacional (PostgreSQL) + RLS (Row Level Security)
+- **Comunicação em tempo real:** WebSockets (Supabase Realtime)
+- **Internationalization (i18n):** Estratégia de campos JSON para conteúdos traduzíveis no banco de dados.
 
 ### 5.2 Stack Implementada
 
@@ -69,6 +70,25 @@
 | **MenuSection** | Divisor lógico na home (ex: "Destaques") que agrupa categorias ou produtos específicos. **Dinâmico por Tenant.** |
 | **FooterConfig** | Configurações globais de rodapé (Links, Contatos, Sociais). **Personalizado por Restaurante.** |
 | **TenantSettings** | Flags de funcionalidade (ex: `enable_recommendations`, `enable_upsells`, `home_layout_type`). |
+
+### 6.1 Estratégia de Internacionalização (i18n)
+
+Para suportar múltiplos idiomas de forma escalável e sem a complexidade de tabelas de tradução N:N para cada entidade, utilizaremos **campos JSONB** para strings transatáveis:
+
+- **MenuItem (Product):**
+  - `name`: `Json` (ex: `{ "pt": "Picanha", "en": "Sirloin", "es": "Picaña" }`)
+  - `description`: `Json`
+- **MenuCategory:**
+  - `name`: `Json`
+- **ProductOption / ProductOptionValue:**
+  - `name`: `Json`
+
+**Implementação:** O backend deve expor um header `Accept-Language` ou query param que determina qual chave do JSON será retornada no "computed field" da API, mantendo o frontend simples.
+
+### 6.2 Marketing & Conversão
+
+- **Upsell:** Implementado via tabela `ProductUpsell` (N:N). Permite sugerir upgrades de tamanho ou acompanhamentos premium no checkout.
+- **Recommendations:** Implementado via tabela `ProductRecommendation` (N:N). Permite cross-sell estratégico.
 
 #### Storage Buckets (Supabase)
 - **`product-gallery`**: Bucket público para armazenamento de imagens de produtos.

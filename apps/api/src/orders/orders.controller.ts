@@ -15,7 +15,7 @@ import { AuthenticatedRequest } from '../common/interfaces/request.interface';
 @Controller('orders')
 @UseGuards(SupabaseAuthGuard)
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) { }
+  constructor(private readonly ordersService: OrdersService) {}
 
   @Get()
   async findAll(@Request() req: AuthenticatedRequest) {

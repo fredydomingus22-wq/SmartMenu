@@ -51,4 +51,11 @@
 
 ---
 
+### 15.4 Consistência Multilingue
+
+- **PT (Default):** Tom direto e amigável.
+- **EN:** Evitar abreviações excessivas; preterir o tom imperativo curto ("Add to cart").
+- **ES:** Manter formalidade leve conforme a cultura regional.
+- **Fallback Rule:** Se um item não tiver tradução, exibir o idioma padrão (PT) com uma sinalização visual discreta se possível (ex: small badge).
+
 **Documento de referência para UX Writing do SmartMenu.**

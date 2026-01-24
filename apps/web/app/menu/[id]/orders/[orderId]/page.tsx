@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Package, Clock, ChefHat, CheckCircle2, XCircle, Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency, cn } from "@/lib/utils";
+import { formatCurrency, cn, getTranslatedValue } from "@/lib/utils";
+import { useTranslation } from "@/hooks/use-translation";
 import Image from "next/image";
 
 interface OrderItem {
@@ -15,13 +16,13 @@ interface OrderItem {
     price: string;
     product: {
         id: string;
-        name: string;
+        name: string | Record<string, string>;
         imageUrl: string | null;
     };
     options: {
         optionValue: {
             id: string;
-            name: string;
+            name: string | Record<string, string>;
             price: string;
         };
     }[];
@@ -49,6 +50,7 @@ export default function OrderStatusPage() {
     const params = useParams<{ id: string; orderId: string }>();
     const router = useRouter();
     const [order, setOrder] = useState<Order | null>(null);
+    const { locale } = useTranslation();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -152,7 +154,7 @@ export default function OrderStatusPage() {
                                     {item.product.imageUrl ? (
                                         <Image
                                             src={item.product.imageUrl}
-                                            alt={item.product.name}
+                                            alt={getTranslatedValue(item.product.name, locale)}
                                             fill
                                             className="object-cover"
                                             unoptimized
@@ -164,10 +166,10 @@ export default function OrderStatusPage() {
                                     )}
                                 </div>
                                 <div className="flex-1">
-                                    <p className="font-semibold">{item.quantity}x {item.product.name}</p>
+                                    <p className="font-semibold">{item.quantity}x {getTranslatedValue(item.product.name, locale)}</p>
                                     {item.options.length > 0 && (
                                         <p className="text-xs text-muted-foreground">
-                                            {item.options.map(o => o.optionValue.name).join(", ")}
+                                            {item.options.map(o => getTranslatedValue(o.optionValue.name, locale)).join(", ")}
                                         </p>
                                     )}
                                 </div>

@@ -16,7 +16,7 @@
 1. Scan QR da mesa (URL: `/menu/[id]?table=[number]`)
 2. Validação de sessão (tenant + mesa)
 3. Tela Menu (Home Concept):
-   - Header: branding do restaurante + mesa (sticked)
+   - Header: branding do restaurante + mesa (sticked) + **Language Selector** (Globe Icon/Dropdown).
    - **Discovery Sections:**
      - Hero Banner (Promocional).
      - Categorias em tabs horizontais (Sticky below Header).
@@ -84,6 +84,7 @@
      - Transição suave (Slide) para `/dashboard/menu/products/new`
      - Formulário segmentado em Tabs (Info Básica, Preços, Extra, Fotos)
      - ScrollArea interno para o conteúdo
+     - **Auto-Translate Trigger:** Botão opcional para traduzir campos vazios via IA (para idiomas ativados).
      - Sticky Header com botão "Salvar" e "Cancelar"
 4. Relatórios
 5. Configurações > Mesas:

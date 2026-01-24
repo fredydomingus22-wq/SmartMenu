@@ -1,4 +1,12 @@
-import { Controller, Post, Get, Body, Param, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Param,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { SupabaseAuthGuard } from '../common/guards/supabase-auth.guard';
 import { Public } from '../common/decorators/public.decorator';
 import { OrdersService } from './orders.service';
@@ -7,7 +15,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 @Controller('public/orders')
 @UseGuards(SupabaseAuthGuard)
 export class OrdersPublicController {
-  constructor(private readonly ordersService: OrdersService) { }
+  constructor(private readonly ordersService: OrdersService) {}
 
   @Public()
   @Post()

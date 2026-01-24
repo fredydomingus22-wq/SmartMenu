@@ -1,4 +1,4 @@
-import { apiClient } from "@/utils/api-client";
+import { apiClient } from "@/utils/api-client-server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Gift, History, Star, ArrowLeft } from "lucide-react";
@@ -47,7 +47,7 @@ export default async function LoyaltyPage({ params }: { params: Promise<{ id: st
         points = pointsData;
         transactions = transactionsData;
         rewards = rewardsData;
-    } catch (_error) {
+    } catch {
         // If not logged in or other error, we might want to redirect to login
         return (
             <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">

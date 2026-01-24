@@ -9,10 +9,14 @@ import Autoplay from "embla-carousel-autoplay";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCart } from "@/components/cart/cart-context";
+import { useCartAnimation } from "@/components/cart/cart-animation-context";
 import { cn } from "@/lib/utils";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Link from "next/link";
+import { getTranslatedValue, formatCurrency as formatPrice } from "@/lib/utils";
+import { useTranslation } from "@/hooks/use-translation";
 import { ProductCard } from "../../../_components/product-card";
+import { RestaurantFooter } from "../../../_components/restaurant-footer";
 import { Product, ProductOption, ProductOptionValue, ProductRecommendation, ProductUpsell } from "../../../_types";
 
 interface ProductPageClientProps {
@@ -22,12 +26,15 @@ interface ProductPageClientProps {
 
 export function ProductPageClient({ product, tenantId }: ProductPageClientProps) {
     const router = useRouter();
+    const { t, locale } = useTranslation();
     const { addItem } = useCart();
+    const { startAnimation } = useCartAnimation();
     const [quantity, setQuantity] = useState(1);
     const [selectedOptions, setSelectedOptions] = useState<Record<string, string[]>>({});
     const [removals, setRemovals] = useState<string[]>([]);
     const [isAdding, setIsAdding] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [lastAddedId, setLastAddedId] = useState<string | null>(null);
 
     const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay()]);
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -59,18 +66,13 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
         setIsAdding(true);
 
         try {
-            // Haptic Feedback
-            if (typeof navigator !== 'undefined' && navigator.vibrate) {
-                navigator.vibrate(50);
-            }
-
             const flatOptions = Object.entries(selectedOptions).flatMap(([optionId, valueIds]) => {
                 const option = product.options?.find((o: ProductOption) => o.id === optionId);
                 return valueIds.map(vId => {
                     const val = option?.values.find((v: ProductOptionValue) => v.id === vId);
                     return {
                         valueId: vId,
-                        name: val?.name || "",
+                        name: getTranslatedValue(val?.name, locale),
                         price: Number(val?.price) || 0
                     };
                 });
@@ -81,7 +83,7 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
 
             addItem({
                 productId: product.id,
-                name: product.name,
+                name: getTranslatedValue(product.name, locale),
                 price: basePrice,
                 imageUrl: product.imageUrl || undefined,
                 quantity,
@@ -89,21 +91,35 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
                 options: flatOptions
             });
 
-            // Show Success State without Redirecting
             setIsAdding(false);
             setSuccess(true);
-            setTimeout(() => {
-                setSuccess(false);
-                // Optional: Reset state if you want, or keep it for multiple adds
-                // setQuantity(1);
-                // setSelectedOptions({});
-                // setRemovals([]);
-            }, 1000);
+            setTimeout(() => setSuccess(false), 1500);
 
         } catch (error) {
             console.error("Error adding to cart:", error);
             setIsAdding(false);
         }
+    };
+
+    const handleQuickAdd = (targetProduct: Product, rect: DOMRect) => {
+        setLastAddedId(targetProduct.id);
+
+        const addToCartLogic = () => {
+            addItem({
+                productId: targetProduct.id,
+                name: getTranslatedValue(targetProduct.name, locale),
+                price: typeof targetProduct.price === "string" ? parseFloat(targetProduct.price) : targetProduct.price,
+                imageUrl: targetProduct.imageUrl || undefined,
+                quantity: 1
+            });
+            setTimeout(() => setLastAddedId(null), 1000);
+        };
+
+        startAnimation({
+            src: targetProduct.imageUrl || "/placeholder-food.jpg",
+            startRect: rect,
+            onComplete: addToCartLogic
+        });
     };
 
     const toggleOption = (optionId: string, valueId: string, maxChoices: number) => {
@@ -123,7 +139,7 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
     };
 
     const formatCurrency = (val: number) => {
-        return new Intl.NumberFormat('pt-AO', { style: 'currency', currency: 'AOA' }).format(val);
+        return formatPrice(val);
     };
 
     return (
@@ -145,7 +161,7 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
                             <div className="flex-[0_0_100%] min-w-0 relative h-full" key={index}>
                                 <Image
                                     src={src}
-                                    alt={product.name}
+                                    alt={getTranslatedValue(product.name, locale)}
                                     fill
                                     className="object-cover"
                                     priority={index === 0}
@@ -200,17 +216,17 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
                             <div className="flex items-center gap-2 mb-4">
                                 <span className="px-2 py-1 rounded bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 text-[10px] font-black uppercase tracking-widest border border-orange-100 dark:border-orange-900/30 flex items-center gap-1.5">
                                     <ShoppingBag className="h-3 w-3" />
-                                    {(product.id.charCodeAt(0) % 15) + 5} pessoas pediram hoje
+                                    {t('menu.pdp_ordered_count', { count: (product.id.charCodeAt(0) % 15) + 5 })}
                                 </span>
                             </div>
-                            <h1 className="text-3xl lg:text-4xl font-black tracking-tight mb-2">{product.name}</h1>
+                            <h1 className="text-3xl lg:text-4xl font-black tracking-tight mb-2">{getTranslatedValue(product.name, locale)}</h1>
                             <p className="text-2xl font-black text-primary">
                                 {formatCurrency(typeof product.price === "string" ? parseFloat(product.price) : product.price)}
                             </p>
                         </div>
 
                         <p className="text-muted-foreground text-lg italic leading-relaxed">
-                            {product.description || "Uma deliciosa escolha preparada especialmente para você."}
+                            {getTranslatedValue(product.description, locale) || t('menu.empty_category_desc')}
                         </p>
 
                         <div className="h-px w-full bg-border" />
@@ -220,11 +236,11 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
                             <div key={option.id} className="space-y-4">
                                 <div className="flex items-center justify-between">
                                     <h4 className="font-bold text-lg flex items-center gap-2">
-                                        {option.name}
+                                        {getTranslatedValue(option.name, locale)}
                                         {option.isRequired && <span className="text-[10px] bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider">Obrigatório</span>}
                                     </h4>
                                     <span className="text-xs text-muted-foreground bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded-md">
-                                        Escolha {option.maxChoices > 1 ? `até ${option.maxChoices}` : "1"}
+                                        {t('common.add')} {option.maxChoices > 1 ? `até ${option.maxChoices}` : "1"}
                                     </span>
                                 </div>
                                 <div className="grid gap-3">
@@ -243,7 +259,7 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
                                             aria-pressed={selectedOptions[option.id]?.includes(val.id)}
                                             aria-label={`Selecionar opção ${val.name} por ${Number(val.price) > 0 ? formatCurrency(Number(val.price)) : 'sem custo adicional'}`}
                                         >
-                                            <span className="font-medium group-hover:text-primary transition-colors">{val.name}</span>
+                                            <span className="font-medium group-hover:text-primary transition-colors">{getTranslatedValue(val.name, locale)}</span>
                                             {Number(val.price) > 0 && (
                                                 <span className="text-sm font-bold text-primary">
                                                     + {formatCurrency(Number(val.price))}
@@ -257,24 +273,24 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
 
                         {/* Special Instructions */}
                         <div className="space-y-4">
-                            <h4 className="font-bold text-lg">Instruções Especiais?</h4>
+                            <h4 className="font-bold text-lg">{t('menu.pdp_special_instructions')}</h4>
                             <textarea
                                 className="w-full h-24 p-4 rounded-xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 focus:border-primary focus:ring-0 transition-all text-sm resize-none"
-                                placeholder="Ex: Sem cebola, bem passado, molho à parte..."
+                                placeholder={t('menu.pdp_special_instructions_placeholder')}
                                 onChange={(e) => setRemovals([e.target.value])}
-                                aria-label="Instruções Especiais para o pedido"
+                                aria-label={t('menu.pdp_special_instructions')}
                             />
                         </div>
 
                         <Accordion type="single" collapsible className="w-full">
                             <AccordionItem value="description">
-                                <AccordionTrigger className="font-bold">Detalhes do Produto</AccordionTrigger>
+                                <AccordionTrigger className="font-bold">{t('menu.pdp_product_details')}</AccordionTrigger>
                                 <AccordionContent className="text-muted-foreground leading-relaxed">
-                                    {product.description || "Este item é preparado com ingredientes frescos e selecionados para garantir o melhor sabor."}
+                                    {getTranslatedValue(product.description, locale) || t('menu.empty_category_desc')}
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="info">
-                                <AccordionTrigger className="font-bold">Informações Adicionais</AccordionTrigger>
+                                <AccordionTrigger className="font-bold">{t('menu.pdp_additional_info')}</AccordionTrigger>
                                 <AccordionContent className="text-muted-foreground">
                                     <ul className="list-disc list-inside space-y-1">
                                         <li>Serve 1 pessoa</li>
@@ -285,32 +301,44 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
                             </AccordionItem>
                         </Accordion>
 
-                        {/* Upsells Section */}
+                        {/* Upsells Section - Improved UX */}
                         {product.upsells && product.upsells.length > 0 && (
-                            <section className="space-y-6 pt-10">
-                                <div className="bg-primary/5 border border-primary/10 rounded-2xl p-6">
-                                    <h4 className="text-primary font-black uppercase tracking-widest text-[10px] mb-2">Upgrade</h4>
-                                    <h3 className="text-xl font-black tracking-tight mb-4">Transforme sua experiência</h3>
-                                    <div className="space-y-4">
-                                        {product.upsells.map((up: ProductUpsell) => (
-                                            <Link
-                                                key={up.id}
-                                                href={`/menu/${tenantId}/product/${up.upsell.id}`}
-                                                className="flex items-center gap-4 bg-background p-3 rounded-xl border-2 border-transparent hover:border-primary transition-all shadow-sm"
-                                            >
-                                                <div className="relative h-16 w-16 rounded-lg overflow-hidden flex-shrink-0">
-                                                    <Image src={up.upsell.imageUrl || "/placeholder-food.jpg"} alt={up.upsell.name} fill className="object-cover" unoptimized />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <h5 className="font-bold text-sm">{up.upsell.name}</h5>
-                                                    <p className="text-[10px] text-muted-foreground line-clamp-1">Item complementar premium</p>
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="text-sm font-black text-primary">+{formatCurrency(Number(up.upsell.price))}</p>
-                                                </div>
+                            <section className="space-y-6 pt-10 border-t">
+                                <div className="space-y-1">
+                                    <h4 className="text-primary font-black uppercase tracking-widest text-[10px]">{t('menu.upsell_badge')}</h4>
+                                    <h3 className="text-xl font-black tracking-tight">{t('menu.pdp_upsell_title')}</h3>
+                                </div>
+                                <div className="grid gap-3">
+                                    {product.upsells.map((up: ProductUpsell) => (
+                                        <div
+                                            key={up.id}
+                                            className="group flex items-center gap-4 bg-zinc-50 dark:bg-zinc-900 p-3 rounded-2xl border-2 border-transparent hover:border-primary/20 transition-all"
+                                        >
+                                            <Link href={`/menu/${tenantId}/product/${up.upsell.id}`} className="relative h-16 w-16 rounded-xl overflow-hidden flex-shrink-0">
+                                                <Image src={up.upsell.imageUrl || "/placeholder-food.jpg"} alt={getTranslatedValue(up.upsell.name, locale)} fill className="object-cover group-hover:scale-110 transition-transform duration-500" unoptimized />
                                             </Link>
-                                        ))}
-                                    </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h5 className="font-bold text-sm truncate">{getTranslatedValue(up.upsell.name, locale)}</h5>
+                                                <p className="text-[11px] text-muted-foreground font-black text-primary">
+                                                    + {formatPrice(typeof up.upsell.price === "string" ? parseFloat(up.upsell.price) : up.upsell.price)}
+                                                </p>
+                                            </div>
+                                            <Button
+                                                size="icon"
+                                                variant="ghost"
+                                                className={cn(
+                                                    "h-10 w-10 rounded-full shadow-sm transition-all",
+                                                    lastAddedId === up.upsell.id ? "bg-green-500 text-white" : "bg-white dark:bg-zinc-800 text-primary hover:bg-primary hover:text-white"
+                                                )}
+                                                onClick={(e) => {
+                                                    const rect = e.currentTarget.getBoundingClientRect();
+                                                    handleQuickAdd(up.upsell, rect);
+                                                }}
+                                            >
+                                                {lastAddedId === up.upsell.id ? <Check className="h-4 w-4" /> : <Plus className="h-5 w-5" />}
+                                            </Button>
+                                        </div>
+                                    ))}
                                 </div>
                             </section>
                         )}
@@ -318,7 +346,7 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
                         {/* Recommendations Section */}
                         {product.recommendations && product.recommendations.length > 0 && (
                             <section className="space-y-6 pt-10">
-                                <h3 className="text-xl font-black tracking-tight">Combina bem com...</h3>
+                                <h3 className="text-xl font-black tracking-tight">{t('menu.pdp_recommendations_title')}</h3>
                                 <div className="grid grid-cols-2 gap-4">
                                     {product.recommendations.map((rec: ProductRecommendation) => (
                                         <div key={rec.id} className="scale-[0.95] origin-top-left">
@@ -371,23 +399,24 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
                             {success ? (
                                 <>
                                     <Check className="h-5 w-5 mr-2" />
-                                    Adicionado!
+                                    {t('menu.pdp_added')}
                                 </>
                             ) : isAdding ? (
                                 <>
                                     <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                                    Adicionando...
+                                    {t('menu.pdp_adding')}
                                 </>
                             ) : (
                                 <>
                                     <ShoppingBag className="h-5 w-5 mr-2" />
-                                    Adicionar ao Pedido
+                                    {t('menu.add_to_cart')}
                                 </>
                             )}
                         </Button>
                     </div>
                 </div>
             </div>
+            <RestaurantFooter />
         </div>
     );
 }

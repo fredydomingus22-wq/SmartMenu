@@ -5,7 +5,15 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
 export class CategoriesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
+
+  private normalizeJson(value: any): any {
+    if (!value) return value;
+    if (typeof value === 'string') {
+      return { pt: value };
+    }
+    return value;
+  }
 
   create(
     createCategoryDto: CreateCategoryDto,
@@ -15,6 +23,7 @@ export class CategoriesService {
     return this.prisma.category.create({
       data: {
         ...createCategoryDto,
+        name: this.normalizeJson(createCategoryDto.name),
         tenantId,
         organizationId,
       },
@@ -47,7 +56,10 @@ export class CategoriesService {
   ) {
     return this.prisma.category.updateMany({
       where: { id, tenantId, organizationId },
-      data: updateCategoryDto,
+      data: {
+        ...updateCategoryDto,
+        name: this.normalizeJson(updateCategoryDto.name),
+      },
     });
   }
 

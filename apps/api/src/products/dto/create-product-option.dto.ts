@@ -1,9 +1,9 @@
-import { IsString } from 'class-validator';
+import { IsObject } from 'class-validator';
 
 export class CreateProductOptionDto {
-  @IsString()
-  name!: string;
-  description?: string;
+  @IsObject()
+  name!: Record<string, string>;
+  description?: Record<string, string>;
   minChoices?: number;
   maxChoices?: number;
   isRequired?: boolean;
@@ -11,8 +11,8 @@ export class CreateProductOptionDto {
 }
 
 export class CreateProductOptionValueDto {
-  @IsString()
-  name!: string;
+  @IsObject()
+  name!: Record<string, string>;
   price?: number;
   isAvailable?: boolean;
 }

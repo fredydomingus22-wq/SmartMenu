@@ -16,7 +16,7 @@ export function QRGenerator({ tenantId }: { tenantId: string }) {
     }, []);
 
     const menuUrl = mounted
-        ? `${window.location.origin}/menu/${tenantId}`
+        ? `${process.env.NEXT_PUBLIC_CONSUMER_APP_URL || 'http://localhost:3002'}/menu/${tenantId}`
         : '';
 
     const downloadQRCode = () => {

@@ -1,3 +1,4 @@
 export class CreateCategoryDto {
-  name!: string;
+  name!: Record<string, string>;
+  preparationSector?: 'KITCHEN' | 'BAR';
 }

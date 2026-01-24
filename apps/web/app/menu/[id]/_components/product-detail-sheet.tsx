@@ -15,18 +15,19 @@ import Image from "next/image";
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/components/cart/cart-context";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, getTranslatedValue } from "@/lib/utils";
+import { useTranslation } from "@/hooks/use-translation";
 
 interface ProductOptionValue {
     id: string;
-    name: string;
+    name: string | Record<string, string>;
     price: number;
     isAvailable: boolean;
 }
 
 interface ProductOption {
     id: string;
-    name: string;
+    name: string | Record<string, string>;
     minChoices: number;
     maxChoices: number;
     isRequired: boolean;
@@ -35,8 +36,8 @@ interface ProductOption {
 
 interface Product {
     id: string;
-    name: string;
-    description: string | null;
+    name: string | Record<string, string>;
+    description: string | Record<string, string> | null;
     price: number;
     imageUrl: string | null;
     images?: { url: string; order: number }[];
@@ -51,6 +52,7 @@ interface ProductDetailSheetProps {
 
 export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetailSheetProps) {
     const { addItem } = useCart();
+    const { locale } = useTranslation();
     const [quantity, setQuantity] = useState(1);
     const [selectedOptions, setSelectedOptions] = useState<Record<string, string[]>>({});
     const [removals, setRemovals] = useState<string[]>([]);
@@ -94,7 +96,7 @@ export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetai
                     const val = option?.values.find(v => v.id === vId);
                     return {
                         valueId: vId,
-                        name: val?.name || "",
+                        name: getTranslatedValue(val?.name, locale),
                         price: Number(val?.price) || 0
                     };
                 });
@@ -103,7 +105,7 @@ export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetai
             const notes = removals.length > 0 ? `Remover: ${removals.join(", ")}` : undefined;
             addItem({
                 productId: product.id,
-                name: product.name,
+                name: getTranslatedValue(product.name, locale),
                 price: Number(product.price),
                 imageUrl: product.imageUrl || undefined,
                 quantity,
@@ -154,7 +156,7 @@ export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetai
             <SheetContent side="right" className="w-full sm:max-w-lg p-0 flex flex-col gap-0 border-l-0 sm:border-l overflow-hidden bg-background">
                 <SheetHeader className="p-4 border-b shrink-0 flex flex-row items-center justify-between space-y-0">
                     <div>
-                        <SheetTitle className="text-xl font-bold">{product.name}</SheetTitle>
+                        <SheetTitle className="text-xl font-bold">{getTranslatedValue(product.name, locale)}</SheetTitle>
                         <SheetDescription className="text-xs">Personalize seu pedido</SheetDescription>
                     </div>
                 </SheetHeader>
@@ -172,7 +174,7 @@ export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetai
                             >
                                 <Image
                                     src={allImages[currentImageIndex] || "/placeholder-food.jpg"}
-                                    alt={product.name}
+                                    alt={getTranslatedValue(product.name, locale)}
                                     fill
                                     className="object-cover"
                                     unoptimized
@@ -210,7 +212,7 @@ export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetai
                         {/* Description */}
                         <div>
                             <p className="text-muted-foreground leading-relaxed">
-                                {product.description || "Nenhuma descrição disponível."}
+                                {getTranslatedValue(product.description, locale) || "Nenhuma descrição disponível."}
                             </p>
                             <div className="mt-4 text-3xl font-black text-primary">
                                 {formatCurrency(product.price)}
@@ -222,7 +224,7 @@ export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetai
                             <div key={option.id} className="space-y-4">
                                 <div className="flex items-center justify-between">
                                     <h4 className="font-bold text-lg flex items-center gap-2">
-                                        {option.name}
+                                        {getTranslatedValue(option.name, locale)}
                                         {option.isRequired && <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider">Obrigatório</span>}
                                     </h4>
                                     <span className="text-xs text-muted-foreground">
@@ -240,7 +242,7 @@ export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetai
                                                 : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-200 dark:hover:border-zinc-700"
                                                 } ${!val.isAvailable ? "opacity-30 cursor-not-allowed" : ""}`}
                                         >
-                                            <span className="font-medium">{val.name}</span>
+                                            <span className="font-medium">{getTranslatedValue(val.name, locale)}</span>
                                             {val.price > 0 && (
                                                 <span className="text-xs font-bold text-primary">
                                                     + {formatCurrency(val.price)}

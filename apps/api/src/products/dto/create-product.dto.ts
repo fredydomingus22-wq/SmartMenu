@@ -1,17 +1,22 @@
 export class CreateProductDto {
-  name!: string;
-  description?: string;
+  name!: Record<string, string>;
+  description?: Record<string, string>;
   price!: number;
   categoryId!: string;
   imageUrl?: string;
   isAvailable?: boolean;
   images?: string[];
   options?: CreateProductOptionFromProductDto[];
+  upsells?: string[];
+  recommendations?: string[];
+  isFeatured?: boolean;
+  isNew?: boolean;
+  isBestSeller?: boolean;
 }
 
 export class CreateProductOptionFromProductDto {
-  name!: string;
-  description?: string;
+  name!: Record<string, string>;
+  description?: Record<string, string>;
   minChoices?: number;
   maxChoices?: number;
   isRequired?: boolean;

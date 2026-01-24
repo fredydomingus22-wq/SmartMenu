@@ -42,19 +42,20 @@ export class ProductsController {
         req.user.organizationId,
       );
     } catch (err: unknown) {
-      const error = err as any;
-      console.error(
-        '[ProductsController] Error in create:',
-        error.message,
-        error.stack,
-      );
-      if (error.code === 'P2003') {
-        // Prisma dependency error
-        throw new BadRequestException(
-          'Categoria ou dado relacionado não encontrado',
+      if (err instanceof Error) {
+        const error = err as ErrorWithMessage;
+        console.error(
+          '[ProductsController] Error in create:',
+          error.message,
+          error.stack,
         );
+        if (error.code === 'P2003') {
+          throw new BadRequestException(
+            'Categoria ou dado relacionado não encontrado',
+          );
+        }
       }
-      throw error;
+      throw err;
     }
   }
 
@@ -63,16 +64,20 @@ export class ProductsController {
     @Request() req: AuthenticatedRequest,
     @Query('categoryId') categoryId?: string,
   ) {
+    console.log(`[ProductsController] findAll for user: ${req.user.email}, tenantId: ${req.user.tenantId}, orgId: ${req.user.organizationId}`);
     try {
-      return await this.productsService.findAll(
+      const products = await this.productsService.findAll(
         req.user.tenantId,
         req.user.organizationId,
         categoryId,
       );
+      console.log(`[ProductsController] Found ${products.length} products`);
+      return products;
     } catch (err: unknown) {
-      const error = err as any;
-      console.error('[ProductsController] Error in findAll:', error.message);
-      throw error;
+      if (err instanceof Error) {
+        console.error('[ProductsController] Error in findAll:', err.message);
+      }
+      throw err;
     }
   }
 
@@ -89,12 +94,13 @@ export class ProductsController {
       }
       return product;
     } catch (err: unknown) {
-      const error = err as any;
-      console.error(
-        `[ProductsController] Error in findOne (${id}):`,
-        error.message,
-      );
-      throw error;
+      if (err instanceof Error) {
+        console.error(
+          `[ProductsController] Error in findOne (${id}):`,
+          err.message,
+        );
+      }
+      throw err;
     }
   }
 
@@ -112,13 +118,14 @@ export class ProductsController {
         req.user.organizationId,
       );
     } catch (err: unknown) {
-      const error = err as any;
-      console.error(
-        `[ProductsController] Error in update (${id}):`,
-        error.message,
-        error.stack,
-      );
-      throw error;
+      if (err instanceof Error) {
+        console.error(
+          `[ProductsController] Error in update (${id}):`,
+          err.message,
+          err.stack,
+        );
+      }
+      throw err;
     }
   }
 
@@ -131,12 +138,62 @@ export class ProductsController {
     );
   }
 
+  @Post(':id/duplicate')
+  async duplicate(
+    @Param('id') id: string,
+    @Request() req: AuthenticatedRequest,
+  ) {
+    return this.productsService.duplicate(
+      id,
+      req.user.tenantId,
+      req.user.organizationId,
+    );
+  }
+
+  @Patch('bulk/availability')
+  async updateAvailabilityBulk(
+    @Body() data: { ids: string[]; isAvailable: boolean },
+    @Request() req: AuthenticatedRequest,
+  ) {
+    if (!data.ids || !Array.isArray(data.ids)) {
+      throw new BadRequestException('IDs deve ser um array');
+    }
+    return this.productsService.updateBulkAvailability(
+      data.ids,
+      data.isAvailable,
+      req.user.tenantId,
+      req.user.organizationId,
+    );
+  }
+
+  @Post('bulk/delete')
+  async removeBulk(
+    @Body() data: { ids: string[] },
+    @Request() req: AuthenticatedRequest,
+  ) {
+    if (!data.ids || !Array.isArray(data.ids)) {
+      throw new BadRequestException('IDs deve ser um array');
+    }
+    return this.productsService.removeBulk(
+      data.ids,
+      req.user.tenantId,
+      req.user.organizationId,
+    );
+  }
+
   // ============ Product Options ============
 
   @Post(':id/options')
   createOption(
     @Param('id') productId: string,
-    @Body() createOptionDto: any,
+    @Body() createOptionDto: {
+      name: string;
+      description?: string;
+      minChoices?: number;
+      maxChoices?: number;
+      isRequired?: boolean;
+      values?: { name: string; price?: number; isAvailable?: boolean }[];
+    },
     @Request() req: AuthenticatedRequest,
   ) {
     return this.productsService.createOption(

@@ -1,8 +1,18 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { KDSGrid } from "./_components/kds-grid";
-import { apiClient } from "@/lib/api-client";
+import { type Order } from "./_components/kds-order-card";
+import { apiClient } from "@/utils/api-client-server";
 
+/**
+ * KDSPage - Versão 6 (Foco em Conformidade de Specs e Design System)
+ * 
+ * Requisitos atendidos:
+ * - Idioma: Português (PT-PT)
+ * - Cores: Dashboard zinc-50 + Orange Accent
+ * - Tipografia: Foco em legibilidade a 1 metro (Botões h-14, text-lg)
+ * - Real-time: Supabase Subscriptions e apiClient
+ */
 export default async function KDSPage() {
     const supabase = await createClient();
     const {
@@ -13,34 +23,24 @@ export default async function KDSPage() {
         redirect("/login");
     }
 
-    // Fetch orders for this tenant
-    let orders = [];
+    // Buscar pedidos iniciais via api-client
+    let orders: Order[] = [];
     try {
-        const response = await apiClient('/orders', {
+        const response = await apiClient<Order[]>('/orders', {
             headers: {
                 Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
             },
         });
-        orders = response.data || [];
+        orders = Array.isArray(response) ? response : [];
     } catch (error) {
-        console.error('Failed to fetch orders:', error);
+        console.error('Falha ao buscar pedidos KDS:', error);
     }
 
     const tenantId = user.user_metadata?.tenantId || user.app_metadata?.tenant_id;
 
     return (
-        <div className="h-full bg-[#0F172A] flex flex-col">
-            <header className="px-6 py-4 bg-[#020617] border-b border-[#1E293B] flex items-center justify-between sticky top-0 z-10">
-                <div>
-                    <h1 className="text-xl font-bold text-white flex items-center gap-2">
-                        🍳 SmartKitchen
-                        <span className="text-xs font-medium text-[#16A34A] bg-[#16A34A]/10 px-2 py-0.5 rounded-full border border-[#16A34A]/20 flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 bg-[#16A34A] rounded-full animate-pulse" />
-                            AO VIVO
-                        </span>
-                    </h1>
-                </div>
-            </header>
+        <div className="h-full flex flex-col -m-8 bg-zinc-50/50">
+            {/* Navbar Customizada KDS (Opcional se herdada, mas aqui limpamos o overlay) */}
             <div className="flex-1 flex flex-col min-h-0">
                 <KDSGrid initialOrders={orders} tenantId={tenantId} />
             </div>

@@ -35,8 +35,9 @@ export class SupabaseAuthGuard extends AuthGuard('supabase') {
     const request: AuthenticatedRequest = context.switchToHttp().getRequest();
     const user = request.user;
 
-    // Trigger lazy sync if tenantId is missing or incorrectly set to userId
-    if (user && (!user.tenantId || user.tenantId === user.userId)) {
+    // Trigger lazy sync or forced fetch if tenantId is missing or incorrectly set to userId
+    if (user && (!user.tenantId || user.tenantId === user.userId || user.tenantId.length < 10)) {
+      this.logger.debug(`Forcing tenant resolution for user ${user.email} (current tenantId: '${user.tenantId}')`);
       try {
         const profile = await this.usersService.syncUser({
           id: user.userId,
@@ -44,18 +45,17 @@ export class SupabaseAuthGuard extends AuthGuard('supabase') {
         });
 
         if (profile) {
-          // Update request user with the newly synced data
+          this.logger.log(`Resolved tenantId: ${profile.tenantId} for user ${user.email}`);
+          // Force update request user
           if (profile.tenantId) request.user.tenantId = profile.tenantId;
           if (profile.organizationId)
             request.user.organizationId = profile.organizationId;
         }
       } catch (err: unknown) {
-        const error = err instanceof Error ? err : new Error(String(err));
-        this.logger.error(
-          `Lazy-sync failed for user ${user?.userId}: ${error.message}`,
-        );
-        // We don't fail the request here, but the data might be missing
+        this.logger.error(`Failed to force resolve tenant for ${user.userId}`);
       }
+    } else if (user) {
+      this.logger.debug(`Tenant context valid: ${user.tenantId} for ${user.email}`);
     }
 
     return true;

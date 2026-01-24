@@ -4,7 +4,11 @@ import { Search, MapPin } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { TenantBranding } from "../_types";
-import { useState } from "react";
+import { ProductSearch } from "./product-search";
+import { OrderHistory } from "./order-history";
+import { LanguageSelector } from "./language-selector";
+import { useParams } from "next/navigation";
+import { useTranslation } from "@/hooks/use-translation";
 import {
     Dialog,
     DialogContent,
@@ -12,15 +16,17 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 
 interface PublicMenuHeaderProps {
     branding?: TenantBranding | null;
     tableId?: string;
+    enabledLanguages?: string[];
 }
 
-export function PublicMenuHeader({ branding, tableId }: PublicMenuHeaderProps) {
-    const [searchQuery, setSearchQuery] = useState("");
+export function PublicMenuHeader({ branding, tableId, enabledLanguages }: PublicMenuHeaderProps) {
+    const params = useParams();
+    const tenantId = params.id as string;
+    const { t } = useTranslation();
 
     return (
         <header className="sticky top-0 z-[var(--z-header)] w-full bg-background/80 backdrop-blur-xl border-b transition-all duration-300">
@@ -45,7 +51,7 @@ export function PublicMenuHeader({ branding, tableId }: PublicMenuHeaderProps) {
                         {tableId && (
                             <div className="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-primary uppercase tracking-widest mt-1">
                                 <MapPin className="h-3 w-3" />
-                                Mesa {tableId.padStart(2, '0')}
+                                {t('menu.table')} {tableId.padStart(2, '0')}
                             </div>
                         )}
                     </div>
@@ -59,30 +65,24 @@ export function PublicMenuHeader({ branding, tableId }: PublicMenuHeaderProps) {
                                 variant="ghost"
                                 size="icon"
                                 className="rounded-full h-10 w-10 sm:h-12 sm:w-12 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-                                aria-label="Pesquisar produtos"
+                                aria-label={t('menu.search_aria_label')}
                             >
                                 <Search className="h-5 w-5 sm:h-6 sm:w-6" />
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px] top-[20%] translate-y-0">
+                        <DialogContent className="sm:max-w-3xl h-[80vh] flex flex-col p-6 overflow-hidden">
                             <DialogHeader>
-                                <DialogTitle>O que vamos pedir hoje?</DialogTitle>
+                                <DialogTitle>{t('menu.search_placeholder')}</DialogTitle>
                             </DialogHeader>
-                            <div className="relative mt-4">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                <Input
-                                    placeholder="Procurar por pizza, burger, bebida..."
-                                    className="pl-10 h-12 rounded-xl"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    autoFocus
-                                />
-                            </div>
-                            <div className="py-8 text-center text-muted-foreground text-sm italic">
-                                Digite para começar a filtrar o cardápio...
+                            <div className="flex-1 overflow-y-auto mt-4 pr-2">
+                                <ProductSearch tenantId={tenantId} />
                             </div>
                         </DialogContent>
                     </Dialog>
+                    <div className="hidden sm:block">
+                        <LanguageSelector enabledLanguages={enabledLanguages} />
+                    </div>
+                    <OrderHistory tenantId={tenantId} />
                 </div>
             </div>
         </header>

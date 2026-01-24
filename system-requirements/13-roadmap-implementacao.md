@@ -48,8 +48,12 @@
 - [x] **Landing Page:** Fluxo de redirecionamento premium.
 - [x] **Order Engine:** Fluxo completo Carrinho -> API -> DB.
 - [ ] **Real-time:** Notificações via WebSockets/Supabase.
+- [x] **Internationalization (i18n):** Migração completa de UI strings para `pt.json` e suporte a tradução básica no cliente.
+- [ ] **Backend i18n Strategy:** Migrar campos `name/description` para JSONB para suporte total a múltiplos idiomas. (High Priority)
 - [ ] **E-commerce Showcase Refactor:** Implementar vitrine por seções (Shopify-style), recomendações, upsells e rodapé global na PDP e Home Cliente. (High Priority)
 - [ ] **KDS Basic:** Tela de preparação. (Next Step)
+- [ ] **Marketing Management UI:** Painel para o gerente configurar Upsells e Recomendações vinculadas a produtos.
+- [x] **Technical Sweep:** Implementação de Error Boundaries, Type Safety e eliminação de `any` (Dashboard & Menu).
 - [ ] **UI Refactor:** Implementar `ScrollArea` em todos os forms e Migrar Cadastro de Produto para Página Dedicada (Framer Motion).
 - [ ] **Product Gallery:** Upgrade do cadastro de produtos para suportar múltiplas fotos e nova UI de galeria.
 - [ ] **Customer UX Upgrade:** Página de Detalhes do Produto com galeria de alta resolução e animações fluidas.

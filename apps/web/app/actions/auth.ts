@@ -43,7 +43,7 @@ export async function signup(formData: FormData) {
         return redirect(`/login?error=${encodeURIComponent(error.message)}`)
     }
 
-    return redirect('/login?message=Check your email for confirmation')
+    return redirect('/onboarding')
 }
 
 export async function signOut() {

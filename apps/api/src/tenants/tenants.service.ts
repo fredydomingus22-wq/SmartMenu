@@ -8,7 +8,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class TenantsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async findTenant(tenantId: string, organizationId: string) {
     const tenant = await this.prisma.tenant.findUnique({

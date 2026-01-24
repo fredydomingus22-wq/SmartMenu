@@ -1,6 +1,6 @@
 "use server";
 
-import { apiClient } from "@/utils/api-client";
+import { apiClient } from "@/utils/api-client-server";
 import { revalidatePath } from "next/cache";
 
 export async function getTables() {
@@ -17,11 +17,11 @@ export async function createTable(data: { number: number }) {
         const result = await apiClient.post("/tables", data);
         revalidatePath("/dashboard/settings/tables");
         return { success: true, data: result };
-    } catch (error: any) {
+    } catch (error) {
         console.error("createTable error:", error);
         return {
             success: false,
-            error: error.message || "Erro ao criar mesa"
+            error: error instanceof Error ? error.message : "Erro ao criar mesa"
         };
     }
 }
@@ -31,11 +31,11 @@ export async function deleteTable(id: string) {
         await apiClient.delete(`/tables/${id}`);
         revalidatePath("/dashboard/settings/tables");
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error("deleteTable error:", error);
         return {
             success: false,
-            error: error.message || "Erro ao eliminar mesa"
+            error: error instanceof Error ? error.message : "Erro ao eliminar mesa"
         };
     }
 }

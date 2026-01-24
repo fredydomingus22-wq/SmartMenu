@@ -6,8 +6,11 @@ export class MenuController {
   constructor(private readonly menuService: MenuService) { }
 
   @Get(':tenantId')
-  getMenu(@Param('tenantId') tenantId: string) {
-    return this.menuService.getPublicMenu(tenantId);
+  async getMenu(@Param('tenantId') tenantId: string) {
+    console.log(`[MenuController] getMenu for tenant: ${tenantId}`);
+    const menu = await this.menuService.getPublicMenu(tenantId);
+    console.log(`[MenuController] getMenu returned ${menu.length} categories`);
+    return menu;
   }
 
   @Get(':tenantId/config')

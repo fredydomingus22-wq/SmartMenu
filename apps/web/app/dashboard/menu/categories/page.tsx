@@ -1,9 +1,10 @@
 import { getAuthorizedClient } from "@/utils/auth-server";
-import { apiClient } from "@/utils/api-client";
+import { apiClient } from "@/utils/api-client-server";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, LayoutGrid } from "lucide-react";
 import { createCategory, deleteCategory } from '../../../actions/menu';
+import { getTranslatedValue } from "@/lib/utils";
 
 export default async function CategoriesPage() {
     const { user, token, error } = await getAuthorizedClient();
@@ -13,10 +14,16 @@ export default async function CategoriesPage() {
     }
 
 
-    let categories: any[] = [];
+    interface Category {
+        id: string;
+        name: string | Record<string, string>;
+        _count?: { products: number };
+    }
+
+    let categories: Category[] = [];
     try {
-        categories = await apiClient.get<any[]>("/categories");
-        if (!categories) categories = [];
+        const response = await apiClient.get<Category[]>("/categories");
+        categories = Array.isArray(response) ? response : [];
     } catch (error) {
         console.error("Error fetching categories:", error);
     }
@@ -51,7 +58,7 @@ export default async function CategoriesPage() {
                         <p className="text-sm text-zinc-500 dark:text-zinc-500">Comece adicionando uma acima.</p>
                     </div>
                 ) : (
-                    categories.map((category: { id: string; name: string; _count?: { products: number } }) => (
+                    categories.map((category) => (
                         <div
                             key={category.id}
                             className="flex items-center justify-between rounded-xl border bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
@@ -61,7 +68,7 @@ export default async function CategoriesPage() {
                                     <LayoutGrid className="h-5 w-5" />
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold text-zinc-900 dark:text-zinc-50">{category.name}</h3>
+                                    <h3 className="font-semibold text-zinc-900 dark:text-zinc-50">{getTranslatedValue(category.name)}</h3>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400">{category._count?.products || 0} produtos</p>
                                 </div>
                             </div>

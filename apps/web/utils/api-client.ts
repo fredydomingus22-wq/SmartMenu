@@ -1,7 +1,7 @@
 
-const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:3001";
 
-interface RequestOptions extends RequestInit {
+export interface RequestOptions extends RequestInit {
     params?: Record<string, string>;
 }
 
@@ -12,6 +12,11 @@ export class ApiError extends Error {
     }
 }
 
+/**
+ * Core API Client
+ * ⚠️ Safe for both Client and Server environments.
+ * ⚠️ Does NOT include automatic server-side authentication to avoid boundary leaks.
+ */
 export async function apiClient<T = unknown>(path: string, options: RequestOptions = {}): Promise<T> {
     const { params, ...fetchOptions } = options;
 
@@ -28,76 +33,64 @@ export async function apiClient<T = unknown>(path: string, options: RequestOptio
     // 2. Prepare Headers
     const headers = new Headers(fetchOptions.headers as HeadersInit);
 
-    // Set default Content-Type if not provided (except for FormData)
     if (!headers.has("Content-Type") && !(fetchOptions.body instanceof FormData)) {
         headers.set("Content-Type", "application/json");
     }
 
-    // 3. Automatic Server-Side Auth (Next.js 16 compliant)
-    if (typeof window === 'undefined' && !headers.has("Authorization")) {
-        try {
-            const { createClient } = await import("./supabase/server");
-            const supabase = await createClient();
-            const { data: { session } } = await supabase.auth.getSession();
-            const token = session?.access_token;
-
-            if (token) {
-                headers.set("Authorization", `Bearer ${token}`);
-            }
-        } catch (e) {
-            console.debug("[apiClient] Could not access Supabase session in server environment", e);
-        }
-    }
-
-    // 4. Cache Policy (Next.js 16 Defaults)
-    // Authenticated requests should usually not be cached by default in Next.js 16
-    const finalOptions: RequestInit = {
-        cache: 'no-store', // Default to no-store for safety in Next.js 16
-        ...fetchOptions,
-        headers,
-    };
-
-    // 5. Debugging
+    // 3. Environment-specific logging
     if (typeof window === 'undefined') {
         const method = options.method || 'GET';
-        const hasAuth = headers.has("Authorization");
-        if (!hasAuth) {
-            console.warn(`[apiClient] ⚠️ Warning: Unauthenticated request to ${method} ${path}`);
-        } else {
-            console.log(`[apiClient] 🚀 ${method} ${path} [Auth: OK]`);
-        }
+        console.log(`[apiClient:core] 🚀 ${method} ${path} (Auth: ${headers.has('Authorization') ? 'YES' : 'NO'})`);
     }
 
-    try {
-        const response = await fetch(url, finalOptions);
+    let lastError: unknown;
+    const MAX_RETRIES = 2;
+    const RETRY_DELAY = 500; // ms
 
-        if (!response.ok) {
-            let errorMessage = `API Error: ${response.status} ${response.statusText}`;
-            try {
-                const errorData = await response.json();
-                errorMessage = errorData.message || JSON.stringify(errorData) || errorMessage;
-            } catch { /* ignore */ }
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+        try {
+            if (attempt > 0) {
+                if (typeof window === 'undefined') console.log(`[apiClient:retry] Attempt ${attempt}/${MAX_RETRIES} for ${path}...`);
+                await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * attempt));
+            }
 
-            throw new ApiError(errorMessage, response.status);
+            const response = await fetch(url, {
+                ...fetchOptions,
+                headers,
+                cache: fetchOptions.cache || 'no-store',
+            });
+
+            if (!response.ok) {
+                let errorMessage = `API Error: ${response.status} ${response.statusText}`;
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || JSON.stringify(errorData) || errorMessage;
+                } catch { /* ignore */ }
+
+                throw new ApiError(errorMessage, response.status);
+            }
+
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                return await response.json();
+            }
+
+            return null as unknown as T;
+        } catch (error) {
+            lastError = error;
+            const isNetworkError = error instanceof Error && (error.message.includes("fetch failed") || error.message.includes("ECONNREFUSED"));
+
+            if (isNetworkError && attempt < MAX_RETRIES) {
+                continue; // Retry
+            }
+
+            if (error instanceof ApiError) throw error;
+            const message = error instanceof Error ? error.message : "Unknown error";
+            console.error(`[apiClient:core] ❌ Failed request to ${url}: ${message}`);
+            throw new ApiError(message);
         }
-
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-            return await response.json();
-        }
-
-        return null as unknown as T;
-    } catch (error) {
-        if (error instanceof ApiError) throw error;
-
-        const message = error instanceof Error ? error.message : "Unknown error";
-        const stack = error instanceof Error ? error.stack : "";
-        console.error(`[apiClient] ❌ Failed request to ${url}: ${message}`);
-        if (stack) {
-            console.debug(`[apiClient] Stack trace: ${stack}`);
-        }
-        throw new ApiError(message);
     }
+    throw lastError;
 }
 
 // Typed helpers

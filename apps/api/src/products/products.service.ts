@@ -8,20 +8,31 @@ import { UpdateProductDto } from './dto/update-product.dto';
 export class ProductsService {
   constructor(private prisma: PrismaService) { }
 
+  private normalizeJson(value: Prisma.JsonValue | string | undefined): Prisma.JsonValue {
+    if (!value) return null;
+    if (typeof value === 'string') {
+      return { pt: value };
+    }
+    return value as Prisma.JsonValue;
+  }
+
   async create(
     createProductDto: CreateProductDto,
     tenantId: string,
     organizationId: string,
-  ) {
+  ): Promise<any> { // TODO: Define exact return type if needed, or use Prisma.ProductGetPayload
     if (!tenantId || !organizationId) {
       throw new Error('Tenant or Organization ID missing in request');
     }
 
-    const { images, options, ...data } = createProductDto;
+    const { images, options, upsells, recommendations, ...data } =
+      createProductDto;
 
     return this.prisma.product.create({
       data: {
         ...data,
+        name: this.normalizeJson(data.name),
+        description: this.normalizeJson(data.description),
         tenantId,
         organizationId,
         images: {
@@ -30,10 +41,22 @@ export class ProductsService {
             order: index,
           })),
         },
+        upsells: {
+          create: (upsells || []).map((upsellId) => ({
+            upsellId,
+            tenantId,
+          })),
+        },
+        recommendations: {
+          create: (recommendations || []).map((recommendedId) => ({
+            recommendedId,
+            tenantId,
+          })),
+        },
         options: {
           create: (options || []).map((opt) => ({
-            name: opt.name,
-            description: opt.description,
+            name: this.normalizeJson(opt.name),
+            description: this.normalizeJson(opt.description),
             minChoices: opt.minChoices || 0,
             maxChoices: opt.maxChoices || 1,
             isRequired: opt.isRequired || false,
@@ -41,7 +64,7 @@ export class ProductsService {
             organizationId,
             values: {
               create: (opt.values || []).map((v) => ({
-                name: v.name,
+                name: this.normalizeJson(v.name),
                 price: v.price || 0,
                 isAvailable: v.isAvailable ?? true,
                 tenantId,
@@ -92,8 +115,9 @@ export class ProductsService {
     updateProductDto: UpdateProductDto,
     tenantId: string,
     organizationId: string,
-  ) {
-    const { categoryId, images, options, ...data } = updateProductDto;
+  ): Promise<any> {
+    const { categoryId, images, options, upsells, recommendations, ...data } =
+      updateProductDto;
 
     // Use transaction to ensure both operations succeed
     return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
@@ -111,10 +135,23 @@ export class ProductsService {
         });
       }
 
+      if (upsells) {
+        await tx.productUpsell.deleteMany({
+          where: { productId: id },
+        });
+      }
+      if (recommendations) {
+        await tx.productRecommendation.deleteMany({
+          where: { productId: id },
+        });
+      }
+
       return tx.product.update({
         where: { id, tenantId, organizationId },
         data: {
           ...data,
+          name: this.normalizeJson(data.name as Prisma.JsonValue),
+          description: this.normalizeJson(data.description as Prisma.JsonValue),
           ...(categoryId ? { categoryId } : {}),
           ...(images
             ? {
@@ -126,12 +163,32 @@ export class ProductsService {
               },
             }
             : {}),
+          ...(upsells
+            ? {
+              upsells: {
+                create: upsells.map((upsellId) => ({
+                  upsellId,
+                  tenantId,
+                })),
+              },
+            }
+            : {}),
+          ...(recommendations
+            ? {
+              recommendations: {
+                create: recommendations.map((recommendedId) => ({
+                  recommendedId,
+                  tenantId,
+                })),
+              },
+            }
+            : {}),
           ...(options
             ? {
               options: {
                 create: options.map((opt) => ({
-                  name: opt.name,
-                  description: opt.description,
+                  name: this.normalizeJson(opt.name),
+                  description: this.normalizeJson(opt.description),
                   minChoices: opt.minChoices,
                   maxChoices: opt.maxChoices,
                   isRequired: opt.isRequired,
@@ -139,7 +196,7 @@ export class ProductsService {
                   organizationId,
                   values: {
                     create: opt.values.map((v) => ({
-                      name: v.name,
+                      name: this.normalizeJson(v.name),
                       price: v.price,
                       isAvailable: v.isAvailable ?? true,
                       tenantId,
@@ -153,6 +210,12 @@ export class ProductsService {
         },
         include: {
           images: true,
+          upsells: {
+            include: { upsell: true },
+          },
+          recommendations: {
+            include: { recommended: true },
+          },
           options: {
             include: { values: true },
           },
@@ -164,6 +227,100 @@ export class ProductsService {
   async remove(id: string, tenantId: string, organizationId: string) {
     return this.prisma.product.delete({
       where: { id, tenantId, organizationId },
+    });
+  }
+
+  async duplicate(id: string, tenantId: string, organizationId: string) {
+    const originalProduct = await this.prisma.product.findUnique({
+      where: { id, tenantId, organizationId },
+      include: {
+        images: true,
+        options: {
+          include: { values: true },
+        },
+      },
+    });
+
+    if (!originalProduct) {
+      throw new Error('Product not found');
+    }
+
+    const {
+      id: _id,
+      createdAt: _createdAt,
+      options,
+      description,
+      ...rest
+    } = originalProduct;
+
+    // Create a new product with " (Cópia)" appended to the name
+    return this.prisma.product.create({
+      data: {
+        ...rest,
+        description: description as Prisma.InputJsonValue,
+        name: {
+          ...(rest.name as Record<string, string>),
+          pt: `${(rest.name as Record<string, string>)['pt']} (Cópia)`,
+        } as Prisma.InputJsonValue,
+        images: {
+          create: originalProduct.images.map((img) => ({
+            url: img.url,
+            order: img.order,
+          })),
+        },
+        options: {
+          create: originalProduct.options.map((opt) => ({
+            name: opt.name as Prisma.InputJsonValue,
+            description: opt.description as Prisma.InputJsonValue,
+            minChoices: opt.minChoices,
+            maxChoices: opt.maxChoices,
+            isRequired: opt.isRequired,
+            tenantId,
+            organizationId,
+            values: {
+              create: opt.values.map((v) => ({
+                name: v.name as Prisma.InputJsonValue,
+                price: v.price,
+                isAvailable: v.isAvailable,
+                tenantId,
+                organizationId,
+              })),
+            },
+          })),
+        },
+      },
+      include: {
+        images: true,
+        options: {
+          include: { values: true },
+        },
+      },
+    });
+  }
+
+  async updateBulkAvailability(
+    ids: string[],
+    isAvailable: boolean,
+    tenantId: string,
+    organizationId: string,
+  ) {
+    return this.prisma.product.updateMany({
+      where: {
+        id: { in: ids },
+        tenantId,
+        organizationId,
+      },
+      data: { isAvailable },
+    });
+  }
+
+  async removeBulk(ids: string[], tenantId: string, organizationId: string) {
+    return this.prisma.product.deleteMany({
+      where: {
+        id: { in: ids },
+        tenantId,
+        organizationId,
+      },
     });
   }
 

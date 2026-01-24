@@ -15,6 +15,7 @@ import { UsersModule } from './users/users.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { TablesModule } from './tables/tables.module';
 import { LoyaltyModule } from './loyalty/loyalty.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { LoyaltyModule } from './loyalty/loyalty.module';
     TenantsModule,
     TablesModule,
     LoyaltyModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, SupabaseStrategy],

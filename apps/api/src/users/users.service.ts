@@ -50,46 +50,49 @@ export class UsersService {
 
     // 2. If not, create a new Organization, Tenant, and UserProfile
     try {
-      user = await this.prisma.$transaction(async (tx) => {
-        const restaurantName = userData.restaurantName || 'Meu Restaurante';
+      user = await this.prisma.$transaction(
+        async (tx) => {
+          const restaurantName = userData.restaurantName || 'Meu Restaurante';
 
-        // Create Organization (The Company)
-        const organization = await tx.organization.create({
-          data: {
-            name: restaurantName, // Initially same as restaurant name
-          },
-        });
+          // Create Organization (The Company)
+          const organization = await tx.organization.create({
+            data: {
+              name: restaurantName, // Initially same as restaurant name
+            },
+          });
 
-        // Create Tenant (The First Branch/Restaurant)
-        const slug =
-          restaurantName.toLowerCase().replace(/\s+/g, '-') +
-          '-' +
-          Math.random().toString(36).substring(2, 7);
+          // Create Tenant (The First Branch/Restaurant)
+          const slug =
+            restaurantName.toLowerCase().replace(/\s+/g, '-') +
+            '-' +
+            Math.random().toString(36).substring(2, 7);
 
-        const tenant = await tx.tenant.create({
-          data: {
-            name: restaurantName,
-            slug,
-            organizationId: organization.id,
-          },
-        });
+          const tenant = await tx.tenant.create({
+            data: {
+              name: restaurantName,
+              slug,
+              organizationId: organization.id,
+            },
+          });
 
-        // Create UserProfile linked to both
-        return tx.userProfile.create({
-          data: {
-            id: userData.id,
-            email: userData.email,
-            name: userData.name,
-            role: 'OWNER',
-            organizationId: organization.id,
-            tenantId: tenant.id,
-          },
-          include: {
-            tenant: true,
-            organization: true,
-          },
-        });
-      });
+          // Create UserProfile linked to both
+          return tx.userProfile.create({
+            data: {
+              id: userData.id,
+              email: userData.email,
+              name: userData.name,
+              role: 'OWNER',
+              organizationId: organization.id,
+              tenantId: tenant.id,
+            },
+            include: {
+              tenant: true,
+              organization: true,
+            },
+          });
+        },
+        { timeout: 30000 },
+      );
 
       // 3. Update Supabase Auth metadata using service role key
       if (user && user.tenantId && user.organizationId) {

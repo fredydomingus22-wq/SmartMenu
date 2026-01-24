@@ -6,6 +6,7 @@ export class MenuService {
   constructor(private prisma: PrismaService) { }
 
   async getPublicMenu(tenantId: string) {
+    console.log(`[MenuService] Fetching menu for tenant: ${tenantId}`);
     const categories = await this.prisma.category.findMany({
       where: { tenantId: tenantId },
       include: {
@@ -26,6 +27,7 @@ export class MenuService {
       orderBy: { name: 'asc' },
     });
 
+    console.log(`[MenuService] Found ${categories.length} categories for tenant: ${tenantId}`);
     return categories;
   }
 
@@ -97,6 +99,7 @@ export class MenuService {
         enableRecommendations: true,
         enableUpsells: true,
         homeLayoutType: 'standard',
+        enabledLanguages: ['pt'],
       },
     };
   }

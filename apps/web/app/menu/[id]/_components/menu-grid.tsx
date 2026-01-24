@@ -1,8 +1,9 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useParams } from "next/navigation";
-import { ChevronRight, UtensilsCrossed } from "lucide-react";
+import { useSearchParams, useParams } from "next/navigation";
+import { UtensilsCrossed, Eye } from "lucide-react";
+import { useTranslation } from "@/hooks/use-translation";
 import Image from "next/image";
 import { useState, useMemo } from "react";
 import { ProductCard } from "./product-card";
@@ -10,7 +11,7 @@ import { ProductGrid } from "./product-grid";
 import { ProductCardSkeleton } from "@/components/skeletons/product-card-skeleton";
 import { Button } from "@/components/ui/button";
 import { Category, MenuConfig, MenuSection } from "../_types";
-import { cn } from "@/lib/utils";
+import { cn, getTranslatedValue } from "@/lib/utils";
 
 interface MenuGridProps {
     categories: Category[];
@@ -19,6 +20,9 @@ interface MenuGridProps {
 
 export function MenuGrid({ categories, config }: MenuGridProps) {
     const params = useParams();
+    const searchParams = useSearchParams();
+    const { t, locale } = useTranslation();
+    const isPreview = searchParams.get("preview") === "true";
     const tenantId = params.id as string;
     const [activeCategoryId, setActiveCategoryId] = useState<string | "all">(
         categories.length > 0 ? categories[0].id : "all"
@@ -37,13 +41,48 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
         setTimeout(() => setIsChangingCategory(false), 300); // Small artificial delay for skeleton
     };
 
-    const sections = config?.sections || [
-        { type: "hero", isActive: true, config: { title: "Bem-vindo!" } },
-        { type: "category_grid", isActive: true }
-    ];
+    const allProducts = useMemo(() => categories.flatMap(c => c.products), [categories]);
+    const featuredProducts = useMemo(() => allProducts.filter(p => p.isFeatured), [allProducts]);
+    const newProducts = useMemo(() => allProducts.filter(p => p.isNew), [allProducts]);
+    const bestSellerProducts = useMemo(() => allProducts.filter(p => p.isBestSeller), [allProducts]);
+
+    const sections = useMemo(() => {
+        if (config?.sections) return config.sections;
+
+        const defaults: MenuSection[] = [
+            { type: "hero", isActive: true, config: { title: t('menu.hero_title') } }
+        ];
+
+        if (featuredProducts.length > 0) {
+            defaults.push({ type: "featured", isActive: true, config: { title: t('menu.featured_title'), subtitle: t('menu.featured_subtitle') } });
+        }
+
+        if (bestSellerProducts.length > 0) {
+            defaults.push({ type: "best_sellers", isActive: true, config: { title: t('menu.best_sellers_title'), subtitle: t('menu.best_sellers_subtitle') } });
+        }
+
+        if (newProducts.length > 0) {
+            defaults.push({ type: "new_arrivals", isActive: true, config: { title: t('menu.new_arrivals_title'), subtitle: t('menu.new_arrivals_subtitle') } });
+        }
+
+        defaults.push({ type: "category_grid", isActive: true });
+
+        return defaults;
+    }, [config, featuredProducts, bestSellerProducts, newProducts, t]);
 
     return (
         <div className="space-y-12 sm:space-y-20 pb-12">
+            {isPreview && (
+                <div className="bg-primary/10 border-2 border-primary/20 rounded-2xl p-4 flex items-center justify-between mt-4">
+                    <div className="flex items-center gap-3 text-primary">
+                        <Eye className="h-5 w-5" />
+                        <span className="font-bold uppercase tracking-wider text-sm">{t('menu.preview_active')}</span>
+                    </div>
+                    <p className="text-[10px] sm:text-xs font-medium text-primary/70 uppercase">
+                        {t('menu.preview_desc')}
+                    </p>
+                </div>
+            )}
             {sections?.map((section: MenuSection, idx: number) => {
                 if (!section.isActive) return null;
 
@@ -73,13 +112,13 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                         transition={{ delay: 0.2 }}
                                     >
                                         <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[10px] uppercase font-black tracking-widest mb-4 inline-block">
-                                            Destaque do Dia
+                                            {t('menu.hero_badge')}
                                         </span>
                                         <h1 className="text-4xl sm:text-6xl font-black tracking-tighter mb-4 leading-none">
-                                            {section.config?.title || "Sabor Incomparável"}
+                                            {section.config?.title || t('menu.hero_title')}
                                         </h1>
                                         <p className="text-base sm:text-lg opacity-80 max-w-lg font-medium leading-relaxed">
-                                            {section.config?.subtitle || "Descubra o melhor da nossa cozinha artesanal hoje mesmo."}
+                                            {section.config?.subtitle || t('menu.hero_subtitle')}
                                         </p>
                                     </motion.div>
                                 </div>
@@ -87,20 +126,47 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                         );
 
                     case "featured":
-                        const featuredCategory = categories.find(c => c.name.toLowerCase().includes("destaque") || c.name.toLowerCase().includes("queridinhos")) || categories[0];
                         return (
-                            <section key={`section-${idx}`} className="space-y-8">
-                                <div className="flex justify-between items-end">
+                            <section key={`section-${idx}`} className="space-y-4">
+                                <div className="flex justify-between items-end px-1">
                                     <div>
-                                        <span className="text-primary font-black uppercase tracking-[0.2em] text-[10px]">{section.config?.label || "Destaque"}</span>
-                                        <h2 className="text-3xl sm:text-4xl font-black tracking-tighter mt-1">{section.config?.title || "Os Queridinhos"}</h2>
+                                        <span className="text-orange-600 font-black uppercase tracking-[0.2em] text-[10px]">{section.config?.label || "Especial"}</span>
+                                        <h2 className="text-3xl font-black tracking-tighter text-zinc-900">{section.config?.title || "Destaques"}</h2>
                                     </div>
-                                    <Button variant="link" className="font-bold gap-1 pr-0 group text-primary">
-                                        Ver tudo <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                                    </Button>
+                                </div>
+                                <div className="flex gap-4 overflow-x-auto pb-8 pt-2 px-1 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+                                    {featuredProducts.map((product) => (
+                                        <div key={product.id} className="min-w-[280px] sm:min-w-[320px]">
+                                            <ProductCard product={product} tenantId={tenantId} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        );
+
+                    case "best_sellers":
+                        return (
+                            <section key={`section-${idx}`} className="space-y-4 bg-orange-50/50 -mx-4 px-4 py-8 sm:rounded-3xl sm:mx-0">
+                                <div className="flex items-center gap-2 mb-6">
+                                    <div className="h-8 w-1 bg-orange-500 rounded-full" />
+                                    <h2 className="text-2xl font-black tracking-tight text-orange-900">{section.config?.title || "Mais Vendidos"}</h2>
                                 </div>
                                 <ProductGrid columns={2}>
-                                    {featuredCategory?.products.slice(0, 4).map((product) => (
+                                    {bestSellerProducts.map((product) => (
+                                        <ProductCard key={product.id} product={product} tenantId={tenantId} />
+                                    ))}
+                                </ProductGrid>
+                            </section>
+                        );
+
+                    case "new_arrivals":
+                        return (
+                            <section key={`section-${idx}`} className="space-y-4 pt-4">
+                                <div className="flex justify-between items-end mb-4">
+                                    <h2 className="text-2xl font-black tracking-tight italic">{section.config?.title || "Novidades"}</h2>
+                                </div>
+                                <ProductGrid columns={2}>
+                                    {newProducts.map((product) => (
                                         <ProductCard key={product.id} product={product} tenantId={tenantId} />
                                     ))}
                                 </ProductGrid>
@@ -124,7 +190,7 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                                         : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
                                                 )}
                                             >
-                                                {category.name}
+                                                {getTranslatedValue(category.name, locale)}
                                             </button>
                                         ))}
                                     </div>
@@ -142,7 +208,7 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                     >
                                         <div className="flex items-center gap-4">
                                             <h2 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic px-4 py-1">
-                                                {activeCategory?.name}
+                                                {getTranslatedValue(activeCategory?.name, locale)}
                                             </h2>
                                             <div className="h-px bg-border flex-1" />
                                         </div>
@@ -167,9 +233,9 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                                     <UtensilsCrossed className="w-10 h-10 text-muted-foreground/50" />
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <h3 className="text-xl font-bold tracking-tight">Categoria Vazia</h3>
+                                                    <h3 className="text-xl font-bold tracking-tight">{t('menu.empty_category')}</h3>
                                                     <p className="text-muted-foreground max-w-xs mx-auto text-sm">
-                                                        Ainda não adicionamos delícias nesta seção. Experimente outra categoria!
+                                                        {t('menu.empty_category_desc')}
                                                     </p>
                                                 </div>
                                                 <Button
@@ -177,7 +243,7 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                                     onClick={() => setActiveCategoryId(categories.find(c => c.products.length > 0)?.id || "all")}
                                                     className="mt-4 border-primary/20 hover:border-primary/50 text-primary hover:bg-primary/5"
                                                 >
-                                                    Explorar Outras Opções
+                                                    {t('menu.explore_others')}
                                                 </Button>
                                             </div>
                                         )}
@@ -198,12 +264,12 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                         unoptimized
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center p-8 sm:p-12 text-white">
-                                        <span className="text-primary font-black uppercase tracking-widest text-[10px] sm:text-xs mb-2">Momento Doce</span>
+                                        <span className="text-primary font-black uppercase tracking-widest text-[10px] sm:text-xs mb-2">{t('menu.upsell_badge')}</span>
                                         <h2 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter mb-2">
-                                            {section.config?.title || "Espaço para Sobremesa?"}
+                                            {section.config?.title || t('menu.upsell_title')}
                                         </h2>
                                         <p className="text-sm sm:text-base md:text-lg opacity-80 max-w-xs sm:max-w-md font-medium mb-6">
-                                            {section.config?.subtitle || "Confira nossas opções artesanais para fechar com chave de ouro."}
+                                            {section.config?.subtitle || t('menu.upsell_subtitle')}
                                         </p>
 
                                         {section.config?.buttonText && (

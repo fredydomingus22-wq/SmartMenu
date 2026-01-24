@@ -42,6 +42,9 @@ export async function createProduct(formData: FormData) {
         const price = parseFloat(formData.get('price') as string)
         const categoryId = formData.get('categoryId') as string
         const isAvailable = formData.get('isAvailable') === 'true'
+        const isFeatured = formData.get('isFeatured') === 'true'
+        const isNew = formData.get('isNew') === 'true'
+        const isBestSeller = formData.get('isBestSeller') === 'true'
 
         console.log('Action: createProduct', { name, categoryId })
 
@@ -67,6 +70,12 @@ export async function createProduct(formData: FormData) {
         const optionsStr = formData.get('options') as string
         const options = optionsStr ? JSON.parse(optionsStr) : []
 
+        // Marketing
+        const upsellsStr = formData.get('upsells') as string
+        const upsells = upsellsStr ? JSON.parse(upsellsStr) : undefined
+        const recommendationsStr = formData.get('recommendations') as string
+        const recommendations = recommendationsStr ? JSON.parse(recommendationsStr) : undefined
+
         await apiClient.post("/products", {
             name,
             description,
@@ -75,7 +84,12 @@ export async function createProduct(formData: FormData) {
             isAvailable,
             imageUrl,
             images,
-            options
+            options,
+            upsells,
+            recommendations,
+            isFeatured,
+            isNew,
+            isBestSeller
         });
 
         console.log('Action: createProduct success')
@@ -105,6 +119,9 @@ export async function updateProduct(id: string, formData: FormData) {
         const price = parseFloat(formData.get('price') as string)
         const categoryId = formData.get('categoryId') as string
         const isAvailable = formData.get('isAvailable') === 'true'
+        const isFeatured = formData.get('isFeatured') === 'true'
+        const isNew = formData.get('isNew') === 'true'
+        const isBestSeller = formData.get('isBestSeller') === 'true'
 
         console.log('Action: updateProduct', { id, name })
 
@@ -134,6 +151,12 @@ export async function updateProduct(id: string, formData: FormData) {
         const optionsStr = formData.get('options') as string
         const options = optionsStr ? JSON.parse(optionsStr) : undefined
 
+        // Marketing
+        const upsellsStr = formData.get('upsells') as string
+        const upsells = upsellsStr ? JSON.parse(upsellsStr) : undefined
+        const recommendationsStr = formData.get('recommendations') as string
+        const recommendations = recommendationsStr ? JSON.parse(recommendationsStr) : undefined
+
         await apiClient.put(`/products/${id}`, {
             name,
             description,
@@ -142,7 +165,12 @@ export async function updateProduct(id: string, formData: FormData) {
             isAvailable,
             imageUrl,
             images: finalImages,
-            options
+            options,
+            upsells,
+            recommendations,
+            isFeatured,
+            isNew,
+            isBestSeller
         });
 
         console.log('Action: updateProduct success')

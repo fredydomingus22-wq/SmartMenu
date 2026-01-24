@@ -80,6 +80,13 @@
   - Ativar/desativar itens
   - Controle de estoque básico
   - Preços e promoções
+- **Gestão de Marketing & Conversão:**
+  - Configuração de Upsells (Venda Casada) por produto.
+  - Configuração de Recomendações ("Quem comprou também levou").
+  - Gestão de Banners Promocionais intercalados no menu.
+- **Gestão de Idiomas:**
+  - Ativação de idiomas suportados (PT, EN, ES).
+  - Tradução customizada de nomes e descrições de produtos.
 - Gestão de mesas
 - Gestão de usuários e permissões
 
@@ -150,6 +157,31 @@
 
 ---
 
+## 14. Gestão de Marketing e Conversão
+
+### 14.1 Upsell & Cross-sell
+- **Regra:** O gerente vincula "Produtos Sugeridos" a um "Produto Principal".
+- **Trigger:** Exibição na página de detalhes do produto ou no checkout.
+- **Objetivo:** Aumentar o ticket médio através de complementos relevantes.
+
+### 14.2 Recomendações Dinâmicas
+- O sistema sugere produtos baseados na categoria ou histórico de vendas (mais vendidos na mesma sessão).
+
+---
+
+## 15. Gestão de Idiomas (Internationalization)
+
+### 15.1 Suporte Multi-idioma
+- O sistema deve permitir que o restaurante ofereça o cardápio em múltiplos idiomas.
+- **Default:** Português (PT).
+- **Opções:** Inglês (EN), Espanhol (ES).
+
+### 15.2 Tradução de Conteúdo
+- Campos traduzíveis: Nome do Produto, Descrição, Nomes de Categorias, Nomes de Opções.
+- Se a tradução não existir, o sistema exibe o idioma padrão.
+
+---
+
 **Documento de referência para requisitos funcionais do SmartMenu.**
 
 ## 12. CRUD de Gestão de Mesas e QR Code
@@ -203,6 +235,7 @@ Permitir que o restaurante configure seu plano de sala digital e forneça acesso
 - **Registro Isolado:** O cadastro cria um vínculo único `(User, Tenant)`.
 - **Visão Única:** O cliente acessa `/menu/{tenantId}` e vê apenas seu histórico e pontos *daquele* restaurante.
 - **Login:** O sistema detecta o contexto do restaurante e filtra os dados automaticamente.
+- **Persistence:** O sistema deve garantir a existência de um `CustomerProfile` (tabela `customer_profiles`) no primeiro acesso autenticado do usuário a um Tenant específico (`ensureProfile`).
 
 
 ### 13.3 Acúmulo de Pontos

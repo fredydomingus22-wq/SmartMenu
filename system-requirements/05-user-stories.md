@@ -58,7 +58,9 @@
 2. Como gerente, quero ativar/desativar itens e gerenciar estoque, para refletir disponibilidade real.
 3. Como gerente, quero visualizar dashboards de vendas, ticket médio e performance de mesas, para tomar decisões estratégicas.
 4. Como gerente, quero configurar promoções e combos, para aumentar vendas.
-5. Como administrador SaaS, quero gerenciar múltiplos tenants, planos e assinaturas, para operar negócio escalável.
+6. Como gerente, quero configurar produtos como "Upsell" de outros itens, para aumentar o valor médio dos pedidos de forma automatizada.
+7. Como gerente, quero oferecer o meu cardápio em múltiplos idiomas (PT, EN, ES) e traduzir os nomes e descrições dos meus pratos, para atender melhor os clientes estrangeiros.
+8. Como administrador SaaS, quero gerenciar múltiplos tenants, planos e assinaturas, para operar negócio escalável.
 
 ---
 
