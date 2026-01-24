@@ -60,6 +60,12 @@ Este diretório contém a documentação técnica e de requisitos do sistema Sma
 - `agents/09_Technical_Audit_Lead.md` (TAL)
 - `workflow: technical_lifecycle.md`
 
+### 📢 Marketing, SEO & Copy
+- `agents/11_Marketing_Digital_Specialist.md` (Estratégia)
+- `agents/12_SEO_Strategist.md` (SEO Técnico)
+- `agents/13_CMO_Copywriter.md` (Copy & Microcopy CMO)
+- `workflow: marketing_audit.md` (Automação de Auditoria)
+
 ### 🚀 Execução & Implementação
 - `agents/10_Implementation_Lead.md` (Full-Stack Expert)
 - `workflow: implementation_execution.md`

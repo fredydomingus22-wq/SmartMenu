@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Utensils, QrCode, ClipboardList, TrendingUp, ChevronRight, Zap } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 export default function LandingPage() {
@@ -43,9 +44,15 @@ export default function LandingPage() {
       <main className="flex-1 pt-16">
         {/* Hero Section */}
         <section className="relative py-24 px-6 overflow-hidden">
-          <div className="absolute inset-0 -z-10 overflow-hidden">
-            <div className="absolute -top-1/4 -left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]" />
-            <div className="absolute top-1/2 -right-1/4 w-[400px] h-[400px] bg-orange-500/10 rounded-full blur-[100px]" />
+          <div className="absolute inset-0 -z-10 bg-black/60">
+            <Image
+              src="/assets/marketing/hero-luanda.png"
+              alt="Restaurante em Luanda - Ambiente"
+              fill
+              className="object-cover opacity-60 mix-blend-overlay"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
           </div>
 
           <div className="max-w-7xl mx-auto text-center md:text-left grid lg:grid-cols-2 gap-12 items-center">
@@ -57,25 +64,25 @@ export default function LandingPage() {
             >
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold border border-primary/20">
                 <Zap className="h-3 w-3 fill-current" />
-                <span>PHASE 2 ENGINE AGORA DISPONÍVEL</span>
+                <span>TECNOLOGIA DE PONTA PARA O SEU RESTAURANTE</span>
               </div>
               <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1]">
-                O Futuro da <br />
+                Digitalize o seu <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-500">
-                  Gastronomia Digital
+                  Sucesso Gastronómico
                 </span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-xl mx-auto md:mx-0">
-                Transforme seu restaurante com menus QR interativos, gestão de pedidos em tempo real e inteligência artificial. Premium, rápido e eficiente.
+                Aumente o seu ticket médio em 20% com menus interativos, KDS inteligente e fidelização de clientes. A plataforma SaaS definitiva para restauração moderna.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4 lg:justify-start">
                 <Button size="lg" className="h-14 px-8 text-lg font-bold rounded-full gap-2 shadow-xl shadow-primary/20" asChild>
                   <Link href="/login">
-                    Começar Agora <ChevronRight className="h-5 w-5" />
+                    Começar Gratuitamente <ChevronRight className="h-5 w-5" />
                   </Link>
                 </Button>
                 <Button variant="outline" size="lg" className="h-14 px-8 text-lg font-bold rounded-full border-2" asChild>
-                  <Link href="#features">Ver Demonstração</Link>
+                  <Link href="#features">Explorar Recursos</Link>
                 </Button>
               </div>
             </motion.div>
@@ -86,28 +93,13 @@ export default function LandingPage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="relative lg:block"
             >
-              <div className="relative z-10 rounded-2xl border-4 border-white/10 shadow-2xl overflow-hidden bg-black/40 backdrop-blur-3xl aspect-[16/10] flex flex-col">
-                <div className="h-8 bg-white/5 flex items-center px-4 gap-1.5 border-b border-white/5">
-                  <div className="h-2.5 w-2.5 rounded-full bg-red-500/50" />
-                  <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/50" />
-                  <div className="h-2.5 w-2.5 rounded-full bg-green-500/50" />
-                </div>
-                <div className="flex-1 p-6 space-y-4">
-                  <div className="h-4 w-1/2 bg-white/10 rounded" />
-                  <div className="grid grid-cols-2 gap-4 h-full pb-8">
-                    <div className="bg-primary/20 rounded-xl border border-primary/30 p-4 space-y-3">
-                      <div className="h-3 w-3/4 bg-primary/40 rounded" />
-                      <div className="h-8 w-full bg-white/10 rounded-lg animate-pulse" />
-                      <div className="h-20 w-full bg-white/5 rounded-lg" />
-                    </div>
-                    <div className="bg-zinc-800/40 rounded-xl border border-white/5 p-4 space-y-3">
-                      <div className="h-3 w-1/2 bg-white/20 rounded" />
-                      <div className="h-24 w-full bg-white/5 rounded-lg flex items-center justify-center">
-                        <QrCode className="h-12 w-12 text-white/20" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div className="relative z-10 rounded-2xl border-4 border-white/10 shadow-2xl overflow-hidden bg-black/40 backdrop-blur-3xl aspect-[4/3] flex flex-col">
+                <Image
+                  src="/assets/marketing/friends-dining.png"
+                  alt="Amigas angolanas a usar o SmartMenu"
+                  fill
+                  className="object-cover hover:scale-105 transition-transform duration-700"
+                />
               </div>
               {/* Decorative floating elements */}
               <motion.div
@@ -124,13 +116,17 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Features Grid */}
+        {/* AI & Automation Features */}
         <section id="features" className="py-24 px-6 bg-zinc-50 dark:bg-zinc-950/40 border-y">
           <div className="max-w-7xl mx-auto space-y-16">
             <div className="text-center space-y-4">
-              <h2 className="text-3xl md:text-5xl font-bold">Potência em cada detalhe</h2>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-500 text-xs font-bold border border-blue-500/20 mb-4">
+                <Zap className="h-3 w-3 fill-current" />
+                <span>POWERED BY AI & AUTOMATION</span>
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold">O Seu Restaurante em Piloto Automático</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Desenvolvemos ferramentas robustas para digitalizar a experiência do seu cliente e otimizar sua operação de ponta a ponta.
+                Enquanto você foca na qualidade da comida, nossa Inteligência Artificial cuida da operação e das vendas.
               </p>
             </div>
 
@@ -141,30 +137,198 @@ export default function LandingPage() {
               viewport={{ once: true }}
               className="grid md:grid-cols-3 gap-8"
             >
-              <motion.div variants={item} className="p-8 bg-background border rounded-3xl space-y-4 hover:shadow-xl transition-shadow group">
-                <div className="h-12 w-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <QrCode className="h-6 w-6" />
-                </div>
-                <h3 className="text-xl font-bold">QR Menu Inteligente</h3>
-                <p className="text-muted-foreground">Substitua o papel por uma experiência rica, com fotos, customização e pedidos instantâneos.</p>
-              </motion.div>
-
-              <motion.div variants={item} className="p-8 bg-background border rounded-3xl space-y-4 hover:shadow-xl transition-shadow group">
-                <div className="h-12 w-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <ClipboardList className="h-6 w-6" />
-                </div>
-                <h3 className="text-xl font-bold">Sistema KDS (Cozinha)</h3>
-                <p className="text-muted-foreground">Elimine erros com um painel digital intuitivo para gerir os pedidos em tempo real diretamente na cozinha.</p>
-              </motion.div>
-
-              <motion.div variants={item} className="p-8 bg-background border rounded-3xl space-y-4 hover:shadow-xl transition-shadow group">
-                <div className="h-12 w-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+              <motion.div variants={item} className="p-8 bg-background border rounded-3xl space-y-4 hover:shadow-xl transition-shadow group relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />
+                <div className="h-12 w-12 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors relative z-10">
                   <TrendingUp className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold">Analytics & Growth</h3>
-                <p className="text-muted-foreground">Descubra quais pratos vendem mais e entenda o comportamento dos seus clientes através de dados precisos.</p>
+                <h3 className="text-xl font-bold relative z-10">Upsell com IA</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
+                  O nosso motor de IA analisa o pedido em tempo real e sugere ("Que tal um vinho?") no momento exato de maior conversão.
+                  <span className="block mt-2 font-medium text-blue-500">+15% Ticket Médio</span>
+                </p>
+              </motion.div>
+
+              <motion.div variants={item} className="p-8 bg-background border rounded-3xl space-y-4 hover:shadow-xl transition-shadow group relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />
+                <div className="h-12 w-12 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors relative z-10">
+                  <ClipboardList className="h-6 w-6" />
+                </div>
+                <h3 className="text-xl font-bold relative z-10">Estoque Inteligente</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
+                  Acabou o bife? O sistema esconde o item do menu automaticamente e avisa o gerente. Sem pedidos frustrados, sem "temos que cancelar".
+                  <span className="block mt-2 font-medium text-orange-500">Zero Erros de Estoque</span>
+                </p>
+              </motion.div>
+
+              <motion.div variants={item} className="p-8 bg-background border rounded-3xl space-y-4 hover:shadow-xl transition-shadow group relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-green-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />
+                <div className="h-12 w-12 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-500 group-hover:bg-green-500 group-hover:text-white transition-colors relative z-10">
+                  <QrCode className="h-6 w-6" />
+                </div>
+                <h3 className="text-xl font-bold relative z-10">Fidelidade Automática</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
+                  Os clientes acumulam pontos a cada pedido automaticamente. O sistema envia notificações para eles voltarem.
+                  <span className="block mt-2 font-medium text-green-500">Retenção de Clientes</span>
+                </p>
               </motion.div>
             </motion.div>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section id="pricing" className="py-24 px-6 relative overflow-hidden">
+          {/* Decorative Banner Background */}
+          <div className="absolute inset-0 -z-10 opacity-5">
+            <Image
+              src="/assets/marketing/banner-promo.png"
+              alt="Background Pattern"
+              fill
+              className="object-cover"
+            />
+          </div>
+
+          <div className="max-w-7xl mx-auto space-y-16">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl md:text-5xl font-bold">Planos para todos os tamanhos</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Escolha a solução ideal para o seu negócio, desde o pequeno café até à grande cadeia de restaurantes.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* Basic Plan */}
+              <div className="relative p-8 bg-background border rounded-3xl space-y-6 hover:shadow-xl transition-all hover:-translate-y-1">
+                <div className="space-y-2">
+                  <h3 className="text-xl font-semibold">Basic</h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold">50.000</span>
+                    <span className="text-muted-foreground">KZ/mês</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">Ideal para começar a digitalizar.</p>
+                </div>
+                <ul className="space-y-3 text-sm">
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Até 50 mesas</li>
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Menu QR Interativo</li>
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Carrinho de Pedidos</li>
+                </ul>
+                <Button variant="outline" className="w-full rounded-full" asChild>
+                  <Link href="/login?plan=basic">Começar Basic</Link>
+                </Button>
+              </div>
+
+              {/* Pro Plan */}
+              <div className="relative p-8 bg-background border-2 border-primary/20 rounded-3xl space-y-6 shadow-2xl shadow-primary/10 scale-105 z-10">
+                <div className="absolute top-0 right-0 transform translate-x-1/3 -translate-y-1/3">
+                  <span className="bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Popular</span>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-xl font-semibold text-primary">Pro</h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold">150.000</span>
+                    <span className="text-muted-foreground">KZ/mês</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">Para operações que precisam de KDS.</p>
+                </div>
+                <ul className="space-y-3 text-sm">
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Até 150 mesas</li>
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary lead" /> <strong>Sistema KDS (Cozinha)</strong></li>
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Gestão de Estoque</li>
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Dashboards Gerenciais</li>
+                </ul>
+                <Button className="w-full rounded-full font-bold" asChild>
+                  <Link href="/login?plan=pro">Escolher Pro</Link>
+                </Button>
+              </div>
+
+              {/* Enterprise Plan */}
+              <div className="relative p-8 bg-background border rounded-3xl space-y-6 hover:shadow-xl transition-all hover:-translate-y-1">
+                <div className="space-y-2">
+                  <h3 className="text-xl font-semibold">Enterprise</h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold">300.000</span>
+                    <span className="text-muted-foreground">KZ/mês</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">Para cadeias e franquias.</p>
+                </div>
+                <ul className="space-y-3 text-sm">
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Mesas Ilimitadas</li>
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Múltiplos Restaurantes</li>
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Analytics Avançado (AI)</li>
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Suporte Dedicado 24/7</li>
+                </ul>
+                <Button variant="outline" className="w-full rounded-full" asChild>
+                  <Link href="/contact">Falar com Vendas</Link>
+                </Button>
+              </div>
+            </div>
+
+            <p className="text-center text-sm text-muted-foreground italic">
+              * Preços indicativos em Kwanzas (KZ). Valores finais sujeitos à confirmação com a equipa comercial.
+            </p>
+          </div>
+        </section>
+
+        {/* How It Works Section */}
+        <section id="how-it-works" className="py-24 px-6">
+          <div className="max-w-7xl mx-auto space-y-16">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl md:text-5xl font-bold">Simples. Rápido. Eficiente.</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Implementação em minutos, resultados no primeiro dia.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-12 relative items-center">
+              {/* Connector Line (Desktop) */}
+              <div className="hidden md:block absolute top-[20%] left-[16%] w-[68%] h-0.5 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20 -z-10" />
+
+              <div className="text-center space-y-6 bg-background p-4 relative group">
+                <div className="h-24 w-24 mx-auto bg-primary text-primary-foreground rounded-full flex items-center justify-center text-3xl font-bold border-8 border-background shadow-xl group-hover:scale-110 transition-transform">
+                  1
+                </div>
+                <h3 className="text-xl font-bold">Scan QR</h3>
+                <p className="text-muted-foreground text-sm">O cliente senta e escaneia o código na mesa. Sem apps, sem downloads.</p>
+              </div>
+
+              <div className="text-center space-y-6 bg-background p-4 relative group">
+                <div className="h-24 w-24 mx-auto bg-primary text-primary-foreground rounded-full flex items-center justify-center text-3xl font-bold border-8 border-background shadow-xl group-hover:scale-110 transition-transform">
+                  2
+                </div>
+                <h3 className="text-xl font-bold">Pedido & Upsell</h3>
+                <p className="text-muted-foreground text-sm">O menu interativo sugere os melhores pratos e bebidas extra automaticamente.</p>
+              </div>
+
+              <div className="text-center space-y-6 bg-background p-4 relative group">
+                <div className="relative h-24 w-40 mx-auto rounded-xl overflow-hidden border-4 border-background shadow-xl group-hover:scale-110 transition-transform">
+                  <Image
+                    src="/assets/marketing/kds-mockup.png"
+                    alt="KDS Dashboard"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <h3 className="text-xl font-bold">Cozinha & Entrega</h3>
+                <p className="text-muted-foreground text-sm">O pedido vai direto para o KDS da cozinha. Sem gritos, sem erros.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Social Proof Section */}
+        <section className="py-12 bg-zinc-50 dark:bg-zinc-900 border-y">
+          <div className="max-w-7xl mx-auto px-6 text-center space-y-8">
+            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest">
+              A escolha dos melhores restaurantes de Luanda
+            </p>
+            <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+              {/* Placeholders for Partner Logos - Text based for now to keep it lightweight */}
+              <span className="text-xl font-bold font-serif">Oon.dah</span>
+              <span className="text-xl font-bold font-mono">Cais de Quatro</span>
+              <span className="text-xl font-bold font-sans">Lookal</span>
+              <span className="text-xl font-bold font-serif">K. Luanda</span>
+              <span className="text-xl font-bold font-mono">Nikki Beach</span>
+            </div>
           </div>
         </section>
 
