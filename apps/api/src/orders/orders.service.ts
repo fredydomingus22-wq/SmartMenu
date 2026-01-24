@@ -4,7 +4,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { LoyaltyService } from '../loyalty/loyalty.service';
-import { Order, OrderStatus, Product } from '@prisma/client';
+import { OrderStatus, Product } from '@prisma/client';
 
 @Injectable()
 export class OrdersService {
@@ -116,7 +116,10 @@ export class OrdersService {
         throw new Error('Loyalty reward not found or inactive');
       }
 
-      const points = await this.loyaltyService.getCustomerPoints(userId, tenantId);
+      const points = await this.loyaltyService.getCustomerPoints(
+        userId,
+        tenantId,
+      );
       if (points < appliedReward.pointsRequired) {
         throw new Error('Insufficient loyalty points');
       }
@@ -146,12 +149,11 @@ export class OrdersService {
         });
 
         // Handle Free Product Reward (applies only once)
-        let finalItemSubtotal = itemSubtotal;
         if (appliedReward?.productId === item.productId) {
           // Effectively subtract one product price (base + options) from total
-          total += (itemSubtotal * (item.quantity - 1));
+          total += itemSubtotal * (item.quantity - 1);
           // Resetting appliedReward.productId so it only applies to ONE item
-          (appliedReward as any).productId = null;
+          appliedReward.productId = null;
         } else {
           total += itemSubtotal * item.quantity;
         }
@@ -203,7 +205,12 @@ export class OrdersService {
 
       // 4. Trigger points deduction
       if (loyaltyRewardId && userId) {
-        await this.loyaltyService.redeemReward(userId, tenantId, loyaltyRewardId, tx);
+        await this.loyaltyService.redeemReward(
+          userId,
+          tenantId,
+          loyaltyRewardId,
+          tx,
+        );
       }
 
       return newOrder;
@@ -216,7 +223,7 @@ export class OrdersService {
   }
 
   async findAll(tenantId: string, organizationId: string, scope?: string) {
-    const where: any = { tenantId, organizationId };
+    const where: Record<string, unknown> = { tenantId, organizationId };
 
     if (scope === 'active') {
       where.status = {

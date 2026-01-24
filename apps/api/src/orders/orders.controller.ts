@@ -19,7 +19,10 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) { }
 
   @Get()
-  async findAll(@Request() req: AuthenticatedRequest, @Query('scope') scope?: string) {
+  async findAll(
+    @Request() req: AuthenticatedRequest,
+    @Query('scope') scope?: string,
+  ) {
     try {
       return await this.ordersService.findAll(
         req.user.tenantId,
