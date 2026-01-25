@@ -4,7 +4,7 @@
     "private": true,
     "main": "src/index.ts",
     "scripts": {
-        "build": "tsc"
+        "build": "echo 'No build needed for UI package'"
     },
     "dependencies": {
         "@radix-ui/react-accordion": "^1.2.2",
