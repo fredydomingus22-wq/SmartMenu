@@ -2,6 +2,7 @@
   "name": "smart-menu-root",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "npm@10.2.3",
   "start_url": "apps/web",
   "workspaces": [
     "apps/*",
@@ -9,16 +10,20 @@
   ],
   "scripts": {
     "dev:fresh": "Get-Process -Name node -ErrorAction SilentlyContinue | Stop-Process -Force; Remove-Item -Path apps/web/.next -Recurse -Force -ErrorAction SilentlyContinue; npm run dev:web",
-    "dev:web": "npm run dev --workspace=apps/web",
-    "dev:consumer": "npm run dev --workspace=apps/consumer",
-    "dev:api": "npm run start:dev --workspace=apps/api",
+    "dev:web": "turbo dev --filter=web",
+    "dev:consumer": "turbo dev --filter=consumer",
+    "dev:api": "turbo dev --filter=api",
     "dev:analytics": "cd apps/analytics && uvicorn main:app --reload",
-    "build": "npm run build --workspaces",
-    "lint": "npm run lint --workspaces",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "lint:fix": "turbo lint:fix",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "clean": "turbo clean",
     "governance-check": "node scripts/layout-governance-check.js",
     "postinstall": "npx prisma generate",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "storybook": "turbo storybook --filter=ui",
+    "build-storybook": "turbo build-storybook --filter=ui"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.0.0",
@@ -27,6 +32,7 @@
     "@storybook/addon-onboarding": "^10.2.0",
     "@storybook/addon-vitest": "^10.2.0",
     "@storybook/nextjs-vite": "^10.2.0",
+    "@types/webpack-bundle-analyzer": "^4.7.0",
     "@vitest/browser-playwright": "^4.0.18",
     "@vitest/coverage-v8": "^4.0.18",
     "autoprefixer": "^10.4.23",
@@ -36,8 +42,10 @@
     "storybook": "^10.2.0",
     "tailwindcss": "^4.1.18",
     "tailwindcss-animate": "^1.0.7",
+    "turbo": "^2.7.6",
     "vite": "^7.3.1",
-    "vitest": "^4.0.18"
+    "vitest": "^4.0.18",
+    "webpack-bundle-analyzer": "^5.2.0"
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",
