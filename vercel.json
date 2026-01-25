@@ -3,5 +3,10 @@
   "outputDirectory": ".next",
   "rootDirectory": "apps/web",
   "framework": "nextjs",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "functions": {
+    "apps/web/app/**/*.ts": {
+      "runtime": "@vercel/node"
+    }
+  }
 }
