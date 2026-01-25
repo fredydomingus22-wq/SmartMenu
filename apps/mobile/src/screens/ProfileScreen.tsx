@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { Button } from '@smart-menu/ui';
 import * as SecureStore from 'expo-secure-store';
 
 export default function ProfileScreen() {

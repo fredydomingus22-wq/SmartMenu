@@ -34,3 +34,4 @@ export * from './components/ui/dropdown-menu';
 export * from './components/ui/radio-group';
 export * from './components/ui/avatar';
 export * from './components/ui/breadcrumb';
+export * from './components/ui/tooltip';

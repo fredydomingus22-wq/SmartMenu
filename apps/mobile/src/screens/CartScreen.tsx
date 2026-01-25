@@ -1,31 +1,61 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { Button } from '@smart-menu/ui';
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  emoji: string;
-}
-
-const mockCartItems: CartItem[] = [
-  { id: '1', name: 'Pizza Margherita', price: 45, quantity: 1, emoji: '🍕' },
-  { id: '2', name: 'Refrigerante', price: 8, quantity: 2, emoji: '🥤' },
-];
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../store';
+import { addItem, removeItem, updateQuantity, clearCart } from '../store/slices/cartSlice';
+import { useConnectivity } from '../hooks/useConnectivity';
+import { CartItem } from '../types';
 
 export default function CartScreen() {
-  const total = mockCartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const { items: cartItems, isOffline } = useSelector((state: RootState) => state.cart);
+  const { isConnected } = useConnectivity();
+
+  const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  const handleQuantityChange = (item: CartItem, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      dispatch(removeItem(item.id));
+    } else {
+      dispatch(updateQuantity({ id: item.id, quantity: newQuantity }));
+    }
+  };
+
+  const handleCheckout = () => {
+    if (!isConnected && !isOffline) {
+      Alert.alert(
+        'Sem conexão',
+        'Você está offline. O pedido será processado quando a conexão for restaurada.',
+        [{ text: 'OK' }]
+      );
+    } else {
+      // @ts-ignore - Navigation typing
+      navigation.navigate('Checkout');
+    }
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Carrinho</Text>
+        {!isConnected && (
+          <View style={styles.offlineIndicator}>
+            <Text style={styles.offlineText}>Offline - Modo limitado</Text>
+          </View>
+        )}
       </View>
 
       <ScrollView style={styles.cartContent}>
-        {mockCartItems.length === 0 ? (
+        {cartItems.length === 0 ? (
           <View style={styles.emptyCart}>
             <Text style={styles.emptyCartEmoji}>🛒</Text>
             <Text style={styles.emptyCartTitle}>Seu carrinho está vazio</Text>
@@ -34,7 +64,7 @@ export default function CartScreen() {
         ) : (
           <>
             <View style={styles.cartItems}>
-              {mockCartItems.map((item) => (
+              {cartItems.map((item) => (
                 <View key={item.id} style={styles.cartItem}>
                   <View style={styles.itemInfo}>
                     <Text style={styles.itemEmoji}>{item.emoji}</Text>
@@ -44,11 +74,17 @@ export default function CartScreen() {
                     </View>
                   </View>
                   <View style={styles.quantityControls}>
-                    <TouchableOpacity style={styles.quantityButton}>
+                    <TouchableOpacity
+                      style={styles.quantityButton}
+                      onPress={() => handleQuantityChange(item, item.quantity - 1)}
+                    >
                       <Text style={styles.quantityButtonText}>-</Text>
                     </TouchableOpacity>
                     <Text style={styles.quantityText}>{item.quantity}</Text>
-                    <TouchableOpacity style={styles.quantityButton}>
+                    <TouchableOpacity
+                      style={styles.quantityButton}
+                      onPress={() => handleQuantityChange(item, item.quantity + 1)}
+                    >
                       <Text style={styles.quantityButtonText}>+</Text>
                     </TouchableOpacity>
                   </View>
@@ -71,7 +107,7 @@ export default function CartScreen() {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.checkoutButton}>
+            <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
               <Text style={styles.checkoutButtonText}>Finalizar Pedido</Text>
             </TouchableOpacity>
           </>
@@ -92,6 +128,18 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     borderBottomWidth: 1,
     borderBottomColor: '#e2e8f0',
+  },
+  offlineIndicator: {
+    backgroundColor: '#fef3c7',
+    padding: 8,
+    borderRadius: 6,
+    marginTop: 10,
+  },
+  offlineText: {
+    color: '#92400e',
+    fontSize: 12,
+    textAlign: 'center',
+    fontWeight: '500',
   },
   title: {
     fontSize: 24,

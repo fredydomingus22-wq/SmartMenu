@@ -105,6 +105,41 @@
 
 ---
 
+### 3.6 App Mobile Admin (Gerente) ⭐ NOVO
+
+- **Dashboard Mobile:** Versão otimizada do dashboard web para dispositivos móveis
+  - Métricas principais (vendas, pedidos ativos)
+  - Gestão rápida de pedidos (aprovar, cancelar)
+  - Acesso a CRUD de menu (visualização e edição básica)
+- **Gestão de Pedidos:** Lista de pedidos ativos com filtros por status/mesa
+- **Notificações Push:** Alertas para novos pedidos e situações críticas
+- **Offline Support:** Visualização de dados cached quando offline
+- **Autenticação:** Login seguro com RBAC (apenas gerentes)
+
+---
+
+### 3.7 App Mobile KDS (Cozinha) ⭐ NOVO
+
+- **Interface Touch-Optimized:** Design específico para tablets e smartphones
+- **Lista de Pedidos Ativos:** Apenas pedidos pendentes/preparando (Zero Distraction)
+- **Transições de Estado:** Toque para mudar status (Pendente → Preparando → Pronto)
+- **Filtragem por Setor:** Visão separada para Cozinha/Bar
+- **Notificações Sonoras:** Alerta para novos pedidos
+- **Real-time Updates:** Atualização automática via WebSockets
+- **Offline Fallback:** Continuar funcionando com dados cached
+
+---
+
+### 3.8 PWA Dashboard Web ⭐ NOVO
+
+- **Progressive Web App:** Dashboard web instalável como app mobile
+- **Offline Capabilities:** Funcionalidade básica offline (visualização de dados)
+- **Push Notifications:** Notificações push no navegador mobile
+- **Responsive Design:** Otimizado para tablets e smartphones
+- **Install Prompt:** Sugestão de instalação automática
+
+---
+
 ## 11. CRUD de Menu Item (Gestão Completa)
 
 ### 11.1 Princípios de Tenant Isolation

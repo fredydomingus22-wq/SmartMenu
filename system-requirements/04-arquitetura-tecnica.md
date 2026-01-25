@@ -4,11 +4,12 @@
 
 ### 5.1 Arquitetura Geral
 
-- **Frontend:** Web Apps (Cliente, Atendente, Cozinha, Gerente)
+- **Frontend:** Web Apps (Cliente, Atendente, Cozinha, Gerente) + Mobile Apps (Consumidor, Admin, KDS) + PWA
 - **Backend:** API central + serviços em tempo real
 - **Banco de Dados:** Relacional (PostgreSQL) + RLS (Row Level Security)
 - **Comunicação em tempo real:** WebSockets (Supabase Realtime)
 - **Internationalization (i18n):** Estratégia de campos JSON para conteúdos traduzíveis no banco de dados.
+- **Mobile Strategy:** Apps nativos com Expo (React Native) + PWA para dashboard web
 
 ### 5.2 Stack Implementada
 
@@ -18,6 +19,17 @@
 - **Tailwind CSS + shadcn/ui** (Acessibilidade via Radix UI Primitives e **Lucide-react**)
 - **Framer Motion** (Animações de transição de página e micro-interações: zoom 1.05x em cards)
 - **Pattern:** CRUDs complexos (ex: Produtos) migram de Modals para **Dedicated Pages** para melhor UX.
+- **PWA:** Service Worker, Manifest.json, Offline capabilities
+
+#### Mobile Apps (`apps/mobile`, `apps/admin-mobile`)
+- **Expo + React Native** (SDK 50+)
+- **TypeScript** (Strict Mode)
+- **React Navigation** (Native stack + tabs)
+- **Expo Notifications** (Push notifications)
+- **Expo Payments** (Integração com Stripe/PagSeguro)
+- **AsyncStorage + Redux Persist** (Offline-first)
+- **SecureStore** (Autenticação segura)
+- **Shared Packages:** `@smart-menu/ui`, `@smart-menu/api-client`
 - **Storybook** (Documentação de componentes)
 - **Supabase SSR** (`@supabase/ssr`)
 - **PWA** (Offline básico e instalação)

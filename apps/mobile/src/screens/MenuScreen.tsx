@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
-import { Button } from '@smart-menu/ui';
 
 interface MenuItem {
   id: string;

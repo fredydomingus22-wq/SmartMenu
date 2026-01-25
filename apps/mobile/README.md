@@ -58,6 +58,42 @@ npm run android  # Android Emulator/Device
 npm run web      # Web browser (for testing)
 ```
 
+## 🧪 Testing Guide
+
+### Quick Start Test
+
+```bash
+# 1. Start the app
+npm start
+
+# 2. Scan QR code with Expo Go app
+
+# 3. Test core features:
+# - Navigate between tabs (Home, Menu, Cart, Profile)
+# - Add items to cart from Menu screen
+# - Manage cart quantities and checkout
+# - Test offline functionality
+```
+
+### Comprehensive Testing
+
+For detailed testing instructions, see:
+- **[TEST_GUIDE.md](./TEST_GUIDE.md)** - Complete testing guide
+- **Key Test Scenarios:**
+  - Cart management and persistence
+  - Payment flow simulation
+  - Offline-first functionality
+  - Navigation and UX
+
+### Test Checklist
+
+- [ ] App launches without errors
+- [ ] Navigation between screens works
+- [ ] Cart functionality (add/remove items)
+- [ ] Checkout process completes
+- [ ] Offline mode indicators appear
+- [ ] No TypeScript compilation errors
+
 ## Project Structure
 
 ```
