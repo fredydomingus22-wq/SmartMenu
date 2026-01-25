@@ -1,53 +1,245 @@
 # Roadmap de Implementação – SmartMenu
 
-## 7. Plano de Implementação (Fases)
+## 🚨 PLANO DE MITIGAÇÃO — NÃO CONFORMIDADES CRÍTICAS
 
-### Fase 1 – MVP (6–8 semanas)
-- QR por mesa
-- Menu digital
-- Pedido e status
-- Tela de atendimento
-- Notificação sonora
+**Data:** Janeiro 2026  
+**Prioridade:** URGENTE - Segurança e Arquitetura  
+**Status:** Ativo
 
-### Fase 2 – Operação Completa (12 semanas)
-- KDS (cozinha)
-- Dashboard gerente
-- Controle de estoque básico
-- Pagamentos integrados
-
-### Fase 3 – Escala & Inteligência (8–12 semanas)
-- Fidelização
-- Analytics avançado
-- Multi-restaurante
-- Planos SaaS
+### 🎯 OBJETIVOS
+- Corrigir 4 violações críticas identificadas na auditoria
+- Restaurar conformidade de segurança e arquitetura
+- Preparar base para deploy seguro
 
 ---
 
-## 8. Roadmap de Evolução
+## 🔥 FASE EMERGÊNCIA — SEGURANÇA (Semanas 1-2)
 
-- IA para sugestão de upsell
-- Previsão de demanda
-- Integração POS
-- Delivery local
+### Sprint 1: Secrets Hardcoded (2-3 dias)
+**Responsável:** Security Engineer + Code Quality Specialist
+**Objetivo:** Remover exposição de chaves Supabase
 
-## 9. Backlog de Execução (Status Atual)
+**Tarefas:**
+- [ ] **Identificar todos os arquivos** com chaves hardcoded
+  - `apps/consumer/proxy.ts`
+  - `apps/web/utils/supabase/*.ts`
+  - `scripts/setup-storage.js`
+  - `apps/api/test-jwt.js`
+- [ ] **Criar variáveis de ambiente** padronizadas
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  - `SUPABASE_SERVICE_ROLE_KEY`
+- [ ] **Atualizar arquivos** para usar variáveis
+- [ ] **Configurar .env.example** com placeholders
+- [ ] **Testar builds** locais e CI/CD
+- [ ] **Auditar logs** para exposição histórica
 
-### Fase 0: Infraestrutura ✅
-- [x] Monorepo setup (Next.js, NestJS, Python)
-- [x] Integração Supabase (Auth, DB, RLS)
-- [x] Modelagem do schema multi-tenant (Prisma 7)
+**Critérios de Aceitação:**
+- ✅ Nenhum arquivo contém chaves reais
+- ✅ Builds passam com variáveis undefined
+- ✅ Documentação de configuração atualizada
 
-### Fase 1: Core Operacional ✅
-- [x] **Auth & Onboarding:** Autenticação integrada ao NestJS.
-- [x] **Menu CRUD:** Gestão isolada por `tenantId`.
-- [x] **QR Engine:** Geração dinâmica de QR por mesa.
-- [x] **Client Web App:** Visualização e carrinho mobile-first.
-- [x] **Tables Module:** CRUD de mesas + Geração de QR SVG.
+### Sprint 2: Isolamento de Packages (3-5 dias)
+**Responsável:** System Architect + Code Quality Specialist
+**Objetivo:** Corrigir side-effects em packages compartilhados
 
-### Fase 2: Pedidos e Tempo Real (Sprint Atual) 🚀
-- [x] **Landing Page:** Fluxo de redirecionamento premium.
-- [x] **Order Engine:** Fluxo completo Carrinho -> API -> DB.
-- [ ] **Real-time:** Notificações via WebSockets/Supabase.
+**Tarefas:**
+- [ ] **Refatorar packages/ui/src/lib/supabase-client.ts**
+  - Remover acesso direto a `process.env`
+  - Criar função que recebe parâmetros
+  - Atualizar todos os consumidores
+- [ ] **Corrigir imports relativos**
+  - `packages/ui` não deve importar `"../../lib/*"`
+  - Mover utilities para local apropriado
+  - Garantir isolamento completo
+- [ ] **Adicionar testes de isolamento**
+  - Verificar que packages não acessam runtime
+  - Testar builds isolados
+- [ ] **Atualizar documentação** de packages
+
+**Critérios de Aceitação:**
+- ✅ Packages não acessam `process.env`
+- ✅ Sem imports relativos entre packages
+- ✅ Tests de isolamento passando
+
+---
+
+## 🏗️ FASE ARQUITETURA — MOBILE & PACKAGES (Semanas 3-6)
+
+### Sprint 3: App Mobile MVP (2-3 semanas)
+**Responsável:** UI/UX Designer + Mobile Layout Specialist + System Architect
+**Objetivo:** Implementar app mobile conforme requisitos
+
+**Tarefas:**
+- [ ] **Setup Expo + React Native**
+  - Criar `apps/mobile/` com Expo
+  - Configurar TypeScript + navigation
+  - Setup CI/CD para mobile
+- [ ] **UI Mobile Própria**
+  - Componentes otimizados para touch
+  - Design system mobile-first
+  - Navegação nativa (React Navigation)
+- [ ] **Integração com Tokens**
+  - Consumir tokens do `packages/ui`
+  - Tema compartilhado web/mobile
+  - SecureStore para autenticação
+- [ ] **Funcionalidades Core**
+  - Menu browsing
+  - Carrinho offline
+  - Autenticação segura
+- [ ] **Testes Mobile**
+  - Testes unitários
+  - Testes de integração
+  - Testes E2E com Detox
+
+**Critérios de Aceitação:**
+- ✅ App mobile funcional no iOS/Android
+- ✅ UI própria (não web wrapped)
+- ✅ Tokens compartilhados
+- ✅ SecureStore implementado
+
+### Sprint 4: Otimização de Packages (1 semana)
+**Responsável:** Code Quality Specialist + Automation Specialist
+**Objetivo:** Melhorar qualidade e performance dos packages
+
+**Tarefas:**
+- [ ] **Configurar turbo.json**
+  - Pipeline de build otimizado
+  - Cache inteligente
+  - Dependências paralelas
+- [ ] **Bundle Analyzer**
+  - Configurar webpack-bundle-analyzer
+  - Identificar otimizações
+  - Reduzir bundle size
+- [ ] **Documentação Completa**
+  - Storybook atualizado
+  - READMEs detalhados
+  - Exemplos de uso
+
+---
+
+## 🛡️ FASE INFRAESTRUTURA — SEGURANÇA & PERFORMANCE (Semanas 7-8)
+
+### Sprint 5: Segurança Avançada (1 semana)
+**Responsável:** Security Engineer + System Architect
+**Objetivo:** Implementar proteções críticas
+
+**Tarefas:**
+- [ ] **Content Security Policy (CSP)**
+  - Configurar headers CSP no Next.js
+  - Middleware para CSP dinâmico
+  - Testar contra XSS
+- [ ] **Rate Limiting**
+  - Implementar na API (NestJS)
+  - Configurar Redis/memory store
+  - Testar proteção DoS
+- [ ] **Headers de Segurança**
+  - HSTS, X-Frame-Options, etc.
+  - Configuração por ambiente
+- [ ] **Auditoria de Segurança**
+  - Scan de vulnerabilidades
+  - Penetration testing básico
+
+**Critérios de Aceitação:**
+- ✅ CSP configurado e testado
+- ✅ Rate limiting ativo
+- ✅ Headers de segurança presentes
+- ✅ Zero vulnerabilidades críticas
+
+### Sprint 6: Performance & Qualidade (1 semana)
+**Responsável:** QA Engineer + Code Quality Specialist
+**Objetivo:** Otimizar performance e qualidade
+
+**Tarefas:**
+- [ ] **Layout Shift Zero**
+  - Implementar skeletons consistentes
+  - Lazy loading otimizado
+  - Critical CSS inlining
+- [ ] **Re-renders Controlados**
+  - React.memo estratégico
+  - useMemo/useCallback
+  - Profiler para identificação
+- [ ] **Testes Abrangentes**
+  - Cobertura mínima 80%
+  - Testes E2E com Playwright
+  - Performance tests
+- [ ] **Monitoramento**
+  - Error boundaries completos
+  - Logging estruturado
+  - Métricas de performance
+
+---
+
+## 📊 MÉTRICAS DE SUCESSO
+
+### Segurança (Dia 5)
+- ✅ Zero chaves hardcoded
+- ✅ Packages isolados
+- ✅ CSP ativo
+
+### Arquitetura (Semana 6)
+- ✅ App mobile funcional
+- ✅ turbo.json configurado
+- ✅ Bundle otimizado
+
+### Infraestrutura (Semana 8)
+- ✅ Rate limiting implementado
+- ✅ Performance baseline estabelecido
+- ✅ Cobertura de testes >80%
+
+---
+
+## 🚨 DEPENDÊNCIAS & BLOQUEADORES
+
+### Dependências Técnicas
+- **Segurança:** Deve ser feita ANTES de qualquer deploy
+- **Mobile:** Pode ser paralelo após isolamento de packages
+- **Performance:** Depende de arquitetura corrigida
+
+### Bloqueadores Potenciais
+- **Deploy Bloqueado:** Até correção de secrets
+- **Mobile Release:** Depende de design system estável
+- **CI/CD:** Quebrado até isolamento de packages
+
+---
+
+## 👥 RESPONSABILIDADES POR AGENT
+
+### Security Engineer (`agents/07_Security_Engineer.md`)
+- Secrets hardcoded (Sprint 1)
+- CSP & Headers (Sprint 5)
+- Auditoria de segurança
+
+### System Architect (`agents/02_System_Architect.md`)
+- Isolamento de packages (Sprint 2)
+- Rate limiting (Sprint 5)
+- Arquitetura mobile (Sprint 3)
+
+### Code Quality Specialist (`agents/08_Code_Quality_Specialist.md`)
+- Refatoração de imports (Sprint 2)
+- Turbo & bundle optimization (Sprint 4)
+- Testes e qualidade (Sprint 6)
+
+### UI/UX Designer + Mobile Layout (`agents/03_UI_UX_Designer.md` + `agents/14_Mobile_Layout_Specialist.md`)
+- App mobile design (Sprint 3)
+- UI/UX mobile-first (Sprint 3)
+
+### QA Engineer (`agents/06_QA_Engineer.md`)
+- Testes abrangentes (Sprint 6)
+- Performance validation (Sprint 6)
+
+---
+
+## 📈 STATUS ATUAL & PRÓXIMOS PASSOS
+
+**Status:** Planejamento concluído  
+**Próximo:** Executar Sprint 1 (Segurança)  
+**Deadline:** Correções críticas em 2 semanas  
+
+**Comando para iniciar:**
+```bash
+# Act as @agents/07_Security_Engineer.md and start Sprint 1
+```
 - [x] **Internationalization (i18n):** Migração completa de UI strings para `pt.json` e suporte a tradução básica no cliente.
 - [ ] **Backend i18n Strategy:** Migrar campos `name/description` para JSONB para suporte total a múltiplos idiomas. (High Priority)
 - [ ] **E-commerce Showcase Refactor:** Implementar vitrine por seções (Shopify-style), recomendações, upsells e rodapé global na PDP e Home Cliente. (High Priority)
