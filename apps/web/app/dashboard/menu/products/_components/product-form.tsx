@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@smart-menu/ui";
+import { Input } from "@smart-menu/ui";
+import { Label } from "@smart-menu/ui";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@smart-menu/ui";
+import { Textarea } from "@smart-menu/ui";
+import { ScrollArea } from "@smart-menu/ui";
 import { ImageIcon, Save, X, Plus, Trash2 } from "lucide-react";
 import { createProduct, updateProduct } from "../../../../actions/menu";
 import { toast } from "sonner";
@@ -235,7 +235,7 @@ export function ProductForm({ categories, initialData, products = [] }: {
 
     return (
         <form action={handleSubmit} className="relative flex flex-col bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl rounded-[2.5rem] border border-white/20 dark:border-white/5 shadow-2xl shadow-orange-500/5 group">
-            <ScrollArea className="h-[calc(100vh-14rem)] rounded-[2.5rem]">
+            <ScrollArea className="h-[calc(100dvh-14rem)] rounded-[2.5rem]">
                 <div className="flex-1 p-8 space-y-12 pb-40">
                     <motion.div
                         variants={container}

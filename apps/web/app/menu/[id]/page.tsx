@@ -12,6 +12,7 @@ import { formatCurrency } from "@/lib/utils";
 import { Category, MenuConfig, LoyaltyConfig } from "./_types";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { getTranslation } from "@/utils/i18n-server";
+import { AppShell, PageContainer } from "@smart-menu/ui";
 
 export default async function PublicMenuPage({
     params,
@@ -77,13 +78,15 @@ export default async function PublicMenuPage({
             organizationId={organizationId}
             branding={branding}
         >
-            <div className="min-h-screen bg-background pb-20">
-                <PublicMenuHeader
+            <AppShell
+                header={<PublicMenuHeader
                     branding={branding}
                     tableId={table || undefined}
                     enabledLanguages={config?.settings?.enabledLanguages}
-                />
-
+                />}
+                footer={<RestaurantFooter branding={branding} footerConfig={config?.footer} />}
+                safeArea={true}
+            >
                 {/* Loyalty Banner stays as top-level if active */}
                 {loyaltyConfig?.isActive && (
                     <div className="bg-amber-50 dark:bg-amber-950/20 border-b border-amber-100 dark:border-amber-900/50 py-3 px-4 sm:px-8 lg:px-12">
@@ -101,14 +104,12 @@ export default async function PublicMenuPage({
                 )}
 
                 {/* The dynamic MenuGrid handles Hero, Sections, and Footer based on config */}
-                <div className="w-full px-4 sm:px-8 lg:px-12">
+                <PageContainer>
                     <ErrorBoundary>
                         <MenuGrid categories={categories} config={config} />
                     </ErrorBoundary>
-                </div>
-
-                <RestaurantFooter branding={branding} footerConfig={config?.footer} />
-            </div>
+                </PageContainer>
+            </AppShell>
         </PublicMenuClient>
     );
 }

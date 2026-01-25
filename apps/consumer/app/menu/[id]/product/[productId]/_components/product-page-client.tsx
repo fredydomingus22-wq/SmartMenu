@@ -126,7 +126,7 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
     };
 
     return (
-        <div className="min-h-screen bg-background flex flex-col lg:flex-row">
+        <div className="min-h-[100dvh] bg-background flex flex-col lg:flex-row">
             {/* Left: Gallery (Desktop) / Top (Mobile) */}
             <div className="w-full lg:w-1/2 lg:h-screen bg-zinc-50 dark:bg-zinc-900 relative">
                 <Button

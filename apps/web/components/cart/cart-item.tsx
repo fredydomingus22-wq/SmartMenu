@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { CartItem as CartItemType, useCart } from "./cart-context";
 import Image from "next/image";

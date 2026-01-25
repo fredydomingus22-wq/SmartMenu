@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Package, Clock, ChefHat, CheckCircle2, XCircle, Loader2, ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@smart-menu/ui";
+import { Card, CardContent, CardHeader, CardTitle } from "@smart-menu/ui";
 import { formatCurrency, cn, getTranslatedValue } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
 import Image from "next/image";
@@ -102,7 +102,7 @@ export default function OrderStatusPage() {
     const StatusIcon = statusConfig.icon;
 
     return (
-        <div className="min-h-screen bg-background pb-20">
+        <div className="min-h-[100dvh] bg-background pb-20">
             {/* Header */}
             <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b">
                 <div className="container mx-auto px-4 h-16 flex items-center gap-4">

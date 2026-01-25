@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 import { ChevronLeft, TrendingUp, Zap, Sparkles } from "lucide-react";
 import Link from "next/link";
 

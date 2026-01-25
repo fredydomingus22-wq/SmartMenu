@@ -1,10 +1,10 @@
 import { login, signup } from '../actions/auth';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@smart-menu/ui";
+import { Input } from "@smart-menu/ui";
+import { Label } from "@smart-menu/ui";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@smart-menu/ui";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@smart-menu/ui";
+import { ScrollArea } from "@smart-menu/ui";
 
 export default async function LoginPage({
     searchParams,

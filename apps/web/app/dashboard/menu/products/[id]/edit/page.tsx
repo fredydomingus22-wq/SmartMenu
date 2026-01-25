@@ -2,7 +2,7 @@ import { getAuthorizedClient } from "@/utils/auth-server";
 import { apiClient } from "@/utils/api-client-server";
 import { redirect, notFound } from "next/navigation";
 import { ProductForm, type ProductInitialData } from "../../_components/product-form";
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 

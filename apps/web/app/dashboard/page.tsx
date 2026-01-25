@@ -1,7 +1,7 @@
 import { getAuthorizedClient } from "@/utils/auth-server";
 import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@smart-menu/ui";
+import { Card, CardContent, CardHeader, CardTitle } from "@smart-menu/ui";
 import { signOut } from "../actions/auth";
 import { QRGenerator } from "@/components/qr-generator/qr-code";
 import Link from "next/link";

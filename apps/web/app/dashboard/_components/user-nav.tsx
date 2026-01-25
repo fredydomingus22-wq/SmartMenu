@@ -4,8 +4,8 @@ import {
     Avatar,
     AvatarFallback,
     AvatarImage,
-} from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+} from "@smart-menu/ui";
+import { Button } from "@smart-menu/ui";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -15,7 +15,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuShortcut,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@smart-menu/ui";
 import { User } from "@supabase/supabase-js";
 import { LogOut, Settings, User as UserIcon } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";

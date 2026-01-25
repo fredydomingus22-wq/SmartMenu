@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { Button } from "@smart-menu/ui";
+import { Input } from "@smart-menu/ui";
+import { Card, CardContent, CardHeader, CardTitle } from "@smart-menu/ui";
+import { Label } from "@smart-menu/ui";
+import { Switch } from "@smart-menu/ui";
 import { toast } from "sonner";
 import { updateMenuConfig } from "@/app/actions/settings";
 import { Layout, GripVertical, Sparkles, Image as ImageIcon, Megaphone } from "lucide-react";
 import { Reorder } from "framer-motion";
 import { MenuSection } from "../../../menu/[id]/_types";
-import { ImageUpload } from "@/components/ui/image-upload";
+import { ImageUpload } from "@smart-menu/ui";
 
 interface MenuDesignFormProps {
     initialSections: MenuSection[] | null;

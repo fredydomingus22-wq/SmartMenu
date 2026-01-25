@@ -1,5 +1,5 @@
 ---
-description: Orchestrates a full requirement review cycle involving all 7 expert agents.
+description: Orchestrates a full requirement review cycle involving all expert agents.
 ---
 # Multi-Agent Requirement Review Workflow
 
@@ -27,11 +27,12 @@ Run this workflow when a **New Feature** is proposed or a **Major Refactor** is 
 3.  **Output:** Updated architecture doc.
 
 ### 3. 🎨 Experience & Intelligence (Parallel)
-**Agents:** `agents/03_UI_UX_Designer.md` & `agents/05_Automation_Specialist.md`
+**Agents:** `agents/03_UI_UX_Designer.md`, `agents/05_Automation_Specialist.md` & `agents/14_Mobile_Layout_Specialist.md`
 **Trigger:** Change in Architecture/Vision.
 **Actions:**
 *   **Designer:** Update `07-design-system.md`, `06-ux-flows.md`, `08-ux-writing-microcopy.md`.
 *   **Automation:** Update `11-automacao-workflows.md` and `12-integracao-automacoes-ui.md`.
+*   **Mobile Layout Specialist:** Audit and enhance mobile layout guidelines in `07-design-system.md`, ensure advanced CSS and responsive principles.
 
 ### 4. 🛡️ Risk Assessment & Quality (QA, Security & Code)
 **Agents:** `agents/06_QA_Engineer.md`, `agents/07_Security_Engineer.md` & `agents/08_Code_Quality_Specialist.md`

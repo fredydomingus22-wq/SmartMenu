@@ -8,15 +8,15 @@ const DEFAULT_FONT_FAMILY = "Inter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Button } from "@smart-menu/ui";
+import { Input } from "@smart-menu/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@smart-menu/ui";
+import { Label } from "@smart-menu/ui";
 import { toast } from "sonner";
 import { updateBranding } from "@/app/actions/settings";
 import { Palette, Type, Square, LayoutTemplate } from "lucide-react";
 import { motion } from "framer-motion";
-import { Slider } from "@/components/ui/slider";
+import { Slider } from "@smart-menu/ui";
 import { formatCurrency } from "@/lib/utils";
 
 const brandingSchema = z.object({

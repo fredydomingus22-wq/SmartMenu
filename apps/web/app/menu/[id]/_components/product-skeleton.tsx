@@ -1,6 +1,6 @@
 "use client";
 
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@smart-menu/ui";
 
 export function ProductCardSkeleton() {
     return (

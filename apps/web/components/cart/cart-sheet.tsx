@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 import {
     Sheet,
     SheetContent,
@@ -9,7 +9,7 @@ import {
     SheetHeader,
     SheetTitle,
     SheetTrigger,
-} from "@/components/ui/sheet";
+} from "@smart-menu/ui";
 import { Loader2 } from "lucide-react";
 import { useCart } from "./cart-context";
 import { useCartAnimation } from "./cart-animation-context";

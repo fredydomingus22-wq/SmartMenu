@@ -10,11 +10,11 @@ import {
     BreadcrumbList,
     BreadcrumbPage,
     BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from "@smart-menu/ui";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@smart-menu/ui";
 
 export function DashboardHeader({ user }: { user: User }) {
     const pathname = usePathname();

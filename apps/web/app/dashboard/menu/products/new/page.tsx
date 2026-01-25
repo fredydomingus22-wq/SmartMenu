@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { ProductForm } from "../_components/product-form";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 
 export default async function NewProductPage() {
     const { user, error: authError } = await getAuthorizedClient();

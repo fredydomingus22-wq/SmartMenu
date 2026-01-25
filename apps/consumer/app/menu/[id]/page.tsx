@@ -93,7 +93,7 @@ export default async function PublicMenuPage({
     }
 
     return (
-        <div className="min-h-screen bg-background pb-20">
+        <div className="min-h-[100dvh] bg-background pb-20">
             <PublicMenuHeader
                 branding={branding}
                 tableId={table || undefined}

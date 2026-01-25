@@ -1,9 +1,9 @@
 "use client";
 
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardHeader, CardContent, CardFooter } from "@smart-menu/ui";
+import { Badge } from "@smart-menu/ui";
+import { Button } from "@smart-menu/ui";
+import { Checkbox } from "@smart-menu/ui";
 import { Clock, MapPin, AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";

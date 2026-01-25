@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardHeader, CardTitle, CardContent } from "@smart-menu/ui";
+import { Button } from "@smart-menu/ui";
+import { Checkbox } from "@smart-menu/ui";
 import { Plus, ImageIcon, Trash2, Copy, Eye, EyeOff, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

@@ -3,9 +3,9 @@
 import { useEffect, useState, useMemo } from "react";
 import { useOrderRealtime } from "@/hooks/use-order-realtime";
 import { updateOrderStatus } from "@/app/actions/orders";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@smart-menu/ui";
+import { Card, CardContent, CardHeader } from "@smart-menu/ui";
+import { Badge } from "@smart-menu/ui";
 import { toast } from "sonner";
 import { Clock, CheckCircle2, PlayCircle } from "lucide-react";
 
@@ -67,7 +67,7 @@ export function KDSBoard({ orders: initialOrders, tenantId }: { orders: Order[],
     ];
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[calc(100vh-12rem)]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[calc(100dvh-12rem)]">
             {columns.map((column) => (
                 <div key={column.id} className="flex flex-col gap-4 bg-zinc-100/50 p-4 rounded-xl border dark:border-zinc-800 dark:bg-zinc-900/50">
                     <div className="flex items-center justify-between px-2">

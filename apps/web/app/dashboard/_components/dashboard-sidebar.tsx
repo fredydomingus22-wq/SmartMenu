@@ -1,5 +1,5 @@
 import { signOut } from "../../actions/auth";
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 import { LogOut } from "lucide-react";
 import { DashboardNav } from "./dashboard-nav";
 import { cn } from "@/lib/utils";

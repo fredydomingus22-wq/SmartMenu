@@ -3,10 +3,10 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Button } from "@smart-menu/ui";
+import { Input } from "@smart-menu/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@smart-menu/ui";
+import { Label } from "@smart-menu/ui";
 import { toast } from "sonner";
 import { updateOrganizationProfile } from "@/app/actions/settings";
 import { Building2, Mail, Phone, MapPin, Globe } from "lucide-react";

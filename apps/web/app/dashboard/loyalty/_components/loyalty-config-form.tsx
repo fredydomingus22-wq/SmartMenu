@@ -3,12 +3,12 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Button } from "@smart-menu/ui";
+import { Input } from "@smart-menu/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@smart-menu/ui";
+import { Label } from "@smart-menu/ui";
 import { toast } from "sonner";
-import { Switch } from "@/components/ui/switch";
+import { Switch } from "@smart-menu/ui";
 import { updateLoyaltyConfig } from "@/app/actions/loyalty";
 import { Gift, Info, Coins } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";

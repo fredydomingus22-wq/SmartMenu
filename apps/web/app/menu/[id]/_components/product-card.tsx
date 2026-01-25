@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/components/cart/cart-context";
 import { useCartAnimation } from "@/components/cart/cart-animation-context";
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 import { formatCurrency, getTranslatedValue } from "@/lib/utils";
 import { useRef } from "react";
 import { useTranslation } from "@/hooks/use-translation";

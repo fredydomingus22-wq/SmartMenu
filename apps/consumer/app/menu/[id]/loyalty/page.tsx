@@ -62,7 +62,7 @@ export default async function LoyaltyPage({ params }: { params: Promise<{ id: st
     }
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 pb-20">
+        <div className="min-h-[100dvh] bg-zinc-50 dark:bg-zinc-950 pb-20">
             {/* Header */}
             <header className="bg-white dark:bg-zinc-900 border-b sticky top-0 z-10 px-4 py-4">
                 <div className="max-w-xl mx-auto flex items-center gap-4">

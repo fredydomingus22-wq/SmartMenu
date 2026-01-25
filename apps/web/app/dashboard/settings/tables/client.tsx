@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 import { Plus, Trash2, Download } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@smart-menu/ui";
 import {
     Dialog,
     DialogContent,
@@ -13,9 +13,9 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@smart-menu/ui";
+import { Input } from "@smart-menu/ui";
+import { Label } from "@smart-menu/ui";
 import { createTable, deleteTable } from "@/app/actions/tables";
 import { useRouter } from "next/navigation";
 

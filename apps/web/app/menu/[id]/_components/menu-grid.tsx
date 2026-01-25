@@ -9,7 +9,7 @@ import { useState, useMemo } from "react";
 import { ProductCard } from "./product-card";
 import { ProductGrid } from "./product-grid";
 import { ProductCardSkeleton } from "@/components/skeletons/product-card-skeleton";
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 import { Category, MenuConfig, MenuSection } from "../_types";
 import { cn, getTranslatedValue } from "@/lib/utils";
 
@@ -136,7 +136,7 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                 </div>
                                 <div className="flex gap-4 overflow-x-auto pb-8 pt-2 px-1 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
                                     {featuredProducts.map((product) => (
-                                        <div key={product.id} className="min-w-[280px] sm:min-w-[320px]">
+                                        <div key={product.id} className="w-[280px] sm:w-[320px] flex-shrink-0">
                                             <ProductCard product={product} tenantId={tenantId} />
                                         </div>
                                     ))}

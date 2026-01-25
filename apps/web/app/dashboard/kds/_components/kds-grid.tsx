@@ -6,7 +6,7 @@ import { KDSOrderCard, type Order } from "./kds-order-card";
 import { updateOrderStatus } from "@/app/actions/orders";
 import { toast } from "sonner";
 import { useKDSSound } from "../_hooks/use-kds-sound";
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 import { cn } from "@/lib/utils";
 import { RefreshCw, Volume2, VolumeX, ChefHat } from "lucide-react";
 import { useTranslation } from "@/hooks/use-translation";

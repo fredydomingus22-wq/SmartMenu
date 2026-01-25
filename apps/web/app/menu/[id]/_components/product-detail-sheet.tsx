@@ -7,9 +7,9 @@ import {
     SheetTitle,
     SheetDescription,
     SheetFooter,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@smart-menu/ui";
+import { Button } from "@smart-menu/ui";
+import { ScrollArea } from "@smart-menu/ui";
 import { Plus, Minus, ChevronLeft, ChevronRight, Loader2, Check } from "lucide-react";
 import Image from "next/image";
 import { useState, useMemo } from "react";

@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@smart-menu/ui";
+import { Input } from "@smart-menu/ui";
+import { Label } from "@smart-menu/ui";
 import { createOnboardingData } from '../actions';
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@smart-menu/ui";
 import { Loader2, Building2, Store, LayoutGrid } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/hooks/use-translation';

@@ -1,5 +1,189 @@
 # Design System – SmartMenu
 
+## 🧱 Arquitetura Oficial de Layout — SmartMenu
+
+### 🎯 Princípios Inegociáveis
+
+Estas regras são **lei do sistema**:
+
+* Mobile-first sempre
+* Um único scroll principal
+* Layout ≠ UI
+* Componentes não conhecem viewport
+* Estados reagem ao breakpoint
+* Zero hacks visuais
+
+### 🏗️ Estrutura Oficial de Layout
+
+#### 📦 Camada 1 — AppShell (obrigatória)
+
+Responsável por:
+* viewport
+* safe-area
+* navegação
+* scroll
+
+```tsx
+<AppShell>
+  <Header />
+  <MainScrollArea>
+    <PageContainer>
+      {children}
+    </PageContainer>
+  </MainScrollArea>
+  <BottomBar /> {/* mobile only */}
+</AppShell>
+```
+
+**Regras do AppShell:**
+* `min-height: 100dvh`
+* **NUNCA** `100vh`
+* `overflow: hidden` só aqui
+* Safe-area respeitada (`env(safe-area-inset-*)`)
+
+#### 📄 Camada 2 — PageContainer
+
+Responsável por:
+* largura máxima
+* padding responsivo
+* alinhamento
+
+```css
+max-width: 1280px;
+padding-inline: var(--spacing-page);
+margin: 0 auto;
+```
+
+**Página nunca:**
+* define grid global
+* define scroll
+* define height fixa
+
+#### 🧩 Camada 3 — Layout Primitives
+
+Componentes estruturais reutilizáveis:
+
+| Componente | Função |
+| ---------- | ------------------- |
+| `Stack` | layout vertical |
+| `Inline` | layout horizontal |
+| `Grid` | layout responsivo |
+| `Spacer` | respiro consistente |
+
+**UI components só usam esses primitivos.**
+
+#### 🎛️ Camada 4 — UI Components (Shadcn/Radix)
+
+Exemplos:
+* Card
+* Button
+* Badge
+* ListItem
+
+**UI components:**
+* não definem largura fixa
+* não usam `position: fixed`
+* não usam viewport units
+* são 100% contidos pelo layout
+
+---
+
+## 📘 Guia Interno de Layout & UI (SmartMenu)
+
+### 📐 Tokens Oficiais (Design System)
+
+#### Spacing (fluido)
+
+```css
+--space-xs: clamp(4px, 1vw, 8px);
+--space-sm: clamp(8px, 2vw, 12px);
+--space-md: clamp(12px, 3vw, 16px);
+--space-lg: clamp(16px, 4vw, 24px);
+```
+
+#### Tipografia
+
+* Base: `1rem`
+* Nunca `px` em texto
+* Line-height mínimo: `1.4`
+
+#### Touch targets (mobile)
+
+* Mínimo: **44px**
+* Botões nunca colados
+* Estados ativos claros
+
+### 📱 Breakpoints Oficiais
+
+```css
+sm: 0–639px
+md: 640–1023px
+lg: 1024–1279px
+xl: 1280px+
+```
+
+**Nunca criar breakpoint fora deste padrão.**
+
+### 🧠 Estados Conscientes de Viewport
+
+Exemplo:
+* Sidebar aberta no desktop → **fecha automaticamente** no mobile
+* Drawer mobile → não existe no desktop
+
+**Estado + layout sempre sincronizados.**
+
+### 🚫 Práticas Proibidas (Regra Interna)
+
+❌ `width: 100vw`
+❌ `height: 100vh`
+❌ `position: fixed` em UI
+❌ `min-width` em cards
+❌ CSS inline para layout
+
+**Violou → PR bloqueado.**
+
+---
+
+## ✅ Checklist Oficial de PR — SmartMenu
+
+### 🧱 Arquitetura
+* [ ] Usa AppShell
+* [ ] Respeita PageContainer
+* [ ] Um único scroll
+* [ ] Sem viewport units proibidas
+
+### 📐 Responsividade
+* [ ] Testado em mobile real
+* [ ] Sem scroll horizontal
+* [ ] Layout colapsa verticalmente
+* [ ] Safe-area respeitada
+
+### 🧩 UI & Design System
+* [ ] Usa tokens oficiais
+* [ ] Tipografia em rem
+* [ ] Touch targets ≥ 44px
+* [ ] Componentes não quebram isolados
+
+### 🧠 Estado & Navegação
+* [ ] Estados reagem a breakpoint
+* [ ] Drawer / Sidebar resetam corretamente
+* [ ] Sem estado "vazando" de desktop → mobile
+
+### ⚡ Performance & Estabilidade
+* [ ] Sem layout shift (CLS)
+* [ ] Skeletons estáveis
+* [ ] Imagens responsivas
+* [ ] Nenhum reflow desnecessário
+
+### 🧪 Testes Mínimos
+* [ ] Android Chrome
+* [ ] iOS Safari
+* [ ] Rotação
+* [ ] Teclado virtual
+* [ ] Zoom 125%
+
+---
+
 ## 14. Documentação de UI/UX – Design System Oficial
 
 ### 14.1 Objetivo
@@ -26,6 +210,59 @@ Criar **uniformidade visual, consistência funcional e escalabilidade** para tod
 
 ---
 
+## 14.2.1 Separação: Layout Components vs UI Components
+
+Para manter a arquitetura limpa e evitar acoplamento, seguimos uma separação rigorosa:
+
+### Layout Components
+**Responsabilidade:** Estrutura, posicionamento e fluxo de layout. Nunca contêm lógica de negócio ou estilização visual específica.
+
+**Exemplos:**
+- `AppShell`: Container principal com header/main/footer
+- `PageContainer`: Wrapper de página com padding responsivo
+- `ContentArea`: Área de conteúdo scrollável
+- `Stack`: Layout vertical/horizontal com gap
+- `GridSystem`: Sistema de grid responsivo
+
+**Regras:**
+- Não assumem viewport (usam classes fluidas)
+- Não contêm cores ou tipografia específica
+- São agnósticos ao conteúdo
+- Usam apenas spacing tokens fluidos
+
+### UI Components
+**Responsabilidade:** Elementos visuais específicos, interações e apresentação de dados.
+
+**Exemplos:**
+- `Card`: Container com sombra e bordas
+- `Button`: Elemento clicável com variantes
+- `ProductCard`: Exibição de produto com imagem/preço
+- `Badge`: Indicador visual
+- `Input`: Campo de entrada
+
+**Regras:**
+- Não controlam layout global
+- Não definem width/height fixos
+- Usam tokens de design system
+- São compostos usando Layout Components quando necessário
+
+**Exemplo de Composição Correta:**
+```tsx
+// ❌ Errado: UI Component assumindo layout
+<Card className="w-full max-w-md mx-auto p-4">
+  <Content />
+</Card>
+
+// ✅ Correto: Layout + UI separados
+<PageContainer>
+  <Card className="p-4">
+    <Content />
+  </Card>
+</PageContainer>
+```
+
+---
+
 ## 14.3 Grid, Breakpoints e Responsividade
 
 ### Breakpoints Padrão
@@ -49,15 +286,17 @@ Criar **uniformidade visual, consistência funcional e escalabilidade** para tod
 
 Base: **4px (0.25rem)**
 
-| Token | Valor |
-|-------|-------|
-| xs | 4px |
-| sm | 8px |
-| md | 12px |
-| lg | 16px |
-| xl | 24px |
-| 2xl | 32px |
-| 3xl | 48px |
+| Token | Valor | Fluido (Mobile-First) |
+|-------|-------|----------------------|
+| xs | 4px | `clamp(4px, 1vw, 8px)` |
+| sm | 8px | `clamp(8px, 2vw, 12px)` |
+| md | 12px | `clamp(12px, 3vw, 16px)` |
+| lg | 16px | `clamp(16px, 4vw, 24px)` |
+| xl | 24px | `clamp(24px, 5vw, 32px)` |
+| 2xl | 32px | `clamp(32px, 6vw, 48px)` |
+| 3xl | 48px | `clamp(48px, 8vw, 64px)` |
+
+**Uso:** Prefira tokens fluidos para layouts responsivos. Use valores fixos apenas para elementos críticos.
 
 ---
 
@@ -249,12 +488,75 @@ O sistema deve injetar variáveis CSS `root` baseadas na configuração do `Tena
 
 ## 14.12 Checklist de Conformidade UI
 
-- [ ] Usa componentes shadcn
-- [ ] Respeita spacing scale
-- [ ] Responsivo
-- [ ] Estados completos
-- [ ] Acessível
-- [ ] Tema por tenant
+- [x] Usa componentes shadcn
+- [x] Respeita spacing scale
+- [x] Responsivo
+- [x] Estados completos
+- [x] Acessível
+- [x] Tema por tenant
+- [x] Separação Layout vs UI Components
+
+---
+
+## 14.13 Advanced Mobile Layout Guidelines (Enterprise-Level Auditing)
+
+To ensure robust, scalable mobile layouts beyond quick CSS fixes, adhere to these advanced principles:
+
+### 14.13.1 CSS Fundamentals (Advanced)
+- **Flexbox & Grid:** Use Flexbox for 1D layouts, Grid for 2D. Avoid over-relying on Flexbox for complex grids.
+- **Sizing:** Employ `min-width`, `max-width`, `clamp()` for fluid sizing. Use `aspect-ratio` for consistent proportions.
+- **Overflow & Containment:** Manage `overflow`, `contain`, `isolation` to prevent layout shifts.
+- **Positioning:** Distinguish `position: sticky` vs `fixed`. Handle stacking context and z-index bugs.
+- **Viewport Units:** Use real mobile viewport units (`dvh`, `svh`, `lvh`) to address 90% of mobile bugs.
+
+### 14.13.2 Responsive Design Architecture
+- **Mobile-First:** Build from mobile up, not desktop down.
+- **Content-Based Breakpoints:** Define breakpoints based on content needs, not device sizes.
+- **Fluid + Adaptive Layouts:** Combine fluid elements with adaptive containers.
+- **Advanced Media Queries:** Use `@media (hover: none)`, `@media (pointer: coarse)`, and container queries for precise control.
+
+### 14.13.3 Framework-Specific Considerations (React/Next.js)
+- **Render Cycle:** Optimize for reflow/repaint minimization.
+- **Hydration:** Mitigate hydration issues in Next.js affecting layouts.
+- **SSR/CSR Impact:** Ensure layouts work across server and client rendering.
+- **Componentization:** Design mobile-safe components, avoiding global state breaking layouts.
+
+### 14.13.4 Design Tokens & System Integrity
+- **Responsive Tokens:** Implement tokens that adapt to screen sizes (e.g., fluid spacing).
+- **Consistent Scales:** Enforce 4px/8px systems for spacing, sizing.
+- **Layout-Safe Components:** Avoid fixed widths/heights/paddings; use token-based values.
+- **Systemic Fixes:** Resolve issues at the system level, not per-component.
+
+### 14.13.5 Performance & Stability
+- **CLS Prevention:** Avoid layout shifts with proper sizing and loading strategies.
+- **Responsive Images:** Use `srcset` and `sizes` for optimal image delivery.
+- **Skeletons:** Ensure skeletons maintain height to prevent shifts.
+- **Lazy Loading:** Implement conscious lazy loading for performance.
+
+### 14.13.6 Security & Systemic Impact
+- **No Device Hacks:** Avoid platform-specific workarounds.
+- **Unified Components:** Do not duplicate components for mobile/desktop.
+- **Debt-Free Fixes:** Ensure changes don't break other platforms or create technical debt.
+- **Testing & Guidelines:** Establish visual tests and clear guidelines for audits.
+
+### 14.13.7 Auditing Methodology
+- **Testing Scope:** iOS Safari, Android Chrome, screen rotation, virtual keyboard, safe areas, zoom levels (125%/150%), scroll behaviors.
+- **Tools:** Chrome DevTools (emulation, layout shift), Lighthouse, CSS Overview, Performance tab for thrashing detection.
+- **Accessibility Integration:** Ensure font scaling, rem units, fluid line-height, focus states, 44px touch targets.
+
+### 14.13.8 Resilient Component Architecture
+- **Layout-Agnostic Components:** Build components that adapt to any layout context.
+- **Separation:** Distinguish layout components from UI components.
+- **Composition:** Use slots and composition patterns correctly to avoid viewport assumptions.
+
+**Checklist for Mobile Layout Audits:**
+- [ ] No fixed dimensions; uses fluid sizing
+- [ ] Handles viewport units correctly
+- [ ] Tested across devices and orientations
+- [ ] No CLS; proper image/loading strategies
+- [ ] Accessible touch targets and scaling
+- [ ] Systemic fixes, not patches
+- [ ] Performance optimized (no thrashing)
 
 ---
 

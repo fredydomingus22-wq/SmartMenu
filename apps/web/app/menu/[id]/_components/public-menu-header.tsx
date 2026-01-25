@@ -2,7 +2,7 @@
 
 import { Search, MapPin } from "lucide-react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 import { TenantBranding } from "../_types";
 import { ProductSearch } from "./product-search";
 import { OrderHistory } from "./order-history";
@@ -15,7 +15,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@smart-menu/ui";
 
 interface PublicMenuHeaderProps {
     branding?: TenantBranding | null;

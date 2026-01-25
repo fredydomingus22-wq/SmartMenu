@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 import { useOrderRealtime } from "@/hooks/use-order-realtime";
 import { updateOrderStatus } from "@/app/actions/orders";
-import { Button } from "@/components/ui/button";
-import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@smart-menu/ui";
+import { CardContent, CardHeader, CardTitle } from "@smart-menu/ui";
 
 import { toast } from "sonner";
 import { Clock, CheckCircle2, PlayCircle, XCircle, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { motion, AnimatePresence } from "framer-motion";
-import { InteractiveCard } from "@/components/ui/interactive-card";
+import { InteractiveCard } from "@smart-menu/ui";
 import { getTranslatedValue } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
 

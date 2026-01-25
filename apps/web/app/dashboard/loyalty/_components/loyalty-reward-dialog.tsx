@@ -3,9 +3,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@smart-menu/ui";
+import { Input } from "@smart-menu/ui";
+import { Label } from "@smart-menu/ui";
 import { toast } from "sonner";
 import { createLoyaltyReward, updateLoyaltyReward } from "@/app/actions/loyalty";
 import {
@@ -15,9 +15,9 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
+} from "@smart-menu/ui";
+import { Switch } from "@smart-menu/ui";
+import { Textarea } from "@smart-menu/ui";
 import { useEffect } from "react";
 import { Reward } from "./loyalty-reward-list";
 

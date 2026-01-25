@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 import { Utensils, QrCode, ClipboardList, TrendingUp, ChevronRight, Zap } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";

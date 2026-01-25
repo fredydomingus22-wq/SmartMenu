@@ -6,12 +6,12 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft, Minus, Plus, ShoppingBag, Loader2, Check } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@smart-menu/ui";
+import { ScrollArea } from "@smart-menu/ui";
 import { useCart } from "@/components/cart/cart-context";
 import { useCartAnimation } from "@/components/cart/cart-animation-context";
 import { cn } from "@/lib/utils";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@smart-menu/ui";
 import Link from "next/link";
 import { getTranslatedValue, formatCurrency as formatPrice } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
@@ -143,7 +143,7 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
     };
 
     return (
-        <div className="min-h-screen bg-background flex flex-col lg:flex-row">
+        <div className="min-h-[100dvh] bg-background flex flex-col lg:flex-row">
             {/* Left: Gallery (Desktop) / Top (Mobile) */}
             <div className="w-full lg:w-1/2 lg:h-screen bg-zinc-50 dark:bg-zinc-900 relative">
                 <Button

@@ -1,7 +1,7 @@
 "use client";
 
 import { UtensilsCrossed, SearchX } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 
 interface EmptyStateProps {
     type?: "menu" | "search";

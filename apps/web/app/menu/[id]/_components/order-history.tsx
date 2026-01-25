@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@smart-menu/ui";
+import { Button } from "@smart-menu/ui";
 import { History, RotateCcw, Loader2, ClipboardList, ChevronRight } from "lucide-react";
 import { useCart } from "@/components/cart/cart-context";
 import { toast } from "sonner";

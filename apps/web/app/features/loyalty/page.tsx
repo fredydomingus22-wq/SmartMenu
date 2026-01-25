@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 import { ChevronLeft, Gift, Heart, Repeat, Users } from "lucide-react";
 import Link from "next/link";
 

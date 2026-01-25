@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { Button } from "@smart-menu/ui";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@smart-menu/ui";
 import { Menu } from "lucide-react";
 import { DashboardSidebar } from "./dashboard-sidebar";
 

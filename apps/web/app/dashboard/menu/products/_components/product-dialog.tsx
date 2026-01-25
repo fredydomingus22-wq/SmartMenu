@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 import {
     Dialog,
     DialogContent,
@@ -10,11 +10,11 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+} from "@smart-menu/ui";
+import { Input } from "@smart-menu/ui";
+import { Label } from "@smart-menu/ui";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@smart-menu/ui";
+import { Textarea } from "@smart-menu/ui";
 import { Plus, Image as ImageIcon } from "lucide-react";
 import { createProduct } from '../../../../actions/menu';
 import { toast } from "sonner";

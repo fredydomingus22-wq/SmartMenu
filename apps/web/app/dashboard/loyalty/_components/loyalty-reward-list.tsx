@@ -1,13 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@smart-menu/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@smart-menu/ui";
 import { Plus, Trash2, Edit2, Gift } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { deleteLoyaltyReward } from "@/app/actions/loyalty";
 import { LoyaltyRewardDialog } from "./loyalty-reward-dialog";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@smart-menu/ui";
 import { formatCurrency } from "@/lib/utils";
 
 export interface Reward {

@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@smart-menu/ui";
+import { Card, CardContent, CardHeader, CardTitle } from "@smart-menu/ui";
 import Link from "next/link";
 import { LayoutGrid, Package, ExternalLink } from 'lucide-react';
 import prisma from "@/utils/prisma";

@@ -1,7 +1,7 @@
 import { getAuthorizedClient } from "@/utils/auth-server";
 import { apiClient } from "@/utils/api-client-server";
 import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Button } from "@smart-menu/ui";
 import { Plus, Trash2, LayoutGrid } from "lucide-react";
 import { createCategory, deleteCategory } from '../../../actions/menu';
 import { getTranslatedValue } from "@/lib/utils";

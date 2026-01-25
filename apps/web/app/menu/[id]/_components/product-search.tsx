@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Search, X, Loader2 } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@smart-menu/ui";
+import { Button } from "@smart-menu/ui";
 import { apiClient } from "@/utils/api-client";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProductCard } from "./product-card";

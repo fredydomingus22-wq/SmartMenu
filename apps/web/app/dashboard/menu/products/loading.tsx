@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@smart-menu/ui";
 
 export default function Loading() {
     return (
