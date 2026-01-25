@@ -120,6 +120,8 @@ export function MenuDesignForm({ initialSections }: MenuDesignFormProps) {
                                                             value={section.config?.imageUrl || ""}
                                                             onChange={(url) => updateConfig(index, 'imageUrl', url)}
                                                             onRemove={() => updateConfig(index, 'imageUrl', "")}
+                                                            supabaseUrl={process.env.NEXT_PUBLIC_SUPABASE_URL!}
+                                                            supabaseKey={process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}
                                                         />
                                                     </div>
                                                 </>
@@ -148,6 +150,8 @@ export function MenuDesignForm({ initialSections }: MenuDesignFormProps) {
                                                             value={section.config?.imageUrl || ""}
                                                             onChange={(url) => updateConfig(index, 'imageUrl', url)}
                                                             onRemove={() => updateConfig(index, 'imageUrl', "")}
+                                                            supabaseUrl={process.env.NEXT_PUBLIC_SUPABASE_URL!}
+                                                            supabaseKey={process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}
                                                         />
                                                     </div>
                                                     <div className="grid gap-2">

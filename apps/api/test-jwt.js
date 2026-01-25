@@ -1,8 +1,11 @@
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlramtkeWVzZWpzc2lkeXF3cXBjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzODUyNzcsImV4cCI6MjA4Mzk2MTI3N30.W5xyrkspeSSuDsqGOBA8VhckJak9IzyqfJnu0-kN20s";
-const secret = "2Gx9Nbp0lw+wShnUNiC//YsCbcyxL4063yRjkK4NPHHLl39p9cdnP3sAL+bhQsVJkOuEGbjRoOo5DBM6Xzu/Ww==";
+// Load environment variables
+require('dotenv').config();
+
+const token = process.env.TEST_JWT_TOKEN || "your-test-token-here";
+const secret = process.env.JWT_SECRET;
 
 let results = "";
 

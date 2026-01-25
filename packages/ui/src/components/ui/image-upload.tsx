@@ -15,6 +15,8 @@ interface ImageUploadProps {
     disabled?: boolean;
     className?: string;
     bucketName?: string;
+    supabaseUrl: string;
+    supabaseKey: string;
 }
 
 export function ImageUpload({
@@ -23,10 +25,12 @@ export function ImageUpload({
     onRemove,
     disabled,
     className,
-    bucketName = "menu-assets" // Default bucket
+    bucketName = "menu-assets", // Default bucket
+    supabaseUrl,
+    supabaseKey
 }: ImageUploadProps) {
     const [isUploading, setIsUploading] = useState(false);
-    const supabase = createClient();
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     const onUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         try {
