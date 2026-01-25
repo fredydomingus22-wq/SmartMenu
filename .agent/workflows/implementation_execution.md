@@ -1,7 +1,7 @@
 ---
 description: Interactive execution workflow: Plan -> Research -> Code -> Verify.
 ---
-
+  
 # Implementation Execution Workflow
 
 This workflow drives the coding phase, ensuring research-backed implementation and collaboration.
