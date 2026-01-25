@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@smart-menu/ui";
+import { Button, Tooltip } from "@smart-menu/ui";
 import { Utensils, QrCode, ClipboardList, TrendingUp, ChevronRight, Zap } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,11 +24,19 @@ export default function LandingPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground overflow-x-hidden">
+      {/* Skip Links */}
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded z-50">
+        Pular para conteúdo principal
+      </a>
+      <a href="#navigation" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:translate-y-12 bg-primary text-primary-foreground px-4 py-2 rounded z-50">
+        Pular para navegação
+      </a>
+
       {/* Navigation */}
-      <header className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b">
+      <header id="navigation" className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
+            <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center" aria-label="SmartMenu Logo">
               <Utensils className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="font-bold text-xl tracking-tight">SmartMenu</span>
@@ -41,7 +49,7 @@ export default function LandingPage() {
         </div>
       </header>
 
-      <main className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-16">
         {/* Hero Section */}
         <section className="relative py-24 px-6 overflow-hidden">
           <div className="absolute inset-0 -z-10 bg-black/60">
@@ -67,18 +75,18 @@ export default function LandingPage() {
                 <span>TECNOLOGIA DE PONTA PARA O SEU RESTAURANTE</span>
               </div>
               <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1]">
-                Digitalize o seu <br />
+                Menu Digital para <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-500">
-                  Sucesso Gastronómico
+                  Restaurantes em Angola
                 </span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-xl mx-auto md:mx-0">
-                Aumente o seu ticket médio em 20% com menus interativos, KDS inteligente e fidelização de clientes. A plataforma SaaS definitiva para restauração moderna.
+                Aumente o seu ticket médio em 20% com menus interativos via QR Code, KDS inteligente e fidelização de clientes. Sugira pratos típicos angolanos como muamba de galinha ou calulu para encantar seus clientes em Luanda e outras cidades.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4 lg:justify-start">
                 <Button size="lg" className="h-14 px-8 text-lg font-bold rounded-full gap-2 shadow-xl shadow-primary/20" asChild>
                   <Link href="/login">
-                    Começar Gratuitamente <ChevronRight className="h-5 w-5" />
+                    Começar Grátis Agora - Oferta Limitada para Luanda <ChevronRight className="h-5 w-5" />
                   </Link>
                 </Button>
                 <Button variant="outline" size="lg" className="h-14 px-8 text-lg font-bold rounded-full border-2" asChild>
@@ -99,6 +107,7 @@ export default function LandingPage() {
                   alt="Amigas angolanas a usar o SmartMenu"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
+                  loading="lazy"
                 />
               </div>
               {/* Decorative floating elements */}
@@ -145,7 +154,7 @@ export default function LandingPage() {
                     <TrendingUp className="h-6 w-6" />
                   </div>
                   <h3 className="text-xl font-bold relative z-10 flex items-center gap-2">
-                    Vendas Sugestivas <ChevronRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                    <Tooltip content="Sistema de sugestão automática de produtos complementares para aumentar vendas">Vendas Sugestivas</Tooltip> <ChevronRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                   </h3>
                   <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
                     O sistema sugere (&quot;Que tal um vinho?&quot;) no momento certo, aumentando o consumo de forma natural.
@@ -162,7 +171,7 @@ export default function LandingPage() {
                     <QrCode className="h-6 w-6" />
                   </div>
                   <h3 className="text-xl font-bold relative z-10 flex items-center gap-2">
-                    O Seu Clube de Pontos <ChevronRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                    <Tooltip content="Programa de fidelização onde clientes acumulam pontos para trocar por recompensas">O Seu Clube de Pontos</Tooltip> <ChevronRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                   </h3>
                   <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
                     Crie regras próprias (ex: 100 KZ = 1 ponto). Os clientes acumulam saldo e voltam para trocar por prémios.
@@ -179,7 +188,7 @@ export default function LandingPage() {
                     <ClipboardList className="h-6 w-6" />
                   </div>
                   <h3 className="text-xl font-bold relative z-10 flex items-center gap-2">
-                    Pedidos Multi-Canal <ChevronRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                    <Tooltip content="Gestão unificada de pedidos através de diferentes canais de venda">Pedidos Multi-Canal</Tooltip> <ChevronRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                   </h3>
                   <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
                     Gerencie pedidos de <strong>Dine-in, Takeaway e Delivery</strong> numa única plataforma centralizada.
@@ -200,6 +209,7 @@ export default function LandingPage() {
               alt="Background Pattern"
               fill
               className="object-cover"
+              loading="lazy"
             />
           </div>
 
@@ -247,9 +257,9 @@ export default function LandingPage() {
                 </div>
                 <ul className="space-y-3 text-sm">
                   <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Até 150 mesas</li>
-                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary lead" /> <strong>Sistema KDS (Cozinha)</strong></li>
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> <Tooltip content="Kitchen Display System - Sistema de exibição para cozinha que organiza pedidos automaticamente">Sistema KDS (Cozinha)</Tooltip></li>
                   <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Gestão de Estoque</li>
-                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Dashboards Gerenciais</li>
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> <Tooltip content="Painéis visuais com métricas e dados para tomada de decisões">Dashboards Gerenciais</Tooltip></li>
                 </ul>
                 <Button className="w-full rounded-full font-bold" asChild>
                   <Link href="/login?plan=pro">Escolher Pro</Link>
@@ -269,7 +279,7 @@ export default function LandingPage() {
                 <ul className="space-y-3 text-sm">
                   <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Mesas Ilimitadas</li>
                   <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Múltiplos Restaurantes</li>
-                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Analytics Avançado (AI)</li>
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> <Tooltip content="Análise de dados avançada usando inteligência artificial para insights preditivos">Analytics Avançado (AI)</Tooltip></li>
                   <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Suporte Dedicado 24/7</li>
                 </ul>
                 <Button variant="outline" className="w-full rounded-full" asChild>
@@ -321,6 +331,7 @@ export default function LandingPage() {
                     alt="KDS Dashboard"
                     fill
                     className="object-cover"
+                    loading="lazy"
                   />
                 </div>
                 <h3 className="text-xl font-bold">Cozinha & Entrega</h3>
@@ -347,24 +358,55 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="py-24 px-6">
-          <div className="max-w-4xl mx-auto bg-primary rounded-[3rem] p-12 md:p-20 text-center space-y-8 relative overflow-hidden shadow-2xl shadow-primary/30">
-            <div className="absolute top-0 right-0 p-8 text-white/10 select-none">
-              <Utensils className="h-48 w-48 rotate-12" />
+        {/* FAQ Section */}
+        <section className="py-24 px-6 bg-zinc-50 dark:bg-zinc-900">
+          <div className="max-w-4xl mx-auto space-y-12">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl md:text-5xl font-bold">Perguntas Frequentes</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Tudo o que você precisa saber sobre menu digital para restaurantes em Angola.
+              </p>
             </div>
 
-            <h2 className="text-4xl md:text-6xl font-extrabold text-primary-foreground leading-tight z-10 relative">
-              Pronto para levar seu <br /> negócio ao próximo nível?
-            </h2>
-            <p className="text-primary-foreground/80 text-lg md:text-xl max-w-xl mx-auto z-10 relative">
-              Junte-se a dezenas de restaurantes que já modernizaram seu atendimento com SmartMenu.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8 z-10 relative">
-              <Button size="lg" className="h-16 px-10 text-xl font-bold bg-white text-primary hover:bg-zinc-100 rounded-full" asChild>
-                <Link href="/login">Criar Conta Grátis</Link>
-              </Button>
+            <div className="space-y-6">
+              <details className="bg-background p-6 rounded-lg border shadow-sm">
+                <summary className="font-semibold text-lg cursor-pointer">Como funciona o menu digital para restaurantes em Angola?</summary>
+                <p className="mt-4 text-muted-foreground">O SmartMenu transforma seu restaurante tradicional em um estabelecimento digital. Clientes escaneiam um QR Code na mesa, acessam o menu interativo no celular e fazem pedidos diretamente. Aumente vendas sugerindo pratos típicos angolanos como muamba de galinha ou calulu.</p>
+              </details>
+
+              <details className="bg-background p-6 rounded-lg border shadow-sm">
+                <summary className="font-semibold text-lg cursor-pointer">Quanto custa implementar menu digital QR Code em restaurante Angola?</summary>
+                <p className="mt-4 text-muted-foreground">Nossos planos começam em 50.000 KZ/mês para até 50 mesas. Inclui menu QR interativo, carrinho de pedidos e suporte completo. Ideal para restaurantes em Luanda e outras cidades angolanas.</p>
+              </details>
+
+              <details className="bg-background p-6 rounded-lg border shadow-sm">
+                <summary className="font-semibold text-lg cursor-pointer">O menu digital aumenta vendas em restaurantes angolanos?</summary>
+                <p className="mt-4 text-muted-foreground">Sim! Restaurantes que usam SmartMenu aumentam o ticket médio em até 20%. Sugestões automáticas de pratos e bebidas extras, além de reduzir erros de pedidos e tempo de espera na cozinha.</p>
+              </details>
+
+              <details className="bg-background p-6 rounded-lg border shadow-sm">
+                <summary className="font-semibold text-lg cursor-pointer">Preciso de app para usar menu digital restaurante Angola?</summary>
+                <p className="mt-4 text-muted-foreground">Não! O SmartMenu funciona diretamente no navegador do celular do cliente. Basta escanear o QR Code na mesa. Sem downloads, sem apps, apenas tecnologia simples e eficiente para restaurantes em Angola.</p>
+              </details>
+
+              <details className="bg-background p-6 rounded-lg border shadow-sm">
+                <summary className="font-semibold text-lg cursor-pointer">Como funciona o sistema KDS para cozinha em Angola?</summary>
+                <p className="mt-4 text-muted-foreground">O Kitchen Display System (KDS) organiza pedidos automaticamente na cozinha. Elimina gritos e confusões, mostrando pedidos em tempo real com tempos de preparo estimados. Perfeito para restaurantes angolanos que querem eficiência.</p>
+              </details>
             </div>
+          </div>
+        </section>
+
+        {/* Google My Business Simulation */}
+        <section className="py-12 px-6 bg-primary text-primary-foreground">
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            <h2 className="text-2xl md:text-4xl font-bold">Aumente Visibilidade no Google</h2>
+            <p className="text-lg">Registre seu restaurante no Google My Business gratuitamente e apareça nos primeiros resultados de busca para "restaurantes em Luanda" ou "menu digital Angola".</p>
+            <Button size="lg" className="bg-white text-primary hover:bg-zinc-100 rounded-full px-8" asChild>
+              <a href="https://www.google.com/business/" target="_blank" rel="noopener noreferrer" aria-label="Registrar no Google My Business - Abre em nova aba">
+                <Tooltip content="Melhore a visibilidade do seu restaurante no Google">Registrar no Google My Business</Tooltip>
+              </a>
+            </Button>
           </div>
         </section>
       </main>

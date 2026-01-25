@@ -15,6 +15,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { Search } from "lucide-react";
 import { Input } from "@smart-menu/ui";
+import { PWAStatus } from "@/components/PWAStatus";
 
 export function DashboardHeader({ user }: { user: User }) {
     const pathname = usePathname();
@@ -71,6 +72,7 @@ export function DashboardHeader({ user }: { user: User }) {
                     />
                 </div>
 
+                <PWAStatus />
                 <UserNav user={user} />
             </div>
         </header>
