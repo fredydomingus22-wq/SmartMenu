@@ -6,7 +6,7 @@ description: Interactive execution workflow: Plan -> Research -> Code -> Verify.
 
 This workflow drives the coding phase, ensuring research-backed implementation and collaboration.
 
-## 🟢 Phase 1: Context & Research
+## 🟢 Phase 1: Context & Research 
 **Trigger:** `/Implementation start [plan_name]`
 **Agent:** `agents/10_Implementation_Lead.md`
 **Action:**
