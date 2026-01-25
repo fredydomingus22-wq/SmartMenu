@@ -4,7 +4,13 @@ export * from './lib/supabase-client';
 
 // Components
 export * from './components/ui/accordion';
+export * from './components/layout/app-shell';
 export * from './components/ui/badge';
+export * from './components/layout/grid';
+export * from './components/layout/inline';
+export * from './components/layout/page-container';
+export * from './components/layout/spacer';
+export * from './components/layout/stack';
 export * from './components/ui/button';
 export * from './components/ui/card';
 export * from './components/ui/checkbox';
@@ -26,3 +32,5 @@ export * from './components/ui/error-boundary';
 export * from './components/ui/product-card-skeleton';
 export * from './components/ui/dropdown-menu';
 export * from './components/ui/radio-group';
+export * from './components/ui/avatar';
+export * from './components/ui/breadcrumb';
