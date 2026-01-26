@@ -5,16 +5,6 @@ import { redirect } from "next/navigation";
 import { DashboardSidebar } from "./_components/dashboard-sidebar";
 import { ContentTransition } from "./_components/content-transition";
 import { DashboardHeader } from "./_components/dashboard-header";
-import {
-    LayoutDashboard,
-    UtensilsCrossed,
-    ShoppingBag,
-    ChefHat,
-    Gift,
-    ClipboardList,
-    Settings
-} from "lucide-react";
-
 import { NavItem, ErrorBoundary } from "@smart-menu/ui";
 
 export default async function DashboardLayout({
