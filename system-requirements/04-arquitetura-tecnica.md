@@ -154,7 +154,8 @@ Para a nova Home Page do consumidor, os seguintes padrões técnicos serão adot
 - **Recent Visits:**
     - **Guest:** Persistência em `localStorage` (JSON array limitado a 10 itens).
     - **Auth:** Query na tabela `customer_profiles` ordenada por `updated_at`.
-- **Discovery API:** Endpoint `GET /discovery/nearby` utilizando extensão `postgis` no Postgres para busca por raio de geolocalização.
+- **Discovery API:** Endpoint `GET /tenants/nearby` utilizando extensão `postgis` no Postgres para busca por raio de geolocalização.
+- **Build Optimization:** Uso de `@next/bundle-analyzer` e `transpilePackages` para garantir compatibilidade em ambientes Vercel com monorepo.
 
 #### 14.1 Menu Configuration Schema
 O endpoint `/config` retorna um objeto JSON que governa a visibilidade e ordenação dos componentes na interface do cliente:

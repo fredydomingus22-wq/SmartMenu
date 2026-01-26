@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const nextConfig: NextConfig = {
+  transpilePackages: ["@smart-menu/ui", "@smart-menu/api"],
   turbopack: {},
   images: {
     remotePatterns: [
@@ -42,20 +43,10 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  webpack: (config, { isServer, dev }) => {
-    // Bundle analyzer
-    if (!dev && process.env.ANALYZE === 'true') {
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: 'static',
-          reportFilename: isServer ? '../analyze/server.html' : '../analyze/client.html',
-          openAnalyzer: false,
-        })
-      );
-    }
-
-    return config;
-  },
 };
 
-export default nextConfig;
+const bundleAnalyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+export default bundleAnalyzer(nextConfig);

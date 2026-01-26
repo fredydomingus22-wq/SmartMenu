@@ -797,11 +797,12 @@
 
 ### Fase 5 – Experiência de Entrada (Universal Landing) ⭐ NOVO
 - **Sprint 16: Consumer Landing Page (1 semana):**
-    - [ ] UI/UX para entrada sem QR carregado.
-    - [ ] Integração de Biblioteca de Scan de QR Code (`html5-qrcode`).
-    - [ ] Lógica de Histórico de Visitas (LocalStorage + Sync DB).
-    - [ ] Card de Sumário Global de Fidelidade (Cross-tenant).
-    - [ ] Micro-animações de entrada e transição para o scanner.
+    - [x] UI/UX para entrada sem QR carregado. ✅
+    - [x] Integração de Biblioteca de Scan de QR Code (`html5-qrcode`). ✅
+    - [x] Lógica de Histórico de Visitas (LocalStorage + Sync DB). ✅
+    - [x] Card de Sumário Global de Fidelidade (Cross-tenant). ✅
+    - [x] Micro-animações de entrada e transição para o scanner. ✅
+    - [x] **Geolocalização (Discovery):** Implementação de busca por raio via PostGIS. ✅
 
 ### Fase 6 – Expansão Delivery (Opcional - Não Prioritário)
 - **Status:** Planejado para Futuro - Caso decidamos expandir

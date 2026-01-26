@@ -6,12 +6,14 @@ import {
   Param,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
 import { TenantsService } from './tenants.service';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
 import { UpdateBrandingDto } from './dto/update-branding.dto';
 import { UpdateMenuConfigDto } from './dto/update-menu-config.dto';
+import { FindNearbyDto } from './dto/find-nearby.dto';
 import { SupabaseAuthGuard } from '../common/guards/supabase-auth.guard';
 import { Public } from '../common/decorators/public.decorator';
 import { AuthenticatedRequest } from '../common/types/authenticated-request.interface';
@@ -19,13 +21,23 @@ import { AuthenticatedRequest } from '../common/types/authenticated-request.inte
 @Controller('tenants')
 @UseGuards(SupabaseAuthGuard)
 export class TenantsController {
-  constructor(private readonly tenantsService: TenantsService) {}
+  constructor(private readonly tenantsService: TenantsService) { }
 
   @Get('me')
   getTenant(@Request() req: AuthenticatedRequest) {
     return this.tenantsService.findTenant(
       req.user.tenantId,
       req.user.organizationId,
+    );
+  }
+
+  @Public()
+  @Get('nearby')
+  findNearby(@Query() query: FindNearbyDto) {
+    return this.tenantsService.findNearby(
+      Number(query.lat),
+      Number(query.lng),
+      Number(query.radius || 5000),
     );
   }
 

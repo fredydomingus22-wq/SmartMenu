@@ -51,6 +51,8 @@ model Tenant {
   facebook       String?
   website        String?
   images         String[]      @default([])
+  latitude       Float?
+  longitude      Float?
   fiscalName     String?       @map("fiscal_name")
   nif            String?
   categories     Category[]

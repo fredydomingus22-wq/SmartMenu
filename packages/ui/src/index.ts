@@ -11,6 +11,7 @@ export * from './hooks/use-pwa';
 export * from './hooks/use-service-worker';
 export * from './hooks/use-translation';
 export * from './hooks/use-recent-visits';
+export * from './hooks/use-geolocation';
 
 // Components
 export * from './components/ui/accordion';

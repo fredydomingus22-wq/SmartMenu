@@ -11,7 +11,8 @@ import {
     useRecentVisits,
     Button
 } from "@smart-menu/ui";
-import { QrCode, User, MapPin, Star } from "lucide-react";
+import { DiscoverySection } from "./discovery-section";
+import { QrCode, User, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function LandingContent() {
@@ -117,19 +118,8 @@ export function LandingContent() {
                     </div>
                 )}
 
-                {/* Discovery / Nearby (Placeholder) */}
-                <div className="p-8 rounded-[2.5rem] border-2 border-dashed border-zinc-200 dark:border-zinc-800 flex flex-col items-center text-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-400">
-                        <MapPin className="ml-0.5 mt-0.5 w-6 h-6" />
-                    </div>
-                    <div className="space-y-1">
-                        <h4 className="font-bold text-zinc-900 dark:text-zinc-50">Explorar arredores</h4>
-                        <p className="text-xs text-zinc-400 max-w-[200px]">Encontre restaurantes parceiros perto de você.</p>
-                    </div>
-                    <Button variant="outline" size="sm" className="rounded-xl border-zinc-200 dark:border-white/10 font-bold">
-                        Habilitar GPS
-                    </Button>
-                </div>
+                {/* Discovery / Nearby Section */}
+                <DiscoverySection />
             </PageContainer>
 
             {/* Modal Scanner */}
