@@ -140,8 +140,6 @@
 
 ---
 
----
-
 ### 3.9 Home Page Central (Consumer App) ⭐ NOVO
 
 - **QR Scan Direto:** Botão proeminente para abrir a câmera e processar QR codes de mesas instantaneamente.
@@ -149,6 +147,14 @@
 - **Hub de Fidelidade Global:** Resumo de pontos acumulados em diferentes estabelecimentos caso o usuário esteja logado.
 - **Modo Descoberta (Opcional):** Visualização de restaurantes próximos baseada em geolocalização.
 - **Onboarding Visual:** Carrossel ou animações explicando como o sistema funciona (Scan -> Order -> Pay).
+
+### 3.10 Onboarding Operacional (Restaurante) ⭐ NOVO
+- **Fluxo de Cadastro Assistido:**
+    - Registro de informações básicas da Organização e primeiro Tenant.
+- **Precisão de Localização (Geocoding):**
+    - Seleção de Província e Município a partir de listas oficiais (Angola).
+    - **Mapa Interativo:** Pin no mapa para capturar latitude/longitude exatas, garantindo precisão para a funcionalidade de "Discovery".
+- **Setup de Branding:** Upload imediato de logo e definição de cores.
 
 ---
 

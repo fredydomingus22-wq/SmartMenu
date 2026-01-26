@@ -2,6 +2,7 @@
 export * from './lib/utils';
 export * from './lib/supabase-client';
 export * from './lib/colors';
+export * from './lib/locations-angola';
 export * from './components/cart-context';
 export * from './components/cart-animation-context';
 export * from './components/domain/pwa/pwa-status';

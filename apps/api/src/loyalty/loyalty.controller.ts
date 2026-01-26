@@ -19,7 +19,7 @@ import { Public } from '../common/decorators/public.decorator';
 @Controller('loyalty')
 @UseGuards(SupabaseAuthGuard)
 export class LoyaltyController {
-  constructor(private readonly loyaltyService: LoyaltyService) {}
+  constructor(private readonly loyaltyService: LoyaltyService) { }
 
   // --- Manager Endpoints ---
 
@@ -114,5 +114,10 @@ export class LoyaltyController {
       req.user.tenantId,
       rewardId,
     );
+  }
+
+  @Get('global-summary')
+  getGlobalSummary(@Request() req: { user: { userId: string } }) {
+    return this.loyaltyService.getGlobalSummary(req.user.userId);
   }
 }

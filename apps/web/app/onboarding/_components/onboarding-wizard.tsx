@@ -1,12 +1,20 @@
 'use client';
 
-import { useState } from 'react';
-import { Button } from "@smart-menu/ui";
-import { Input } from "@smart-menu/ui";
-import { Label } from "@smart-menu/ui";
+import {
+    Button,
+    Input,
+    Label,
+    ScrollArea,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    ANGOLA_LOCATIONS,
+    useGeolocation
+} from "@smart-menu/ui";
 import { createOnboardingData } from '../actions';
-import { ScrollArea } from "@smart-menu/ui";
-import { Loader2, Building2, Store, LayoutGrid } from "lucide-react";
+import { Loader2, Building2, Store, LayoutGrid, MapPin, CheckCircle2 } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/hooks/use-translation';
 
@@ -19,8 +27,13 @@ export function OnboardingWizard() {
         restaurantName: '',
         restaurantPhone: '',
         restaurantAddress: '',
+        province: '',
+        municipality: '',
+        latitude: undefined as number | undefined,
+        longitude: undefined as number | undefined,
         tableCount: '5', // Default 5 tables
     });
+    const { loading: geoLoading, error: geoError, coords, getPosition } = useGeolocation();
     const router = useRouter();
     const { t } = useTranslation();
 
@@ -126,8 +139,44 @@ export function OnboardingWizard() {
                                     required
                                     autoFocus
                                 />
-                                <p className="text-xs text-zinc-500">{t('onboarding.restaurant_name_help')}</p>
                             </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Província</Label>
+                                    <Select
+                                        value={formData.province}
+                                        onValueChange={(val) => setFormData(prev => ({ ...prev, province: val, municipality: '' }))}
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Selecione..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {ANGOLA_LOCATIONS.map(p => (
+                                                <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Município</Label>
+                                    <Select
+                                        value={formData.municipality}
+                                        onValueChange={(val) => setFormData(prev => ({ ...prev, municipality: val }))}
+                                        disabled={!formData.province}
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Selecione..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {ANGOLA_LOCATIONS.find(p => p.id === formData.province)?.municipalities.map(m => (
+                                                <SelectItem key={m.id} value={m.name}>{m.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+
                             <div className="space-y-2">
                                 <Label htmlFor="restaurantAddress">{t('onboarding.address_label')}</Label>
                                 <Input
@@ -138,6 +187,60 @@ export function OnboardingWizard() {
                                     onChange={handleInputChange}
                                 />
                             </div>
+
+                            <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-white/5 space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <MapPin className="w-4 h-4 text-orange-600" />
+                                        <span className="text-sm font-bold">Localização GPS</span>
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-8 rounded-full text-[10px] font-bold uppercase tracking-tight"
+                                        onClick={() => {
+                                            getPosition();
+                                            if (coords) {
+                                                setFormData(prev => ({ ...prev, latitude: coords.latitude, longitude: coords.longitude }));
+                                            }
+                                        }}
+                                        disabled={geoLoading}
+                                    >
+                                        {geoLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : "Capturar Atual"}
+                                    </Button>
+                                </div>
+
+                                {coords && !geoLoading && (
+                                    <div className="flex items-center gap-2 text-xs text-green-600 font-medium animate-in fade-in zoom-in-95">
+                                        <CheckCircle2 className="w-4 h-4" />
+                                        Coordenadas capturadas com sucesso!
+                                    </div>
+                                )}
+
+                                {geoError && <p className="text-[10px] text-red-500 font-medium">{geoError}</p>}
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1">
+                                        <Label className="text-[10px] uppercase text-zinc-400">Lat</Label>
+                                        <Input
+                                            readOnly
+                                            value={formData.latitude || coords?.latitude || ''}
+                                            className="h-8 text-xs bg-zinc-100 dark:bg-zinc-800"
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <Label className="text-[10px] uppercase text-zinc-400">Lng</Label>
+                                        <Input
+                                            readOnly
+                                            value={formData.longitude || coords?.longitude || ''}
+                                            className="h-8 text-xs bg-zinc-100 dark:bg-zinc-800"
+                                        />
+                                    </div>
+                                </div>
+                                <p className="text-[10px] text-zinc-400 italic">Isso ajuda clientes próximos a encontrarem seu restaurante.</p>
+                            </div>
+
                             <div className="space-y-2">
                                 <Label htmlFor="restaurantPhone">{t('onboarding.phone_label')}</Label>
                                 <Input

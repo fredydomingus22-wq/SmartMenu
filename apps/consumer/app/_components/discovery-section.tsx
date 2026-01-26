@@ -34,7 +34,12 @@ export function DiscoverySection() {
             fetch(`${apiUrl}/tenants/nearby?lat=${coords.latitude}&lng=${coords.longitude}&radius=5000`)
                 .then(res => res.json())
                 .then(data => {
-                    setRestaurants(data);
+                    if (Array.isArray(data)) {
+                        setRestaurants(data);
+                    } else {
+                        console.error("Discovery API did not return an array", data);
+                        setRestaurants([]);
+                    }
                     setFetching(false);
                 })
                 .catch(err => {

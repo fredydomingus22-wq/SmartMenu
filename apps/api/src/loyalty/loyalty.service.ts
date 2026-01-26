@@ -10,7 +10,7 @@ import { TransactionType, Prisma } from '@prisma/client';
 
 @Injectable()
 export class LoyaltyService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async getOrCreateConfig(tenantId: string) {
     if (!tenantId || tenantId === 'undefined') {
@@ -174,5 +174,20 @@ export class LoyaltyService {
       orderBy: { createdAt: 'desc' },
       take: 20,
     });
+  }
+
+  async getGlobalSummary(userId: string) {
+    const profiles = await this.prisma.customerProfile.findMany({
+      where: { userId },
+      select: { pointsBalance: true },
+    });
+
+    const totalPoints = profiles.reduce((sum, p) => sum + p.pointsBalance, 0);
+    const restaurantsCount = profiles.length;
+
+    return {
+      points: totalPoints,
+      restaurantsCount,
+    };
   }
 }

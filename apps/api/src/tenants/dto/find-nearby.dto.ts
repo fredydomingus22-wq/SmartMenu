@@ -1,13 +1,17 @@
 import { IsNumber, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class FindNearbyDto {
     @IsNumber()
-    lat: number;
+    @Type(() => Number)
+    lat!: number;
 
     @IsNumber()
-    lng: number;
+    @Type(() => Number)
+    lng!: number;
 
     @IsNumber()
     @IsOptional()
+    @Type(() => Number)
     radius?: number = 5000; // Default 5km
 }

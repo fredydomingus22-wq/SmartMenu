@@ -53,4 +53,10 @@ export class UpdateTenantDto {
   @IsString()
   @IsOptional()
   nif?: string;
+
+  @IsOptional()
+  latitude?: number;
+
+  @IsOptional()
+  longitude?: number;
 }

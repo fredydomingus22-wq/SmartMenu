@@ -156,6 +156,11 @@ Para a nova Home Page do consumidor, os seguintes padrões técnicos serão adot
     - **Auth:** Query na tabela `customer_profiles` ordenada por `updated_at`.
 - **Discovery API:** Endpoint `GET /tenants/nearby` utilizando extensão `postgis` no Postgres para busca por raio de geolocalização.
 - **Build Optimization:** Uso de `@next/bundle-analyzer` e `transpilePackages` para garantir compatibilidade em ambientes Vercel com monorepo.
+- **Onboarding Geolocation:**
+    - **Data Hierarchy:** Listas de Províncias/Municípios gerenciadas via JSON local para Angola (redução de latência).
+    - **Map Tool:** Integração opcional com Google Maps JavaScript API (ou Leaflet) para seleção visual de coordenadas (`Pin-on-Map`).
+- **Data Hub Persistence:**
+    - Erro `o.map is not a function` prevenido via **Zod schema validation** nas respostas de API, garantindo que `Nearby[]` seja sempre um array, mesmo vazio.
 
 #### 14.1 Menu Configuration Schema
 O endpoint `/config` retorna um objeto JSON que governa a visibilidade e ordenação dos componentes na interface do cliente:

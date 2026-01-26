@@ -10,6 +10,10 @@ interface OnboardingData {
     restaurantName: string;
     restaurantAddress?: string;
     restaurantPhone?: string;
+    province?: string;
+    municipality?: string;
+    latitude?: number;
+    longitude?: number;
     tableCount: string;
 }
 
@@ -44,6 +48,9 @@ export async function createOnboardingData(data: OnboardingData) {
                     organizationId: organization.id,
                     slug: slug,
                     address: data.restaurantAddress,
+                    city: data.municipality ? `${data.municipality}, ${data.province}` : undefined,
+                    latitude: data.latitude,
+                    longitude: data.longitude,
                     phone: data.restaurantPhone,
                 },
             });

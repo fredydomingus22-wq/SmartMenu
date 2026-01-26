@@ -14,15 +14,38 @@ import {
 import { DiscoverySection } from "./discovery-section";
 import { QrCode, User, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
+import { createClient } from "@/utils/supabase/client";
 
 export function LandingContent() {
     const router = useRouter();
     const [isScannerOpen, setIsScannerOpen] = useState(false);
     const { visits } = useRecentVisits();
+    const [loyaltyData, setLoyaltyData] = useState({ points: 0, restaurantsCount: 0 });
+    const supabase = createClient();
 
-    // Mock user points (will be fetched from API in full implementation)
-    const userPoints = 450;
-    const restaurantsCount = 3;
+    useEffect(() => {
+        const fetchLoyalty = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+                try {
+                    const res = await fetch(`${apiUrl}/loyalty/global-summary`, {
+                        headers: {
+                            'Authorization': `Bearer ${session.access_token}`
+                        }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        setLoyaltyData(data);
+                    }
+                } catch (err) {
+                    console.error("Failed to fetch loyalty summary", err);
+                }
+            }
+        };
+        fetchLoyalty();
+    }, [supabase]);
 
     const handleScanSuccess = (url: string) => {
         setIsScannerOpen(false);
@@ -97,7 +120,7 @@ export function LandingContent() {
                 </div>
 
                 {/* Global Loyalty Summary */}
-                <GlobalLoyaltySummary points={userPoints} restaurantsCount={restaurantsCount} />
+                <GlobalLoyaltySummary points={loyaltyData.points} restaurantsCount={loyaltyData.restaurantsCount} />
 
                 {/* Recent Visits */}
                 {visits.length > 0 && (
