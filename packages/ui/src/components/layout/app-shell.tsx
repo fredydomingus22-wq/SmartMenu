@@ -11,12 +11,12 @@ interface AppShellProps {
 }
 
 export function AppShell({ children, header, footer, className = "", safeArea = true }: AppShellProps) {
-    const safeAreaClasses = safeArea ? "pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]" : "";
+    const safeAreaClasses = safeArea ? "pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)]" : "";
 
     return (
         <div className={`min-h-[100dvh] flex flex-col ${safeAreaClasses} ${className}`}>
             {header && (
-                <header className="sticky top-0 z-50 w-full">
+                <header className="sticky top-0 z-[var(--z-header,50)] w-full">
                     {header}
                 </header>
             )}
@@ -24,7 +24,7 @@ export function AppShell({ children, header, footer, className = "", safeArea = 
                 {children}
             </main>
             {footer && (
-                <footer className="sticky bottom-0 z-50 w-full">
+                <footer className="sticky bottom-0 z-[var(--z-header,50)] w-full">
                     {footer}
                 </footer>
             )}

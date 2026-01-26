@@ -39,10 +39,12 @@
   --sidebar-ring: 0.708 0 0;
 
   /* Z-Index Hierarchy (NC-03) */
+  --z-flying-item: 9999;
+  --z-toast: 200;
+  --z-portal: 100;
   --z-sticky-cta: 60;
-  --z-modal: 50;
-  --z-header: 40;
-  --z-category-nav: 30;
+  --z-header: 50;
+  --z-category-nav: 40;
 }
 
 .dark {

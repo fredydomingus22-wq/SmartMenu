@@ -63,6 +63,7 @@ export interface ProductInitialData {
     isFeatured?: boolean;
     isNew?: boolean;
     isBestSeller?: boolean;
+    metadata?: Record<string, unknown>;
 }
 
 interface FormOptionValue {
@@ -185,6 +186,10 @@ export function ProductForm({ categories, initialData, products = [] }: {
     const [recommendations, setRecommendations] = useState<string[]>(
         initialData?.recommendations?.map(r => r.recommended.id) || []
     );
+    const [removals, setRemovals] = useState<string[]>(
+        (initialData?.metadata?.removals as string[]) || []
+    );
+    const [newRemoval, setNewRemoval] = useState("");
 
     async function handleSubmit(formData: FormData) {
         setLoading(true);
@@ -202,6 +207,9 @@ export function ProductForm({ categories, initialData, products = [] }: {
             // Marketing
             if (upsells.length > 0) formData.append('upsells', JSON.stringify(upsells));
             if (recommendations.length > 0) formData.append('recommendations', JSON.stringify(recommendations));
+
+            // Metadata
+            formData.append('metadata', JSON.stringify({ ...initialData?.metadata, removals }));
 
             if (initialData?.id) {
                 await updateProduct(initialData.id, formData);
@@ -545,6 +553,61 @@ export function ProductForm({ categories, initialData, products = [] }: {
                                             <Plus className="h-8 w-8 text-zinc-200 mx-auto mb-2" />
                                             <p className="text-xs text-zinc-400 font-medium">Nenhum grupo de opções adicionado.</p>
                                         </div>
+                                    )}
+                                </div>
+                            </motion.div>
+
+                            <motion.div variants={item} className="lg:col-span-5 p-8 rounded-[2rem] border border-zinc-100 dark:border-white/5 bg-zinc-50/30 dark:bg-white/[0.02] space-y-6">
+                                <div className="space-y-1">
+                                    <h3 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 uppercase italic">Opções de Remoção</h3>
+                                    <p className="text-sm text-zinc-500">Adicione ingredientes ou itens que o cliente pode pedir para retirar.</p>
+                                </div>
+
+                                <div className="flex gap-3">
+                                    <Input
+                                        placeholder="Ex: Cebola, Pimenta, Maionese..."
+                                        value={newRemoval}
+                                        onChange={(e) => setNewRemoval(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                                if (newRemoval.trim()) {
+                                                    setRemovals([...removals, newRemoval.trim()]);
+                                                    setNewRemoval("");
+                                                }
+                                            }
+                                        }}
+                                        className="max-w-md h-12 rounded-xl"
+                                    />
+                                    <Button
+                                        type="button"
+                                        onClick={() => {
+                                            if (newRemoval.trim()) {
+                                                setRemovals([...removals, newRemoval.trim()]);
+                                                setNewRemoval("");
+                                            }
+                                        }}
+                                        className="h-12 px-6 rounded-xl bg-zinc-900 text-white"
+                                    >
+                                        Adicionar
+                                    </Button>
+                                </div>
+
+                                <div className="flex flex-wrap gap-2 pt-2">
+                                    {removals.map((r, i) => (
+                                        <div key={i} className="flex items-center gap-2 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-4 py-2 rounded-full text-sm font-bold border border-orange-200 dark:border-orange-800/50 group/removal transition-all hover:bg-orange-200">
+                                            {r}
+                                            <button
+                                                type="button"
+                                                onClick={() => setRemovals(removals.filter((_, idx) => idx !== i))}
+                                                className="hover:text-red-600 transition-colors"
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                    {removals.length === 0 && (
+                                        <p className="text-sm text-zinc-400 italic">Nenhuma opção de remoção configurada.</p>
                                     )}
                                 </div>
                             </motion.div>

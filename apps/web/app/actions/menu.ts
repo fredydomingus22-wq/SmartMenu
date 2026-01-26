@@ -1,7 +1,7 @@
 'use server'
 
 import { apiClient } from '@/utils/api-client-server'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 
 // --- Categories ---
 
@@ -13,7 +13,10 @@ export async function createCategory(formData: FormData) {
         await apiClient.post("/categories", { name });
 
         console.log('Action: createCategory success')
-        revalidatePath('/dashboard/menu/categories')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('categories', 'layout' as any)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('menu', 'layout' as any)
     } catch (error) {
         console.error('Action Exception (createCategory):', error)
         throw error
@@ -26,7 +29,10 @@ export async function deleteCategory(id: string) {
         await apiClient.delete(`/categories/${id}`);
 
         console.log('Action: deleteCategory success')
-        revalidatePath('/dashboard/menu/categories')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('categories', 'layout' as any)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('menu', 'layout' as any)
     } catch (error) {
         console.error('Action Exception (deleteCategory):', error)
         throw error
@@ -76,6 +82,10 @@ export async function createProduct(formData: FormData) {
         const recommendationsStr = formData.get('recommendations') as string
         const recommendations = recommendationsStr ? JSON.parse(recommendationsStr) : undefined
 
+        // Metadata (customizations like removals)
+        const metadataStr = formData.get('metadata') as string
+        const metadata = metadataStr ? JSON.parse(metadataStr) : undefined
+
         await apiClient.post("/products", {
             name,
             description,
@@ -89,11 +99,16 @@ export async function createProduct(formData: FormData) {
             recommendations,
             isFeatured,
             isNew,
-            isBestSeller
+            isBestSeller,
+            metadata
         });
 
         console.log('Action: createProduct success')
         revalidatePath('/dashboard/menu/products')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('products', 'layout' as any)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('menu', 'layout' as any)
     } catch (error) {
         console.error('Action Exception (createProduct):', error)
         throw error
@@ -106,7 +121,10 @@ export async function deleteProduct(id: string) {
         await apiClient.delete(`/products/${id}`);
 
         console.log('Action: deleteProduct success')
-        revalidatePath('/dashboard/menu/products')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('products', 'layout' as any)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('menu', 'layout' as any)
     } catch (error) {
         console.error('Action Exception (deleteProduct):', error)
     }
@@ -157,6 +175,10 @@ export async function updateProduct(id: string, formData: FormData) {
         const recommendationsStr = formData.get('recommendations') as string
         const recommendations = recommendationsStr ? JSON.parse(recommendationsStr) : undefined
 
+        // Metadata (customizations like removals)
+        const metadataStr = formData.get('metadata') as string
+        const metadata = metadataStr ? JSON.parse(metadataStr) : undefined
+
         await apiClient.patch(`/products/${id}`, {
             name,
             description,
@@ -170,11 +192,16 @@ export async function updateProduct(id: string, formData: FormData) {
             recommendations,
             isFeatured,
             isNew,
-            isBestSeller
+            isBestSeller,
+            metadata
         });
 
         console.log('Action: updateProduct success')
         revalidatePath('/dashboard/menu/products')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('products', 'layout' as any)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('menu', 'layout' as any)
     } catch (error) {
         console.error('Action Exception (updateProduct):', error)
         throw error

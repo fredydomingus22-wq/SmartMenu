@@ -2,22 +2,10 @@
 
 import { Skeleton } from "@smart-menu/ui";
 
-export function ProductCardSkeleton() {
-    return (
-        <div className="flex flex-col gap-3">
-            <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-muted/50">
-                <Skeleton className="h-full w-full" />
-            </div>
-            <div className="flex justify-between items-start gap-2">
-                <div className="space-y-2 flex-1">
-                    <Skeleton className="h-5 w-[85%]" />
-                    <Skeleton className="h-3 w-[50%]" />
-                </div>
-                <Skeleton className="h-5 w-16" />
-            </div>
-        </div>
-    );
-}
+// Re-export shared ProductCardSkeleton
+export { ProductCardSkeleton } from "@smart-menu/ui";
+
+// PDPSkeleton is app-specific, kept local
 
 export function PDPSkeleton() {
     return (

@@ -36,8 +36,15 @@ export class SupabaseAuthGuard extends AuthGuard('supabase') {
     const user = request.user;
 
     // Trigger lazy sync or forced fetch if tenantId is missing or incorrectly set to userId
-    if (user && (!user.tenantId || user.tenantId === user.userId || user.tenantId.length < 10)) {
-      this.logger.debug(`Forcing tenant resolution for user ${user.email} (current tenantId: '${user.tenantId}')`);
+    if (
+      user &&
+      (!user.tenantId ||
+        user.tenantId === user.userId ||
+        user.tenantId.length < 10)
+    ) {
+      this.logger.debug(
+        `Forcing tenant resolution for user ${user.email} (current tenantId: '${user.tenantId}')`,
+      );
       try {
         const profile = await this.usersService.syncUser({
           id: user.userId,
@@ -45,7 +52,9 @@ export class SupabaseAuthGuard extends AuthGuard('supabase') {
         });
 
         if (profile) {
-          this.logger.log(`Resolved tenantId: ${profile.tenantId} for user ${user.email}`);
+          this.logger.log(
+            `Resolved tenantId: ${profile.tenantId} for user ${user.email}`,
+          );
           // Force update request user
           if (profile.tenantId) request.user.tenantId = profile.tenantId;
           if (profile.organizationId)
@@ -55,7 +64,9 @@ export class SupabaseAuthGuard extends AuthGuard('supabase') {
         this.logger.error(`Failed to force resolve tenant for ${user.userId}`);
       }
     } else if (user) {
-      this.logger.debug(`Tenant context valid: ${user.tenantId} for ${user.email}`);
+      this.logger.debug(
+        `Tenant context valid: ${user.tenantId} for ${user.email}`,
+      );
     }
 
     return true;

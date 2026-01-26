@@ -28,7 +28,7 @@ type ErrorWithMessage = {
 @Controller('products')
 @UseGuards(SupabaseAuthGuard)
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) { }
+  constructor(private readonly productsService: ProductsService) {}
 
   @Post()
   async create(
@@ -64,7 +64,9 @@ export class ProductsController {
     @Request() req: AuthenticatedRequest,
     @Query('categoryId') categoryId?: string,
   ) {
-    console.log(`[ProductsController] findAll for user: ${req.user.email}, tenantId: ${req.user.tenantId}, orgId: ${req.user.organizationId}`);
+    console.log(
+      `[ProductsController] findAll for user: ${req.user.email}, tenantId: ${req.user.tenantId}, orgId: ${req.user.organizationId}`,
+    );
     try {
       const products = await this.productsService.findAll(
         req.user.tenantId,
@@ -186,7 +188,8 @@ export class ProductsController {
   @Post(':id/options')
   createOption(
     @Param('id') productId: string,
-    @Body() createOptionDto: {
+    @Body()
+    createOptionDto: {
       name: string;
       description?: string;
       minChoices?: number;

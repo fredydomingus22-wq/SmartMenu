@@ -1,8 +1,9 @@
 "use client";
 
 import { ReactNode, useMemo } from "react";
-import { hexToOklchString, getContrastColor } from "@/utils/colors";
-import { TenantBranding } from "../../app/menu/[id]/_types";
+import { hexToOklchString, getContrastColor } from "../../../lib/colors";
+
+import { TenantBranding } from "../../../types/menu";
 
 const FONTS_MAP: Record<string, string> = {
     "Inter": "Inter, sans-serif",

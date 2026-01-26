@@ -1,14 +1,7 @@
 import { signOut } from "../../actions/auth";
-import { Button } from "@smart-menu/ui";
+import { Button, DashboardNav, NavItem } from "@smart-menu/ui";
 import { LogOut } from "lucide-react";
-import { DashboardNav } from "./dashboard-nav";
 import { cn } from "@/lib/utils";
-
-interface NavItem {
-    label: string;
-    icon: string;
-    href: string;
-}
 
 interface DashboardSidebarProps {
     className?: string;

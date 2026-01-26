@@ -31,7 +31,9 @@ export default async function ProductsPage() {
     let products: Product[] = [];
     try {
         console.log(`[ProductsPage] Fetching products via API for tenant resolution...`);
-        const response = await apiClient.get<Product[]>("/products");
+        const response = await apiClient.get<Product[]>("/products", {
+            next: { tags: ['products', 'menu'] }
+        });
 
         if (Array.isArray(response)) {
             products = response;

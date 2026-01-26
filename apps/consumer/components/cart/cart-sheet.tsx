@@ -32,6 +32,7 @@ import { toast } from "sonner";
 import { formatCurrency } from "@smart-menu/ui";
 import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
+import { useHasMounted } from "@/hooks/use-has-mounted";
 
 export function CartSheet() {
     const {
@@ -227,6 +228,9 @@ export function CartSheet() {
             setIsSubmitting(false);
         }
     };
+    const hasMounted = useHasMounted();
+
+    if (!hasMounted) return null;
 
     return (
         <Sheet open={isCartOpen} onOpenChange={(open) => open ? openCart() : closeCart()}>

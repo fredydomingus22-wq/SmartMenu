@@ -11,7 +11,7 @@ import { useCart } from "@/components/cart/cart-context";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/use-translation";
 import { ProductCard } from "../../../_components/product-card";
-import { Product, ProductOption, ProductOptionValue, ProductRecommendation, ProductUpsell } from "../../../_types";
+import { Product, ProductOption, ProductOptionValue, ProductRecommendation, ProductUpsell } from "@smart-menu/ui";
 
 interface ProductPageClientProps {
     product: Product;
@@ -27,6 +27,14 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
     const [removals, setRemovals] = useState<string[]>([]);
     const [isAdding, setIsAdding] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [specialInstructions, setSpecialInstructions] = useState("");
+
+    const activeRemovals = useMemo(() => {
+        if (product?.metadata?.removals && Array.isArray(product.metadata.removals)) {
+            return product.metadata.removals;
+        }
+        return [];
+    }, [product?.metadata]);
 
     const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay()]);
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -46,11 +54,14 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
 
     const totalPrice = useMemo(() => {
         let extra = 0;
-        Object.values(selectedOptions).flat().forEach(valId => {
-            const optValue = product.options?.flatMap((o: ProductOption) => o.values).find((v: ProductOptionValue) => v.id === valId);
-            if (optValue) extra += Number(optValue.price);
+        product.options?.forEach((option) => {
+            const selectedIds = selectedOptions[option.id] || [];
+            selectedIds.forEach(valId => {
+                const val = option.values.find(v => v.id === valId);
+                if (val) extra += Number(val.price);
+            });
         });
-        const basePrice = typeof product.price === "string" ? parseFloat(product.price) : product.price;
+        const basePrice = typeof product.price === "string" ? parseFloat(product.price) : Number(product.price);
         return (basePrice + extra) * quantity;
     }, [product, selectedOptions, quantity]);
 
@@ -64,9 +75,9 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
             }
 
             const flatOptions = Object.entries(selectedOptions).flatMap(([optionId, valueIds]) => {
-                const option = product.options?.find((o: ProductOption) => o.id === optionId);
+                const option = product.options?.find((o) => o.id === optionId);
                 return valueIds.map(vId => {
-                    const val = option?.values.find((v: ProductOptionValue) => v.id === vId);
+                    const val = option?.values.find((v) => v.id === vId);
                     return {
                         valueId: vId,
                         name: getTranslatedValue(val?.name, locale),
@@ -75,8 +86,9 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
                 });
             });
 
-            const notes = removals.length > 0 ? `Remover: ${removals.join(", ")}` : undefined;
-            const basePrice = typeof product.price === "string" ? parseFloat(product.price) : product.price;
+            const formattedRemovals = removals.length > 0 ? `Remover: ${removals.join(", ")}` : "";
+            const notes = [formattedRemovals, specialInstructions].filter(Boolean).join(". ");
+            const basePrice = typeof product.price === "string" ? parseFloat(product.price) : Number(product.price);
 
             addItem({
                 productId: product.id,
@@ -148,7 +160,7 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
                                     fill
                                     className="object-cover"
                                     priority={index === 0}
-                                    unoptimized
+                                    sizes="(max-width: 768px) 100vw, 50vw"
                                 />
                             </div>
                         )) : (
@@ -185,7 +197,7 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
                                 i === currentSlide ? "border-primary ring-4 ring-primary/20" : "border-white/20 hover:border-white/40"
                             )}
                         >
-                            <Image src={src} alt={`Thumb ${i}`} fill className="object-cover" unoptimized />
+                            <Image src={src} alt={`Thumb ${i}`} fill className="object-cover" />
                         </button>
                     ))}
                 </div>
@@ -215,7 +227,7 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
                         <div className="h-px w-full bg-border" />
 
                         {/* Customization Options */}
-                        {product.options?.map((option: ProductOption) => (
+                        {product.options?.map((option) => (
                             <div key={option.id} className="space-y-4">
                                 <div className="flex items-center justify-between">
                                     <h4 className="font-bold text-lg flex items-center gap-2">
@@ -254,13 +266,37 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
                             </div>
                         ))}
 
+                        {/* Removals Section */}
+                        {activeRemovals.length > 0 && (
+                            <div className="space-y-4">
+                                <h4 className="font-bold text-lg">{t('menu.removals_title') || 'Retirar algo?'}</h4>
+                                <div className="flex flex-wrap gap-2">
+                                    {activeRemovals.map((item) => (
+                                        <button
+                                            key={item}
+                                            onClick={() => setRemovals(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item])}
+                                            className={cn(
+                                                "px-4 py-2 rounded-xl text-sm font-medium border-2 transition-all",
+                                                removals.includes(item)
+                                                    ? "bg-red-50 text-red-600 border-red-200"
+                                                    : "bg-zinc-50 dark:bg-zinc-900 border-transparent hover:border-zinc-200"
+                                            )}
+                                        >
+                                            {t('menu.without', { name: item }) || `Sem ${item}`}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         {/* Special Instructions */}
                         <div className="space-y-4">
                             <h4 className="font-bold text-lg">{t('menu.pdp_special_instructions')}</h4>
                             <textarea
                                 className="w-full h-24 p-4 rounded-xl border-2 border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 focus:border-primary focus:ring-0 transition-all text-sm resize-none"
                                 placeholder={t('menu.pdp_special_instructions_placeholder')}
-                                onChange={(e) => setRemovals([e.target.value])}
+                                value={specialInstructions}
+                                onChange={(e) => setSpecialInstructions(e.target.value)}
                                 aria-label={t('menu.pdp_special_instructions')}
                             />
                         </div>
@@ -298,7 +334,7 @@ export function ProductPageClient({ product, tenantId }: ProductPageClientProps)
                                                 className="flex items-center gap-4 bg-background p-3 rounded-xl border-2 border-transparent hover:border-primary transition-all shadow-sm"
                                             >
                                                 <div className="relative h-16 w-16 rounded-lg overflow-hidden flex-shrink-0">
-                                                    <Image src={up.upsell.imageUrl || "/placeholder-food.jpg"} alt={getTranslatedValue(up.upsell.name, locale)} fill className="object-cover" unoptimized />
+                                                    <Image src={up.upsell.imageUrl || "/placeholder-food.jpg"} alt={getTranslatedValue(up.upsell.name, locale)} fill className="object-cover" />
                                                 </div>
                                                 <div className="flex-1">
                                                     <h5 className="font-bold text-sm">{getTranslatedValue(up.upsell.name, locale)}</h5>

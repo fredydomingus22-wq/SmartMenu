@@ -10,7 +10,7 @@ import { TransactionType, Prisma } from '@prisma/client';
 
 @Injectable()
 export class LoyaltyService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async getOrCreateConfig(tenantId: string) {
     if (!tenantId || tenantId === 'undefined') {

@@ -4,7 +4,10 @@ import { PrismaClient } from '@prisma/client';
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
   constructor() {
-    console.log('[PrismaService] Connecting to:', process.env.DATABASE_URL?.split('@')[1] || 'URL MISSING');
+    console.log(
+      '[PrismaService] Connecting to:',
+      process.env.DATABASE_URL?.split('@')[1] || 'URL MISSING',
+    );
     super({
       datasources: {
         db: {

@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class MenuService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async getPublicMenu(tenantId: string) {
     console.log(`[MenuService] Fetching menu for tenant: ${tenantId}`);
@@ -27,7 +27,9 @@ export class MenuService {
       orderBy: { name: 'asc' },
     });
 
-    console.log(`[MenuService] Found ${categories.length} categories for tenant: ${tenantId}`);
+    console.log(
+      `[MenuService] Found ${categories.length} categories for tenant: ${tenantId}`,
+    );
     return categories;
   }
 
@@ -86,14 +88,14 @@ export class MenuService {
         sections.length > 0
           ? sections
           : [
-            {
-              type: 'hero',
-              isActive: true,
-              name: 'Hero',
-              config: { title: 'Benvindo!' },
-            },
-            { type: 'category_grid', isActive: true, name: 'Categorias' },
-          ],
+              {
+                type: 'hero',
+                isActive: true,
+                name: 'Hero',
+                config: { title: 'Benvindo!' },
+              },
+              { type: 'category_grid', isActive: true, name: 'Categorias' },
+            ],
       footer: footer || { socials: {}, links: [], contactInfo: {} },
       settings: settings || {
         enableRecommendations: true,

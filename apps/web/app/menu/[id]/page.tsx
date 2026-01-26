@@ -9,10 +9,9 @@ import { PublicMenuHeader } from "./_components/public-menu-header";
 import { RestaurantFooter } from "./_components/restaurant-footer";
 import { formatCurrency } from "@/lib/utils";
 
-import { Category, MenuConfig, LoyaltyConfig } from "./_types";
+import { Category, MenuConfig, LoyaltyConfig, AppShell, PageContainer } from "@smart-menu/ui";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { getTranslation } from "@/utils/i18n-server";
-import { AppShell, PageContainer } from "@smart-menu/ui";
 
 export default async function PublicMenuPage({
     params,
@@ -84,7 +83,6 @@ export default async function PublicMenuPage({
                     tableId={table || undefined}
                     enabledLanguages={config?.settings?.enabledLanguages}
                 />}
-                footer={<RestaurantFooter branding={branding} footerConfig={config?.footer} />}
                 safeArea={true}
             >
                 {/* Loyalty Banner stays as top-level if active */}
@@ -109,6 +107,9 @@ export default async function PublicMenuPage({
                         <MenuGrid categories={categories} config={config} />
                     </ErrorBoundary>
                 </PageContainer>
+
+                {/* Footer scrolls with content now */}
+                <RestaurantFooter branding={branding} footerConfig={config?.footer} />
             </AppShell>
         </PublicMenuClient>
     );

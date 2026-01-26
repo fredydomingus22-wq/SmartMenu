@@ -1,11 +1,11 @@
 "use client";
 
-import { CartProvider, useCart } from "@/components/cart/cart-context";
+import { useCart } from "@/components/cart/cart-context";
 import { CartSheet } from "@/components/cart/cart-sheet";
 import { CartAnimationProvider } from "@/components/cart/cart-animation-context";
 import { FlyingProduct } from "@/components/cart/flying-product";
 import { ReactNode, useEffect, useMemo } from "react";
-import { hexToOklchString, getContrastColor } from "@/utils/colors";
+import { hexToOklchString, getContrastColor } from "@smart-menu/ui";
 import { TenantBranding } from "../_types";
 
 function TenantSetter({ tenantId, organizationId }: { tenantId: string; organizationId: string }) {

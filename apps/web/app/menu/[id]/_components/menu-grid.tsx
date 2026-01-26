@@ -6,10 +6,9 @@ import { UtensilsCrossed, Eye } from "lucide-react";
 import { useTranslation } from "@/hooks/use-translation";
 import Image from "next/image";
 import { useState, useMemo } from "react";
-import { ProductCard } from "./product-card";
+import { ProductCard } from "@smart-menu/ui"; // Shared component
 import { ProductGrid } from "./product-grid";
-import { ProductCardSkeleton } from "@/components/skeletons/product-card-skeleton";
-import { Button } from "@smart-menu/ui";
+import { Button, ProductCardSkeleton } from "@smart-menu/ui";
 import { Category, MenuConfig, MenuSection } from "../_types";
 import { cn, getTranslatedValue } from "@/lib/utils";
 
@@ -102,7 +101,6 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                         alt="Banner"
                                         fill
                                         className="object-cover"
-                                        unoptimized
                                     />
                                 )}
                                 <div className="absolute inset-x-0 bottom-0 p-8 sm:p-12 z-20 text-white">
@@ -137,7 +135,7 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                 <div className="flex gap-4 overflow-x-auto pb-8 pt-2 px-1 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
                                     {featuredProducts.map((product) => (
                                         <div key={product.id} className="w-[280px] sm:w-[320px] flex-shrink-0">
-                                            <ProductCard product={product} tenantId={tenantId} />
+                                            <ProductCard product={product} tenantId={tenantId} locale={locale} t={t} />
                                         </div>
                                     ))}
                                 </div>
@@ -153,7 +151,7 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                 </div>
                                 <ProductGrid columns={2}>
                                     {bestSellerProducts.map((product) => (
-                                        <ProductCard key={product.id} product={product} tenantId={tenantId} />
+                                        <ProductCard key={product.id} product={product} tenantId={tenantId} locale={locale} t={t} />
                                     ))}
                                 </ProductGrid>
                             </section>
@@ -167,7 +165,7 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                 </div>
                                 <ProductGrid columns={2}>
                                     {newProducts.map((product) => (
-                                        <ProductCard key={product.id} product={product} tenantId={tenantId} />
+                                        <ProductCard key={product.id} product={product} tenantId={tenantId} locale={locale} t={t} />
                                     ))}
                                 </ProductGrid>
                             </section>
@@ -222,7 +220,7 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                         ) : (
                                             <ProductGrid columns={4}>
                                                 {activeCategory?.products.map((product) => (
-                                                    <ProductCard key={product.id} product={product} tenantId={tenantId} />
+                                                    <ProductCard key={product.id} product={product} tenantId={tenantId} locale={locale} t={t} />
                                                 ))}
                                             </ProductGrid>
                                         )}
@@ -261,7 +259,6 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                         alt={section.config?.title || "Banner Promocional"}
                                         fill
                                         className="object-cover transition-transform duration-700 group-hover:scale-110"
-                                        unoptimized
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center p-8 sm:p-12 text-white">
                                         <span className="text-primary font-black uppercase tracking-widest text-[10px] sm:text-xs mb-2">{t('menu.upsell_badge')}</span>

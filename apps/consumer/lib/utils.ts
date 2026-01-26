@@ -12,7 +12,7 @@ export function formatCurrency(amount: number | string) {
     }).format(Number(amount));
 }
 
-export function getTranslatedValue(value: any, locale: string = 'pt'): string {
+export function getTranslatedValue(value: string | Record<string, string> | null | undefined, locale: string = 'pt'): string {
     if (!value) return '';
     if (typeof value === 'string') return value;
     if (typeof value === 'object') {

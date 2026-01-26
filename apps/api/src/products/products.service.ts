@@ -20,19 +20,21 @@ export class ProductsService {
     createProductDto: CreateProductDto,
     tenantId: string,
     organizationId: string,
-  ): Promise<any> { // TODO: Define exact return type if needed, or use Prisma.ProductGetPayload
+  ): Promise<any> {
+    // TODO: Define exact return type if needed, or use Prisma.ProductGetPayload
     if (!tenantId || !organizationId) {
       throw new Error('Tenant or Organization ID missing in request');
     }
 
-    const { images, options, upsells, recommendations, ...data } =
+    const { images, options, upsells, recommendations, metadata, ...data } =
       createProductDto;
 
     return this.prisma.product.create({
       data: {
         ...data,
         name: this.normalizeJson(data.name),
-        description: this.normalizeJson(data.description) as Prisma.InputJsonValue,
+        description: this.normalizeJson(data.description),
+        metadata: metadata ?? Prisma.JsonNull,
         tenantId,
         organizationId,
         images: {
@@ -116,7 +118,7 @@ export class ProductsService {
     tenantId: string,
     organizationId: string,
   ): Promise<any> {
-    const { categoryId, images, options, upsells, recommendations, ...data } =
+    const { categoryId, images, options, upsells, recommendations, metadata, ...data } =
       updateProductDto;
 
     // Use transaction to ensure both operations succeed
@@ -151,7 +153,8 @@ export class ProductsService {
         data: {
           ...data,
           name: this.normalizeJson(data.name),
-          description: this.normalizeJson(data.description) as Prisma.InputJsonValue,
+          description: this.normalizeJson(data.description),
+          metadata: metadata ?? undefined,
           ...(categoryId ? { categoryId } : {}),
           ...(images
             ? {
@@ -257,6 +260,7 @@ export class ProductsService {
     return this.prisma.product.create({
       data: {
         ...rest,
+        metadata: rest.metadata as Prisma.InputJsonValue,
         description: description as Prisma.InputJsonValue,
         name: {
           ...(rest.name as Record<string, string>),

@@ -1,5 +1,5 @@
-import { Skeleton } from "@smart-menu/ui";
-import { Card, CardContent, CardFooter } from "@smart-menu/ui";
+import { Skeleton } from "../ui/skeleton";
+import { Card, CardContent, CardFooter } from "../ui/card";
 
 export function ProductCardSkeleton() {
     return (

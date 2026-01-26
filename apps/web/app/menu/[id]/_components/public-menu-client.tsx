@@ -1,11 +1,11 @@
 "use client";
 
-import { CartProvider, useCart } from "@/components/cart/cart-context";
+import { useCart } from "@/components/cart/cart-context";
 import { CartSheet } from "@/components/cart/cart-sheet";
 import { CartAnimationProvider } from "@/components/cart/cart-animation-context";
 import { FlyingProduct } from "@/components/cart/flying-product";
 import { ReactNode, useEffect, useMemo } from "react";
-import { hexToOklchString, getContrastColor } from "@/utils/colors";
+import { hexToOklchString, getContrastColor } from "@smart-menu/ui";
 
 import { TenantBranding } from "../_types";
 
@@ -78,7 +78,7 @@ export function PublicMenuClient({
     const fontHref = branding?.fontFamily ? GOOGLE_FONTS_HREF[branding.fontFamily] : null;
 
     return (
-        <CartProvider>
+        <>
             {fontHref && (
                 <>
                     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -94,6 +94,6 @@ export function PublicMenuClient({
                     <CartSheet />
                 </CartAnimationProvider>
             </div>
-        </CartProvider>
+        </>
     );
 }

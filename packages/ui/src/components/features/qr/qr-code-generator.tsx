@@ -1,7 +1,7 @@
 'use client';
 
 import { QRCodeCanvas } from 'qrcode.react';
-import { Button } from '@smart-menu/ui';
+import { Button } from '../../ui/button';
 import { Download, Share2 } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
 import { toast } from 'sonner';

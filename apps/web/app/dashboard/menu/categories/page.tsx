@@ -22,7 +22,9 @@ export default async function CategoriesPage() {
 
     let categories: Category[] = [];
     try {
-        const response = await apiClient.get<Category[]>("/categories");
+        const response = await apiClient.get<Category[]>("/categories", {
+            next: { tags: ['categories', 'menu'] }
+        });
         categories = Array.isArray(response) ? response : [];
     } catch (error) {
         console.error("Error fetching categories:", error);

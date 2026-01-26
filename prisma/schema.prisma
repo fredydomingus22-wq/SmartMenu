@@ -237,6 +237,7 @@ model Product {
   upsoldBy        ProductUpsell[] @relation("UpsellTo")
   minPrepTime     Int?            @map("min_prep_time")
   maxPrepTime     Int?            @map("max_prep_time")
+  metadata        Json?           @map("metadata")
 
   @@map("products")
   @@schema("public")

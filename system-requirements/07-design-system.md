@@ -136,11 +136,27 @@ Exemplo:
 
 ❌ `width: 100vw`
 ❌ `height: 100vh`
-❌ `position: fixed` em UI
-❌ `min-width` em cards
-❌ CSS inline para layout
+❌ `position: fixed` em UI (use `sticky` ou `absolute` contido)
+❌ `min-width` em cards (use `grow/shrink`)
+❌ **Imagens controlando altura do container** (use `aspect-ratio` + `max-height`)
+❌ **Conteúdo sem container** (texto fora de `<PageContainer>` ou `<Section>`)
 
 **Violou → PR bloqueado.**
+
+---
+
+### 🎭 Hero & Banner Contract (Padrão Ouro)
+
+Todo componente de destaque (Hero) deve seguir este contrato:
+
+| Propriedade | Mobile | Desktop |
+| :--- | :--- | :--- |
+| `Aspect Ratio` | **4:5** ou **1:1** | **21:9** ou **4:1** |
+| `Max Height` | **50vh** ou **60vh** | **400px** ou **500px** |
+| `Containment` | `overflow-hidden` | `overflow-hidden` |
+| `Content Overlay` | Bottom aligned, max 60% w | Bottom-left aligned, max 40% w |
+
+**Objetivo:** Garantir que o conteúdo secundário (Título da Loja, Botões de Ação) esteja visível **above the fold**.
 
 ---
 

@@ -33,7 +33,7 @@ export default function LandingPage() {
       </a>
 
       {/* Navigation */}
-      <header id="navigation" className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b">
+      <header id="navigation" className="fixed top-0 w-full z-[var(--z-header)] bg-background/80 backdrop-blur-md border-b">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center" aria-label="SmartMenu Logo">
@@ -401,7 +401,7 @@ export default function LandingPage() {
         <section className="py-12 px-6 bg-primary text-primary-foreground">
           <div className="max-w-4xl mx-auto text-center space-y-6">
             <h2 className="text-2xl md:text-4xl font-bold">Aumente Visibilidade no Google</h2>
-            <p className="text-lg">Registre seu restaurante no Google My Business gratuitamente e apareça nos primeiros resultados de busca para "restaurantes em Luanda" ou "menu digital Angola".</p>
+            <p className="text-lg">Registre seu restaurante no Google My Business gratuitamente e apareça nos primeiros resultados de busca para &quot;restaurantes em Luanda&quot; ou &quot;menu digital Angola&quot;.</p>
             <Button size="lg" className="bg-white text-primary hover:bg-zinc-100 rounded-full px-8" asChild>
               <a href="https://www.google.com/business/" target="_blank" rel="noopener noreferrer" aria-label="Registrar no Google My Business - Abre em nova aba">
                 <Tooltip content="Melhore a visibilidade do seu restaurante no Google">Registrar no Google My Business</Tooltip>

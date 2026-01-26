@@ -286,3 +286,23 @@ Permitir que o restaurante configure seu plano de sala digital e forneça acesso
 - Validação no checkout para garantir que os pontos ainda são válidos.
 - Fluxo de aprovação: O item resgatado aparece para o restaurante com sinalização de "Resgate Fidelidade".
 
+
+---
+
+## 16. Padrões de Qualidade e Manutenção (Code Health)
+
+### 16.1 Integridade de Tipos
+- **Strict Typing:** Uso obrigatório de TypeScript em modo estrito. O uso de `any` é proibido e deve ser substituído por interfaces específicas ou `unknown` (com narrowed checks).
+- **Zod Validation:** Todas as entradas de dados (API) e retornos críticos devem ser validados via schemas Zod.
+
+### 16.2 Consistência de Dependências
+- **Single Source of Truth:** Versões de React, Next.js e Tailwind devem ser sincronizadas entre apps e packages para evitar erros de hidratação.
+- **Linting:** O comando `npm run lint` deve passar em todos os pacotes antes de qualquer merge.
+
+### 16.3 Tratamento de Erros
+- Implementação de Error Boundaries no frontend.
+- Fallbacks visuais para falhas de serviços externos (Supabase, OpenAI) para garantir que o menu continue funcional mesmo em degradação parcial.
+
+---
+
+**Documento de referência para requisitos funcionais do SmartMenu.**

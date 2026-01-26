@@ -5,6 +5,17 @@ import { redirect } from "next/navigation";
 import { DashboardSidebar } from "./_components/dashboard-sidebar";
 import { ContentTransition } from "./_components/content-transition";
 import { DashboardHeader } from "./_components/dashboard-header";
+import {
+    LayoutDashboard,
+    UtensilsCrossed,
+    ShoppingBag,
+    ChefHat,
+    Gift,
+    ClipboardList,
+    Settings
+} from "lucide-react";
+
+import { NavItem, ErrorBoundary } from "@smart-menu/ui";
 
 export default async function DashboardLayout({
     children,
@@ -20,14 +31,14 @@ export default async function DashboardLayout({
     }
     console.log("DashboardLayout: User authenticated", user.email);
 
-    const navItems = [
-        { label: "Visão Geral", icon: "layout-dashboard", href: "/dashboard" },
-        { label: "Cardápio", icon: "utensils", href: "/dashboard/menu" },
-        { label: "Pedidos", icon: "shopping-bag", href: "/dashboard/orders" },
-        { label: "Cozinha (KDS)", icon: "chef-hat", href: "/dashboard/kds" },
-        { label: "Fidelidade", icon: "gift", href: "/dashboard/loyalty" },
-        { label: "Mesas & QR", icon: "clipboard-list", href: "/dashboard/settings/tables" },
-        { label: "Configurações", icon: "settings", href: "/dashboard/settings" },
+    const navItems: NavItem[] = [
+        { label: "Visão Geral", icon: "LayoutDashboard", href: "/dashboard" },
+        { label: "Cardápio", icon: "UtensilsCrossed", href: "/dashboard/menu" },
+        { label: "Pedidos", icon: "ShoppingBag", href: "/dashboard/orders" },
+        { label: "Cozinha (KDS)", icon: "ChefHat", href: "/dashboard/kds" },
+        { label: "Fidelidade", icon: "Gift", href: "/dashboard/loyalty" },
+        { label: "Mesas & QR", icon: "ClipboardList", href: "/dashboard/settings/tables" },
+        { label: "Configurações", icon: "Settings", href: "/dashboard/settings" },
     ];
 
     return (
@@ -50,13 +61,15 @@ export default async function DashboardLayout({
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
-                <DashboardHeader user={user} />
+                <DashboardHeader user={user} navItems={navItems} />
 
                 <main className="flex-1 overflow-y-auto p-8 scrollbar-hide">
                     <div className="mx-auto max-w-5xl">
-                        <ContentTransition>
-                            {children}
-                        </ContentTransition>
+                        <ErrorBoundary>
+                            <ContentTransition>
+                                {children}
+                            </ContentTransition>
+                        </ErrorBoundary>
                     </div>
                 </main>
             </div>

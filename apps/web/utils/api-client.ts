@@ -57,7 +57,7 @@ export async function apiClient<T = unknown>(path: string, options: RequestOptio
             const response = await fetch(url, {
                 ...fetchOptions,
                 headers,
-                cache: fetchOptions.cache || 'no-store',
+                cache: fetchOptions.cache || (fetchOptions.next?.tags ? 'force-cache' : 'no-store'),
             });
 
             if (!response.ok) {
@@ -84,9 +84,31 @@ export async function apiClient<T = unknown>(path: string, options: RequestOptio
                 continue; // Retry
             }
 
-            if (error instanceof ApiError) throw error;
+            if (error instanceof ApiError) {
+                // Global Error Toasting (Client Side Only)
+                if (typeof window !== 'undefined') {
+                    try {
+                        const { toast } = await import("sonner");
+                        toast.error("Erro na Requisição", {
+                            description: error.message,
+                            duration: 5000,
+                        });
+                    } catch { /* sonner might not be loaded yet */ }
+                }
+                throw error;
+            }
             const message = error instanceof Error ? error.message : "Unknown error";
             console.error(`[apiClient:core] ❌ Failed request to ${url}: ${message}`);
+
+            if (typeof window !== 'undefined') {
+                try {
+                    const { toast } = await import("sonner");
+                    toast.error("Erro de Conexão", {
+                        description: "Não foi possível contactar o servidor. Verifique sua conexão.",
+                    });
+                } catch { /* ignore */ }
+            }
+
             throw new ApiError(message);
         }
     }

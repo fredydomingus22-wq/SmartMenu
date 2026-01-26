@@ -10,14 +10,19 @@ import {
     BreadcrumbList,
     BreadcrumbPage,
     BreadcrumbSeparator,
+    NavItem,
 } from "@smart-menu/ui";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { Search } from "lucide-react";
-import { Input } from "@smart-menu/ui";
-import { PWAStatus } from "@/components/PWAStatus";
+import { Input, PWAStatus } from "@smart-menu/ui";
 
-export function DashboardHeader({ user }: { user: User }) {
+interface DashboardHeaderProps {
+    user: User;
+    navItems: NavItem[];
+}
+
+export function DashboardHeader({ user, navItems }: DashboardHeaderProps) {
     const pathname = usePathname();
     const paths = pathname.split('/').filter(Boolean);
 
@@ -33,9 +38,9 @@ export function DashboardHeader({ user }: { user: User }) {
     };
 
     return (
-        <header className="sticky top-0 z-50 flex h-16 w-full items-center gap-4 border-b bg-background/95 backdrop-blur px-6 shadow-sm">
+        <header className="sticky top-0 z-[var(--z-header)] flex h-16 w-full items-center gap-4 border-b bg-background/95 backdrop-blur px-6 shadow-sm">
             <div className="flex items-center gap-4">
-                <MobileSidebarTrigger /> {/* This handles the sheet trigger logic */}
+                <MobileSidebarTrigger navItems={navItems} />
 
                 <Breadcrumb className="hidden md:flex">
                     <BreadcrumbList>

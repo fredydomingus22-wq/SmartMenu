@@ -13,10 +13,11 @@
 
 ### 5.2 Stack Implementada
 
-#### Frontend (`apps/web`)
-- **Next.js 16+** (App Router)
-- **React 19**
-- **Tailwind CSS + shadcn/ui** (Acessibilidade via Radix UI Primitives e **Lucide-react**)
+#### Frontend (`apps/web`, `apps/consumer`, `packages/ui`)
+- **Next.js 16.1.4** (App Router - Standardized)
+- **React 19.2.3**
+- **Tailwind CSS 3.4.14** (Standardized v3 Core)
+- **Lucide-react 0.454.0** (Unified)
 - **Framer Motion** (Animações de transição de página e micro-interações: zoom 1.05x em cards)
 - **Pattern:** CRUDs complexos (ex: Produtos) migram de Modals para **Dedicated Pages** para melhor UX.
 - **PWA:** Service Worker, Manifest.json, Offline capabilities

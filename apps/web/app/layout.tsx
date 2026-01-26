@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from '@/components/cart/cart-context';
 import { I18nProvider } from '@/hooks/use-translation';
+import { Toaster } from "@smart-menu/ui";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -114,7 +116,10 @@ export default function RootLayout({
           }}
         />
         <I18nProvider>
-          <CartProvider>{children}</CartProvider>
+          <CartProvider>
+            {children}
+            <Toaster position="top-center" expand={true} richColors />
+          </CartProvider>
         </I18nProvider>
       </body>
     </html>

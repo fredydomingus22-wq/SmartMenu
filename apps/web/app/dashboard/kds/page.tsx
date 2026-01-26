@@ -39,9 +39,13 @@ export default async function KDSPage() {
     const tenantId = user.user_metadata?.tenantId || user.app_metadata?.tenant_id;
 
     return (
-        <div className="h-full flex flex-col -m-8 bg-zinc-50/50">
-            {/* Navbar Customizada KDS (Opcional se herdada, mas aqui limpamos o overlay) */}
-            <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex flex-col h-full space-y-6">
+            <div className="flex flex-col gap-1">
+                <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">Cozinha (KDS)</h2>
+                <p className="text-muted-foreground font-medium">Fluxo de pedidos em tempo real para a equipe de preparo.</p>
+            </div>
+
+            <div className="flex-1 min-h-0 bg-white/50 dark:bg-zinc-950/20 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 overflow-hidden">
                 <KDSGrid initialOrders={orders} tenantId={tenantId} />
             </div>
         </div>

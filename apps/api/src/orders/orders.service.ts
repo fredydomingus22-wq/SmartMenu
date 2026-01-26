@@ -80,13 +80,13 @@ export class OrdersService {
       }),
       optionValueIds.length > 0
         ? this.prisma.productOptionValue.findMany({
-          where: {
-            id: { in: optionValueIds },
-            tenantId,
-            organizationId,
-            isAvailable: true,
-          },
-        })
+            where: {
+              id: { in: optionValueIds },
+              tenantId,
+              organizationId,
+              isAvailable: true,
+            },
+          })
         : [],
     ]);
 

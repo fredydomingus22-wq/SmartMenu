@@ -12,6 +12,7 @@ export class CreateProductDto {
   isFeatured?: boolean;
   isNew?: boolean;
   isBestSeller?: boolean;
+  metadata?: Record<string, any>;
 }
 
 export class CreateProductOptionFromProductDto {

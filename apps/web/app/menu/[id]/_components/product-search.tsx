@@ -8,6 +8,7 @@ import { apiClient } from "@/utils/api-client";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProductCard } from "./product-card";
 import { ProductGrid } from "./product-grid";
+import { ProductCardSkeleton } from "@smart-menu/ui";
 
 interface ProductSearchProps {
     tenantId: string;
@@ -77,10 +78,16 @@ export function ProductSearch({ tenantId, onClose }: ProductSearchProps) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="flex flex-col items-center justify-center py-20 text-muted-foreground"
+                        className="space-y-4"
                     >
-                        <Loader2 className="h-10 w-10 animate-spin mb-4 text-primary" />
-                        <p className="font-medium">Buscando as melhores opções...</p>
+                        <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground animate-pulse">
+                            Buscando as melhores opções...
+                        </h3>
+                        <ProductGrid columns={4}>
+                            {[...Array(8)].map((_, i) => (
+                                <ProductCardSkeleton key={i} />
+                            ))}
+                        </ProductGrid>
                     </motion.div>
                 ) : hasSearched && results.length > 0 ? (
                     <motion.div

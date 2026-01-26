@@ -32,7 +32,6 @@ export function RestaurantFooter({ branding, footerConfig }: FooterProps) {
                                         alt={branding.tenantName || "Logo"}
                                         fill
                                         className="object-cover"
-                                        unoptimized
                                     />
                                 </div>
                             )}

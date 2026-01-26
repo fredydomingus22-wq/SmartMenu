@@ -1,6 +1,5 @@
 import { apiClient } from "@/utils/api-client-server";
-import { Button, Input, Label, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Tabs, TabsContent, TabsList, TabsTrigger, ScrollArea } from "@smart-menu/ui";
-import { AuthBrandingWrapper } from "@/components/auth/auth-branding-wrapper";
+import { Button, Input, Label, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Tabs, TabsContent, TabsList, TabsTrigger, ScrollArea, AuthBrandingWrapper } from "@smart-menu/ui";
 import { TenantBranding, MenuConfig } from "../menu/[id]/_types";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,7 +26,7 @@ export default async function ConsumerLoginPage({
 
     return (
         <AuthBrandingWrapper branding={branding}>
-            <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 dark:bg-black">
+            <div className="flex min-h-[100dvh] items-center justify-center bg-zinc-50 px-4 dark:bg-black">
                 <div className="w-full max-w-md">
                     <div className="mb-8 text-center flex flex-col items-center gap-4">
                         {branding?.logoUrl ? (
@@ -122,7 +121,7 @@ export default async function ConsumerLoginPage({
                                 </CardHeader>
                                 <form action={signup}>
                                     <input type="hidden" name="tenantId" value={tenantId} />
-                                    <ScrollArea className="max-h-[50vh]">
+                                    <ScrollArea className="max-h-[80dvh]">
                                         <CardContent className="space-y-4 pr-4">
                                             <div className="space-y-2">
                                                 <Label htmlFor="reg-name">Nome Completo</Label>

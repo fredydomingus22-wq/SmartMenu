@@ -18,6 +18,7 @@ import { CartItem } from "./cart-item";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useHasMounted } from "@/hooks/use-has-mounted";
 import { formatCurrency } from "@/lib/utils";
 
 export function CartSheet() {
@@ -100,13 +101,17 @@ export function CartSheet() {
         }
     };
 
+    const hasMounted = useHasMounted();
+
+    if (!hasMounted) return null;
+
     return (
         <Sheet open={isCartOpen} onOpenChange={(open) => open ? openCart() : closeCart()}>
             <SheetTrigger asChild>
                 <Button
                     variant="default"
                     size="lg"
-                    className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50 flex items-center justify-center p-0 overflow-visible"
+                    className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-[var(--z-sticky-cta)] flex items-center justify-center p-0 overflow-visible"
                     ref={registerCartIcon}
                 >
                     <AnimatedCartIcon state={iconState} itemCount={totalItems} />

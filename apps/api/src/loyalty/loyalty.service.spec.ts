@@ -12,9 +12,23 @@ describe('LoyaltyService', () => {
         {
           provide: PrismaService,
           useValue: {
-            loyaltyConfig: { findUnique: jest.fn(), create: jest.fn(), upsert: jest.fn() },
-            loyaltyReward: { findMany: jest.fn(), create: jest.fn(), update: jest.fn(), delete: jest.fn(), findFirst: jest.fn() },
-            customerProfile: { findUnique: jest.fn(), create: jest.fn(), update: jest.fn() },
+            loyaltyConfig: {
+              findUnique: jest.fn(),
+              create: jest.fn(),
+              upsert: jest.fn(),
+            },
+            loyaltyReward: {
+              findMany: jest.fn(),
+              create: jest.fn(),
+              update: jest.fn(),
+              delete: jest.fn(),
+              findFirst: jest.fn(),
+            },
+            customerProfile: {
+              findUnique: jest.fn(),
+              create: jest.fn(),
+              update: jest.fn(),
+            },
             pointsTransaction: { create: jest.fn(), findMany: jest.fn() },
           },
         },
