@@ -72,6 +72,10 @@ A segurança do SmartMenu é baseada num modelo "Zero Trust" entre tenants e pro
 - **Audit Logs:** Registo automático de alterações críticas (preços, deleções, permissões) na tabela `audit_logs`.
 - **Monitoramento:** Alertas para acessos suspeitos ou falhas consecutivas de login.
 
+### 16.3.2 Segurança de Acesso a Periféricos
+- **Câmera:** O acesso deve ser solicitado apenas no gatilho do usuário. O stream de vídeo deve ser encerrado imediatamente após o sucesso ou cancelamento do scan. Nenhum dado de imagem é enviado ao servidor; o processamento do QR é local (Client-Side).
+- **Geolocalização:** Uso estrito de HTTPS para acesso à API de Geo. Dados de localização do usuário nunca são armazenados, servindo apenas para filtragem instantânea de restaurantes próximos.
+
 ---
 
 **Documento de referência para segurança e compliance do SmartMenu.**

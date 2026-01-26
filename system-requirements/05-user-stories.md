@@ -64,4 +64,15 @@
 
 ---
 
+---
+
+### 18.6 Landing Experience (Consumer App Home) ⭐ NOVO
+
+1. Como cliente, quero um botão de acesso rápido à câmera na página inicial, para escanear QR codes de mesas sem digitar URLs.
+2. Como cliente, quero ver uma lista dos restaurantes que visitei recentemente, para acessar menus familiares rapidamente.
+3. Como cliente, quero ver meu saldo total de pontos de fidelidade na página inicial, para me sentir motivado a visitar meus lugares favoritos.
+4. Como cliente, quero um guia visual simples ao entrar no app, para entender rapidamente como fazer pedidos e pagar.
+
+---
+
 **Documento de referência para user stories do SmartMenu.**

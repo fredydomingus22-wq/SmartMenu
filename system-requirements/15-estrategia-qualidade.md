@@ -42,6 +42,9 @@ Este documento define a estratégia de garantia de qualidade para o SmartMenu, g
 | **Upsell Logic** | Business | Alto | Preço do combo/upsell é adicionado corretamente ao total. |
 | **Localization** | UX | Médio | Tradução correta de produtos/categorias ao trocar o idioma. |
 | **Responsive Grid** | UX | Médio | Layout sections (featured/standard) se comportam bem em mobile/desktop. |
+| **QR Scan Accuracy** | UX | Alto | Reconhecimento rápido de QR codes internos; Feedback de erro para códigos inválidos. |
+| **Recent Visits Sync** | Logic | Médio | Conversão de LocalStorage p/ Database ao realizar login. |
+| **Geo-Privacy** | Security | Médio | Pedido de localização apenas sob demanda; Fallback graceful caso negado. |
 
 ---
 

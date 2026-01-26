@@ -140,6 +140,18 @@
 
 ---
 
+---
+
+### 3.9 Home Page Central (Consumer App) ⭐ NOVO
+
+- **QR Scan Direto:** Botão proeminente para abrir a câmera e processar QR codes de mesas instantaneamente.
+- **Histórico de Visitas Recentes:** Listagem de menus acessados anteriormente (via LocalStorage para guest, via DB para autenticados).
+- **Hub de Fidelidade Global:** Resumo de pontos acumulados em diferentes estabelecimentos caso o usuário esteja logado.
+- **Modo Descoberta (Opcional):** Visualização de restaurantes próximos baseada em geolocalização.
+- **Onboarding Visual:** Carrossel ou animações explicando como o sistema funciona (Scan -> Order -> Pay).
+
+---
+
 ## 11. CRUD de Menu Item (Gestão Completa)
 
 ### 11.1 Princípios de Tenant Isolation

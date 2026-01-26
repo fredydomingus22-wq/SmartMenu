@@ -440,6 +440,22 @@ Table, Card, Accordion
 - Sinalização visual de item obrigatório.
 - Exibição de preço adicional (+R$ X,XX) ao lado da opção.
 
+### ConsumerLandingComponents
+#### QRScannerOverlay
+- **Visual:** Fundo escurecido (black/80) com frame central transparente (square).
+- **Feedback:** Linha de scan animada (moving up/down).
+- **Ação:** Toque fora para cancelar. Habilita lanterna se suportado.
+
+#### RecentRestaurantCard
+- **Visual:** Layout horizontal compacta (60px height).
+- **Conteúdo:** Avatar circular (logo), Título (semiblold), Subtítulo (muted).
+- **Interação:** Toque redireciona para `/menu/[tenantId]`.
+
+#### GlobalLoyaltySummary
+- **Visual:** Card com gradiente sutil, ícone de estrela.
+- **Conteúdo:** "Você tem X pontos em Y restaurantes".
+- **CTA:** "Ver todos".
+
 Todo componente deve prever:
 - Default
 - Hover

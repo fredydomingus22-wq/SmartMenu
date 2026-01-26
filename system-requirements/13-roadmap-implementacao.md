@@ -795,7 +795,15 @@
 - PWA integration para dashboard web (Sprint 10 - Planejado)
 - Offline-first completo em todos os apps (Sprint 11 - Planejado)
 
-### Fase 5 – Expansão Delivery (Opcional - Não Prioritário)
+### Fase 5 – Experiência de Entrada (Universal Landing) ⭐ NOVO
+- **Sprint 16: Consumer Landing Page (1 semana):**
+    - [ ] UI/UX para entrada sem QR carregado.
+    - [ ] Integração de Biblioteca de Scan de QR Code (`html5-qrcode`).
+    - [ ] Lógica de Histórico de Visitas (LocalStorage + Sync DB).
+    - [ ] Card de Sumário Global de Fidelidade (Cross-tenant).
+    - [ ] Micro-animações de entrada e transição para o scanner.
+
+### Fase 6 – Expansão Delivery (Opcional - Não Prioritário)
 - **Status:** Planejado para Futuro - Caso decidamos expandir
 - **Objetivo:** Adicionar módulo opcional de delivery para tenants que optarem, mantendo foco no core QR
 - **Funcionalidades Opcionais:**

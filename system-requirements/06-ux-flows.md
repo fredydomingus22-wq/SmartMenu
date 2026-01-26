@@ -11,6 +11,24 @@
 
 ---
 
+### 10.1.1 Fluxo – App Consumer (Universal Landing) ⭐ NOVO
+
+1. Acesso à raíz do Consumer App (`/`)
+2. Estado de Carregamento (Loading de sessão)
+3. Interface Home:
+   - Header minimalista com Logotipo.
+   - **CTA Primário:** "Escanear Menu" (Abre câmera).
+   - **Seção Recentes:** Memória local de acessos anteriores.
+   - **Hub de Fidelidade:** Saldo acumulado (se auth).
+4. Clique em "Escanear":
+   - Pedido de permissão de câmera.
+   - Overlay de Scanner (Mira laser).
+   - Detecção de URL -> Parse `tenantId` -> Redirecionamento para `/menu/[id]`.
+5. Se falha técnica no scanner:
+   - Campo manual para digitar "Código da Loja".
+
+---
+
 ### 10.2 Fluxo – Cliente (QR Code)
 
 1. Scan QR da mesa (URL: `/menu/[id]?table=[number]`)

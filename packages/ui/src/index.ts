@@ -10,6 +10,7 @@ export * from './components/layout/auth-shell/auth-branding-wrapper';
 export * from './hooks/use-pwa';
 export * from './hooks/use-service-worker';
 export * from './hooks/use-translation';
+export * from './hooks/use-recent-visits';
 
 // Components
 export * from './components/ui/accordion';
@@ -56,6 +57,9 @@ export * from "./components/domain/menu/language-selector";
 export * from "./components/domain/menu/product-card";
 export * from "./components/domain/menu/product-grid";
 export * from "./components/domain/menu/product-detail-sheet";
+export * from "./components/domain/menu/qr-scanner-overlay";
+export * from "./components/domain/menu/global-loyalty-summary";
+export * from "./components/domain/menu/recent-visit-card";
 export * from './components/layout/dashboard-nav';
 export * from './components/layout/content-transition';
 

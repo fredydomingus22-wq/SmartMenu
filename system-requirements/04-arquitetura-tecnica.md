@@ -145,7 +145,16 @@ Para garantir performance e "Zero Distraction" em cozinhas movimentadas, a arqui
 | Orders | `/orders` | Private | SupabaseAuthGuard |
 | Tables | `/tables` | Private | SupabaseAuthGuard (Tenant Scoped) |
 | Loyalty | `/loyalty` | Public/Private | SupabaseAuthGuard |
+| Discovery | `/discovery` | Public | None |
 | Config | `/public/menu/:tenantId/config` | Public | None |
+
+#### 14.2 Consumer Landing Logic
+Para a nova Home Page do consumidor, os seguintes padrões técnicos serão adotados:
+- **QR Scanning:** Integração da biblioteca `html5-qrcode` encapsulada em um componente `@smart-menu/ui`.
+- **Recent Visits:**
+    - **Guest:** Persistência em `localStorage` (JSON array limitado a 10 itens).
+    - **Auth:** Query na tabela `customer_profiles` ordenada por `updated_at`.
+- **Discovery API:** Endpoint `GET /discovery/nearby` utilizando extensão `postgis` no Postgres para busca por raio de geolocalização.
 
 #### 14.1 Menu Configuration Schema
 O endpoint `/config` retorna um objeto JSON que governa a visibilidade e ordenação dos componentes na interface do cliente:
