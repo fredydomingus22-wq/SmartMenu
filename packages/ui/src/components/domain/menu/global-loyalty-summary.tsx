@@ -8,10 +8,17 @@ interface GlobalLoyaltySummaryProps {
     points?: number;
     restaurantsCount?: number;
     onClick?: () => void;
+    showMarketingState?: boolean;
 }
 
-export function GlobalLoyaltySummary({ points = 0, restaurantsCount = 0, onClick }: GlobalLoyaltySummaryProps) {
-    if (points === 0) return null;
+export function GlobalLoyaltySummary({
+    points = 0,
+    restaurantsCount = 0,
+    onClick,
+    showMarketingState = false
+}: GlobalLoyaltySummaryProps) {
+    // If points are 0 and NOT in marketing state, it's a legacy behavior, should show marketing state anyway or hide.
+    // Based on CMO feedback, we want to always show the benefit.
 
     return (
         <motion.div
@@ -31,10 +38,13 @@ export function GlobalLoyaltySummary({ points = 0, restaurantsCount = 0, onClick
                         <span className="text-sm font-bold uppercase tracking-wider text-white/80">Clube de Pontos</span>
                     </div>
                     <h3 className="text-3xl font-black italic tracking-tighter">
-                        {points} <span className="text-lg not-italic font-medium text-white/70">pontos</span>
+                        {showMarketingState ? "GANHE RECOMPENSAS" : `${points} pontos`}
                     </h3>
                     <p className="text-xs font-medium text-white/60">
-                        Acumulados em {restaurantsCount} {restaurantsCount === 1 ? 'restaurante' : 'restaurantes'}
+                        {showMarketingState
+                            ? "Acumule pontos em cada pedido na rede."
+                            : `Acumulados em ${restaurantsCount} ${restaurantsCount === 1 ? 'restaurante' : 'restaurantes'}`
+                        }
                     </p>
                 </div>
 

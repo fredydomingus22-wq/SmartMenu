@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
     AppShell,
@@ -14,7 +14,6 @@ import {
 import { DiscoverySection } from "./discovery-section";
 import { QrCode, User, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 
 export function LandingContent() {
@@ -22,12 +21,14 @@ export function LandingContent() {
     const [isScannerOpen, setIsScannerOpen] = useState(false);
     const { visits } = useRecentVisits();
     const [loyaltyData, setLoyaltyData] = useState({ points: 0, restaurantsCount: 0 });
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const supabase = createClient();
 
     useEffect(() => {
-        const fetchLoyalty = async () => {
+        const checkAuthAndFetchLoyalty = async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
+                setIsLoggedIn(true);
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
                 try {
                     const res = await fetch(`${apiUrl}/loyalty/global-summary`, {
@@ -42,9 +43,11 @@ export function LandingContent() {
                 } catch (err) {
                     console.error("Failed to fetch loyalty summary", err);
                 }
+            } else {
+                setIsLoggedIn(false);
             }
         };
-        fetchLoyalty();
+        checkAuthAndFetchLoyalty();
     }, [supabase]);
 
     const handleScanSuccess = (url: string) => {
@@ -78,7 +81,7 @@ export function LandingContent() {
                         <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => router.push('/account')}
+                            onClick={() => router.push(isLoggedIn ? '/account' : '/auth/loyalty-welcome?returnTo=/account')}
                             className="rounded-full bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-white/5 shadow-sm"
                         >
                             <User className="w-5 h-5" />
@@ -124,11 +127,12 @@ export function LandingContent() {
                     </motion.div>
                 </div>
 
-                {/* Global Loyalty Summary */}
+                {/* Persuasive Loyalty Card */}
                 <GlobalLoyaltySummary
                     points={loyaltyData.points}
                     restaurantsCount={loyaltyData.restaurantsCount}
-                    onClick={() => router.push('/loyalty')}
+                    onClick={() => router.push(isLoggedIn ? '/loyalty' : '/auth/loyalty-welcome')}
+                    showMarketingState={!isLoggedIn || loyaltyData.points === 0}
                 />
 
                 {/* Recent Visits */}
@@ -174,14 +178,14 @@ export function LandingContent() {
                     <span className="text-[10px] font-bold uppercase tracking-tighter">Scan</span>
                 </button>
                 <button
-                    onClick={() => router.push('/loyalty')}
+                    onClick={() => router.push(isLoggedIn ? '/loyalty' : '/auth/loyalty-welcome')}
                     className="text-zinc-400 hover:text-zinc-600 flex flex-col items-center gap-1 transition-colors"
                 >
                     <Star className="w-6 h-6" />
                     <span className="text-[10px] font-bold uppercase tracking-tighter">Pontos</span>
                 </button>
                 <button
-                    onClick={() => router.push('/account')}
+                    onClick={() => router.push(isLoggedIn ? '/account' : '/auth/loyalty-welcome?returnTo=/account')}
                     className="text-zinc-400 hover:text-zinc-600 flex flex-col items-center gap-1 transition-colors"
                 >
                     <User className="w-6 h-6" />
