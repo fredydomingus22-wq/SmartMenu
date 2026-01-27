@@ -120,4 +120,9 @@ export class LoyaltyController {
   getGlobalSummary(@Request() req: { user: { userId: string } }) {
     return this.loyaltyService.getGlobalSummary(req.user.userId);
   }
+
+  @Get('my-profiles')
+  getMyProfiles(@Request() req: { user: { userId: string } }) {
+    return this.loyaltyService.getMyGlobalProfiles(req.user.userId);
+  }
 }

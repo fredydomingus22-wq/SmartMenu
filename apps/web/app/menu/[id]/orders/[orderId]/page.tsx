@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Package, Clock, ChefHat, CheckCircle2, XCircle, Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@smart-menu/ui";
@@ -71,9 +72,20 @@ export default function OrderStatusPage() {
 
     useEffect(() => {
         fetchOrder();
-        // Poll every 10 seconds
-        const interval = setInterval(fetchOrder, 10000);
-        return () => clearInterval(interval);
+
+        const supabase = createClient();
+        const channel = supabase.channel(`orders:${params.id}`)
+            .on('broadcast', { event: 'STATUS_UPDATED' }, (payload: { payload: Order }) => {
+                console.log('Evento de status recebido:', payload);
+                if (payload.payload.id === params.orderId) {
+                    setOrder(payload.payload);
+                }
+            })
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params.orderId]);
 

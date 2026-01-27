@@ -75,7 +75,12 @@ export function LandingContent() {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                     >
-                        <Button variant="ghost" size="icon" className="rounded-full bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-white/5 shadow-sm">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => router.push('/account')}
+                            className="rounded-full bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-white/5 shadow-sm"
+                        >
                             <User className="w-5 h-5" />
                         </Button>
                     </motion.div>
@@ -120,7 +125,11 @@ export function LandingContent() {
                 </div>
 
                 {/* Global Loyalty Summary */}
-                <GlobalLoyaltySummary points={loyaltyData.points} restaurantsCount={loyaltyData.restaurantsCount} />
+                <GlobalLoyaltySummary
+                    points={loyaltyData.points}
+                    restaurantsCount={loyaltyData.restaurantsCount}
+                    onClick={() => router.push('/loyalty')}
+                />
 
                 {/* Recent Visits */}
                 {visits.length > 0 && (
@@ -157,15 +166,24 @@ export function LandingContent() {
 
             {/* Footer Nav (Floating style) */}
             <div className="fixed bottom-6 left-6 right-6 h-16 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-2xl flex items-center justify-around px-8">
-                <button className="text-orange-600 flex flex-col items-center gap-1">
+                <button
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    className="text-orange-600 flex flex-col items-center gap-1"
+                >
                     <QrCode className="w-6 h-6" />
                     <span className="text-[10px] font-bold uppercase tracking-tighter">Scan</span>
                 </button>
-                <button className="text-zinc-400 hover:text-zinc-600 flex flex-col items-center gap-1 transition-colors">
+                <button
+                    onClick={() => router.push('/loyalty')}
+                    className="text-zinc-400 hover:text-zinc-600 flex flex-col items-center gap-1 transition-colors"
+                >
                     <Star className="w-6 h-6" />
                     <span className="text-[10px] font-bold uppercase tracking-tighter">Pontos</span>
                 </button>
-                <button className="text-zinc-400 hover:text-zinc-600 flex flex-col items-center gap-1 transition-colors">
+                <button
+                    onClick={() => router.push('/account')}
+                    className="text-zinc-400 hover:text-zinc-600 flex flex-col items-center gap-1 transition-colors"
+                >
                     <User className="w-6 h-6" />
                     <span className="text-[10px] font-bold uppercase tracking-tighter">Conta</span>
                 </button>

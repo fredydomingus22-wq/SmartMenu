@@ -190,4 +190,21 @@ export class LoyaltyService {
       restaurantsCount,
     };
   }
+
+  async getMyGlobalProfiles(userId: string) {
+    return this.prisma.customerProfile.findMany({
+      where: { userId },
+      include: {
+        tenant: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            images: true,
+          },
+        },
+      },
+      orderBy: { pointsBalance: 'desc' },
+    });
+  }
 }
