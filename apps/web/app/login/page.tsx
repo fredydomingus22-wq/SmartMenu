@@ -3,17 +3,10 @@ import {
     Button,
     Input,
     Label,
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
     Tabs,
     TabsContent,
     TabsList,
     TabsTrigger,
-    ScrollArea
 } from "@smart-menu/ui";
 import { LoginMarketingSidebar } from './_components/login-marketing-sidebar';
 import Link from 'next/link';

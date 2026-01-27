@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle2, Star, Zap, TrendingUp, Users } from "lucide-react";
+import { Star, Zap, TrendingUp, Users } from "lucide-react";
 
 export function LoginMarketingSidebar() {
     const benefits = [

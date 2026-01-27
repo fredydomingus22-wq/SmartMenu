@@ -117,11 +117,11 @@ export class TenantsService {
     // We use queryRaw because Prisma doesn't have native support for PostGIS geography types
     // 4326 is the standard WGS84 SRID
     return this.prisma.$queryRaw`
-      SELECT 
-        id, 
-        name, 
-        slug, 
-        image_url as "logoUrl", 
+      SELECT
+        id,
+        name,
+        slug,
+        image_url as "logoUrl",
         description,
         ST_Distance(location, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography) as distance
       FROM tenants
