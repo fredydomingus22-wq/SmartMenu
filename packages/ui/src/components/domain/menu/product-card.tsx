@@ -41,6 +41,13 @@ export function ProductCard({
 
         if (!product.isAvailable) return;
 
+        // Smart Quick Add: If product has required options, open the detail sheet instead
+        const hasRequiredOptions = product.options?.some(opt => opt.isRequired);
+        if (hasRequiredOptions) {
+            window.location.href = itemHref;
+            return;
+        }
+
         const imageUrl = product.imageUrl || product.images?.[0]?.url || "/placeholder-food.jpg";
 
         const addToCartLogic = () => {
@@ -114,11 +121,11 @@ export function ProductCard({
                 </div>
 
                 <div className="mt-3 flex flex-col gap-0.5 sm:gap-1">
-                    <div className="flex justify-between items-start gap-2">
-                        <h3 className="font-bold text-sm sm:text-base leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                    <div className="flex justify-between items-start gap-3">
+                        <h3 className="font-bold text-sm sm:text-base leading-normal group-hover:text-primary transition-colors line-clamp-2 flex-1">
                             {getTranslatedValue(product.name, locale)}
                         </h3>
-                        <span className="font-black text-sm sm:text-base whitespace-nowrap text-foreground/90">
+                        <span className="font-black text-sm sm:text-base whitespace-nowrap text-foreground/90 shrink-0">
                             {formatCurrency(price)}
                         </span>
                     </div>

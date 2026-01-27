@@ -6,10 +6,16 @@ const config: Config = {
         "./pages/**/*.{js,ts,jsx,tsx,mdx}",
         "./components/**/*.{js,ts,jsx,tsx,mdx}",
         "./app/**/*.{js,ts,jsx,tsx,mdx}",
-        // Include shared UI package components (source files)
         "../../packages/ui/src/**/*.{ts,tsx,js,jsx}",
     ],
     theme: {
+        container: {
+            center: true,
+            padding: "2rem",
+            screens: {
+                "2xl": "1400px",
+            },
+        },
         extend: {
             colors: {
                 border: "oklch(var(--border) / <alpha-value>)",
@@ -53,6 +59,14 @@ const config: Config = {
             },
             fontFamily: {
                 sans: ["var(--font-sans)", "Inter", "ui-sans-serif", "system-ui"],
+            },
+            zIndex: {
+                header: "var(--z-header)",
+                portal: "var(--z-portal)",
+                toast: "var(--z-toast)",
+                "flying-item": "var(--z-flying-item)",
+                "category-nav": "var(--z-category-nav)",
+                "sticky-cta": "var(--z-sticky-cta)",
             },
         },
     },

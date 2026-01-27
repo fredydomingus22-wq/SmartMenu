@@ -63,7 +63,7 @@ export function LandingContent() {
     };
 
     return (
-        <AppShell className="bg-zinc-50 dark:bg-black">
+        <AppShell className="bg-white dark:bg-zinc-950 bg-background" safeArea={true}>
             <PageContainer size="sm" className="pt-12 pb-24 space-y-12">
                 {/* Header / Brand */}
                 <div className="flex items-center justify-between">
@@ -72,7 +72,7 @@ export function LandingContent() {
                         animate={{ opacity: 1, x: 0 }}
                         className="text-2xl font-black italic tracking-tighter"
                     >
-                        Smart<span className="text-orange-600">Menu</span>
+                        Smart<span className="text-orange-700 dark:text-orange-400">Menu</span>
                     </motion.h1>
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
@@ -98,7 +98,7 @@ export function LandingContent() {
                             className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50"
                         >
                             Pronto para <br />
-                            <span className="text-orange-600 font-black italic">fazer seu pedido?</span>
+                            <span className="text-orange-700 dark:text-orange-400 font-black italic">fazer seu pedido?</span>
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
@@ -140,7 +140,7 @@ export function LandingContent() {
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-400">Vistos Recentemente</h3>
-                            <button className="text-[10px] font-black uppercase text-orange-600 tracking-tighter hover:underline">Ver tudo</button>
+                            <button className="text-[10px] font-black uppercase text-orange-700 dark:text-orange-400 tracking-tighter hover:underline">Ver tudo</button>
                         </div>
                         <div className="space-y-3">
                             {visits.map((visit) => (
@@ -169,10 +169,10 @@ export function LandingContent() {
             </AnimatePresence>
 
             {/* Footer Nav (Floating style) */}
-            <div className="fixed bottom-6 left-6 right-6 h-16 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-2xl flex items-center justify-around px-8">
+            <div className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] left-6 right-6 h-16 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-2xl flex items-center justify-around px-8 z-50">
                 <button
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                    className="text-orange-600 flex flex-col items-center gap-1"
+                    className="text-orange-700 dark:text-orange-400 flex flex-col items-center gap-1"
                 >
                     <QrCode className="w-6 h-6" />
                     <span className="text-[10px] font-bold uppercase tracking-tighter">Scan</span>

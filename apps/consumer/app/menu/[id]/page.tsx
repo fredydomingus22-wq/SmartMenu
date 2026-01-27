@@ -7,7 +7,7 @@ import { MenuGrid } from "./_components/menu-grid";
 import { PublicMenuClient } from "./_components/public-menu-client";
 import { PublicMenuHeader } from "./_components/public-menu-header";
 import { RestaurantFooter } from "./_components/restaurant-footer";
-import { Category, MenuConfig, LoyaltyConfig, AppShell, PageContainer, Section, ErrorBoundary } from "@smart-menu/ui";
+import { Category, MenuConfig, LoyaltyConfig, AppShell, PageContainer, ErrorBoundary } from "@smart-menu/ui";
 import { formatCurrency } from "@smart-menu/ui";
 import { getTranslation } from "@/utils/i18n-server";
 import { Metadata } from "next";
@@ -100,6 +100,7 @@ export default async function PublicMenuPage({
             tableId={table || undefined}
         >
             <AppShell
+                className="bg-white dark:bg-zinc-950 bg-background"
                 header={<PublicMenuHeader
                     branding={branding}
                     tableId={table || undefined}
@@ -128,11 +129,9 @@ export default async function PublicMenuPage({
                     <ErrorBoundary>
                         <MenuGrid categories={categories} config={config} />
                     </ErrorBoundary>
-
-                    <Section spacing="lg" innerContainer={false}>
-                        <RestaurantFooter branding={branding} footerConfig={config?.footer} />
-                    </Section>
                 </PageContainer>
+
+                <RestaurantFooter branding={branding} footerConfig={config?.footer} />
             </AppShell>
         </PublicMenuClient>
     );

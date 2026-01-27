@@ -53,10 +53,39 @@ export function CartSheet() {
     const [manualTableId, setManualTableId] = useState("");
     const [manualAddress, setManualAddress] = useState("");
 
-    // Loyalty Rewards State
     const { appliedReward, applyReward, removeReward } = useCart();
     const [userPoints, setUserPoints] = useState(0);
     const [availableRewards, setAvailableRewards] = useState<LoyaltyReward[]>([]);
+    const [loyaltyConfig, setLoyaltyConfig] = useState<any>(null);
+
+    // Table Selection Data
+    const [availableTables, setAvailableTables] = useState<{ id: string, number: number }[]>([]);
+    const [isLoadingTables, setIsLoadingTables] = useState(false);
+    const [tableSearchTerm, setTableSearchTerm] = useState("");
+
+    const filteredTables = availableTables.filter(t =>
+        t.number.toString().includes(tableSearchTerm)
+    );
+
+    useEffect(() => {
+        const fetchTables = async () => {
+            if (!tenantId || !isOrderTypeOpen) return;
+            setIsLoadingTables(true);
+            try {
+                const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+                const response = await fetch(`${API_URL}/public/menu/${tenantId}/tables`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setAvailableTables(data);
+                }
+            } catch (e) {
+                console.warn("Failed to fetch tables", e);
+            } finally {
+                setIsLoadingTables(false);
+            }
+        };
+        fetchTables();
+    }, [tenantId, isOrderTypeOpen]);
 
     useEffect(() => {
         const fetchLoyaltyData = async () => {
@@ -66,13 +95,15 @@ export function CartSheet() {
                 const headers = { Authorization: `Bearer ${session?.access_token}` };
 
                 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-                const [pointsData, rewardsData] = await Promise.all([
-                    fetch(`${API_URL}/loyalty/my-points`, { headers }).then(r => r.json()),
-                    fetch(`${API_URL}/loyalty/rewards/public?tenantId=${tenantId}`).then(r => r.json())
+                const [pointsData, rewardsData, configData] = await Promise.all([
+                    fetch(`${API_URL}/loyalty/my-points?tenantId=${tenantId}`, { headers }).then(r => r.json()),
+                    fetch(`${API_URL}/loyalty/rewards/public?tenantId=${tenantId}`).then(r => r.json()),
+                    fetch(`${API_URL}/loyalty/config/public?tenantId=${tenantId}`).then(r => r.json())
                 ]);
 
-                setUserPoints(pointsData || 0);
+                setUserPoints(pointsData?.points || 0);
                 setAvailableRewards(rewardsData || []);
+                setLoyaltyConfig(configData);
             } catch (e) {
                 console.warn("Failed to fetch loyalty data for cart", e);
             }
@@ -129,7 +160,7 @@ export function CartSheet() {
 
     const handleCheckoutWithSelection = async () => {
         if (selectedType === 'DINE_IN_GENERAL' && !manualTableId) {
-            toast.error("Por favor, digite o número da mesa.");
+            toast.error("Por favor, selecione a sua mesa.");
             return;
         }
         if (selectedType === 'TAKEAWAY' && !manualAddress) {
@@ -200,7 +231,8 @@ export function CartSheet() {
             });
 
             if (!response.ok) {
-                throw new Error('Falha ao enviar pedido');
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || 'Falha ao enviar pedido');
             }
 
             const createdOrder = await response.json();
@@ -220,10 +252,15 @@ export function CartSheet() {
 
             // Redirect to Order Status Page
             router.push(`/menu/${tenantId}/orders/${createdOrder.id}`);
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Order error:", error);
+            const err = error as Error;
+            const errorMessage = err.message === 'Falha ao enviar pedido'
+                ? "Não foi possível processar o seu pedido no servidor."
+                : "Ocorreu um problema técnico. Por favor, tente novamente.";
+
             toast.error("Erro ao enviar pedido", {
-                description: "Ocorreu um problema técnico. Por favor, tente novamente.",
+                description: errorMessage,
             });
         } finally {
             setIsSubmitting(false);
@@ -239,7 +276,7 @@ export function CartSheet() {
                 <Button
                     variant="default"
                     size="lg"
-                    className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50 flex items-center justify-center p-0 overflow-visible"
+                    className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-6 h-14 w-14 rounded-full shadow-lg z-50 flex items-center justify-center p-0 overflow-visible"
                     ref={registerCartIcon}
                 >
                     <AnimatedCartIcon state={iconState} itemCount={totalItems} />
@@ -352,6 +389,20 @@ export function CartSheet() {
                                 {formatCurrency(totalAmount)}
                             </span>
                         </div>
+
+                        {loyaltyConfig?.isActive && (
+                            <div className="flex items-center justify-between py-1 px-3 bg-orange-50 dark:bg-orange-950/20 rounded-md border border-orange-100 dark:border-orange-900/50">
+                                <div className="flex items-center gap-2">
+                                    <Gift className="h-3.5 w-3.5 text-orange-600" />
+                                    <span className="text-[10px] font-bold text-orange-700 dark:text-orange-400">
+                                        LOIALDADE
+                                    </span>
+                                </div>
+                                <span className="text-xs font-semibold text-orange-700 dark:text-orange-400">
+                                    + {Math.floor((totalAmount / Number(loyaltyConfig.currencyUnit)) * Number(loyaltyConfig.pointsPerUnit))} pts
+                                </span>
+                            </div>
+                        )}
                         <Button
                             className="w-full h-12 text-base font-semibold"
                             disabled={items.length === 0 || isSubmitting}
@@ -409,14 +460,67 @@ export function CartSheet() {
                         </RadioGroup>
 
                         {selectedType === 'DINE_IN_GENERAL' && (
-                            <div className="grid gap-2">
-                                <Label htmlFor="table-number">Número da Mesa</Label>
-                                <Input
-                                    id="table-number"
-                                    placeholder="Ex: 5"
-                                    value={manualTableId}
-                                    onChange={(e) => setManualTableId(e.target.value)}
-                                />
+                            <div className="grid gap-3">
+                                <Label htmlFor="table-search">Nº da Mesa</Label>
+                                <div className="space-y-3">
+                                    <Input
+                                        id="table-search"
+                                        placeholder="Pesquisar mesa (ex: 5)..."
+                                        inputMode="numeric"
+                                        pattern="[0-9]*"
+                                        value={tableSearchTerm}
+                                        onChange={(e) => setTableSearchTerm(e.target.value)}
+                                        className="h-12 text-lg"
+                                        autoComplete="off"
+                                    />
+
+                                    <div className="relative">
+                                        {isLoadingTables ? (
+                                            <div className="flex items-center justify-center p-8">
+                                                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                                            </div>
+                                        ) : (
+                                            <div className="h-[200px] overflow-y-auto border rounded-md p-2 bg-zinc-50 dark:bg-zinc-900/50 overscroll-contain">
+                                                <div className="grid grid-cols-3 gap-3">
+                                                    {filteredTables.map((table) => {
+                                                        const isSelected = manualTableId === table.id;
+                                                        return (
+                                                            <button
+                                                                key={table.id}
+                                                                type="button"
+                                                                onClick={() => setManualTableId(table.id)}
+                                                                className={`h-16 flex items-center justify-center rounded-xl border-2 transition-all font-bold text-xl active:scale-95 active:opacity-80 touch-manipulation ${isSelected
+                                                                    ? 'border-primary bg-primary text-white shadow-md'
+                                                                    : 'border-transparent bg-white dark:bg-zinc-800 hover:border-zinc-200 dark:hover:border-zinc-700 text-zinc-700 dark:text-zinc-300 shadow-sm'
+                                                                    }`}
+                                                            >
+                                                                {table.number}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                    {filteredTables.length === 0 && (
+                                                        <div className="col-span-3 py-8 text-center text-sm text-muted-foreground">
+                                                            Nenhuma mesa encontrada
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+                                        {!manualTableId && !isLoadingTables && availableTables.length > 0 && (
+                                            <div className="mt-2 text-center">
+                                                <p className="text-xs text-muted-foreground italic">Selecione uma mesa acima</p>
+                                            </div>
+                                        )}
+                                        {manualTableId && (
+                                            <div className="mt-2 flex items-center justify-center gap-2 text-primary font-semibold">
+                                                <span className="text-xs">Mesa Selecionada:</span>
+                                                <span className="text-sm px-3 py-1 bg-primary/20 rounded-full">
+                                                    {availableTables.find(t => t.id === manualTableId)?.number}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         )}
 

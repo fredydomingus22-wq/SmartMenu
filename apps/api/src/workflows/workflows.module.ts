@@ -12,4 +12,4 @@ import { PrismaModule } from '../prisma/prisma.module';
   providers: [OrderEventsListener, StockEventsListener, UpsellService],
   exports: [UpsellService],
 })
-export class WorkflowsModule { }
+export class WorkflowsModule {}

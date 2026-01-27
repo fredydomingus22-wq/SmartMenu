@@ -105,4 +105,19 @@ export class MenuService {
       },
     };
   }
+
+  async getPublicTables(tenantId: string) {
+    return this.prisma.table.findMany({
+      where: {
+        tenantId,
+      },
+      orderBy: {
+        number: 'asc',
+      },
+      select: {
+        id: true,
+        number: true,
+      },
+    });
+  }
 }

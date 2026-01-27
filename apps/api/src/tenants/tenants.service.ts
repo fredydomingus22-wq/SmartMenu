@@ -8,7 +8,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class TenantsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async findTenant(tenantId: string, organizationId: string) {
     const tenant = await this.prisma.tenant.findUnique({
@@ -116,18 +116,23 @@ export class TenantsService {
   async findNearby(lat: number, lng: number, radiusMeters: number) {
     // We use queryRaw because Prisma doesn't have native support for PostGIS geography types
     // 4326 is the standard WGS84 SRID
-    return this.prisma.$queryRaw`
-      SELECT
-        id,
-        name,
-        slug,
-        image_url as "logoUrl",
-        description,
-        ST_Distance(location, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography) as distance
-      FROM tenants
-      WHERE ST_DWithin(location, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography, ${radiusMeters})
-      ORDER BY distance ASC
-      LIMIT 10
-    `;
+    try {
+      return await this.prisma.$queryRaw`
+        SELECT
+          id,
+          name,
+          slug,
+          image_url as "logoUrl",
+          description,
+          ST_Distance(location, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography) as distance
+        FROM tenants
+        WHERE ST_DWithin(location, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography, ${radiusMeters})
+        ORDER BY distance ASC
+        LIMIT 10
+      `;
+    } catch (error) {
+      console.error('Error finding nearby tenants (PostGIS missing?):', error);
+      return []; // Return empty array to avoid frontend crash "Discovery API did not return an array"
+    }
   }
 }

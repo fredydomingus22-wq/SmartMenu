@@ -12,16 +12,17 @@ import { TransactionType, Prisma } from '@prisma/client';
 export class LoyaltyService {
   constructor(private prisma: PrismaService) { }
 
-  async getOrCreateConfig(tenantId: string) {
+  async getOrCreateConfig(tenantId: string, externalTx?: Prisma.TransactionClient) {
     if (!tenantId || tenantId === 'undefined') {
       throw new BadRequestException('Invalid tenant ID');
     }
-    let config = await this.prisma.loyaltyConfig.findUnique({
+    const tx = externalTx || this.prisma;
+    let config = await tx.loyaltyConfig.findUnique({
       where: { tenantId },
     });
 
     if (!config) {
-      config = await this.prisma.loyaltyConfig.create({
+      config = await tx.loyaltyConfig.create({
         data: { tenantId },
       });
     }
@@ -75,22 +76,28 @@ export class LoyaltyService {
     });
   }
 
-  async getCustomerProfile(userId: string, tenantId: string) {
-    let profile = await this.prisma.customerProfile.findUnique({
-      where: { userId_tenantId: { userId, tenantId } },
-    });
-
-    if (!profile) {
-      profile = await this.prisma.customerProfile.create({
-        data: { userId, tenantId },
+  async getCustomerProfile(userId: string, tenantId: string, externalTx?: Prisma.TransactionClient) {
+    const tx = externalTx || this.prisma;
+    try {
+      let profile = await tx.customerProfile.findUnique({
+        where: { userId_tenantId: { userId, tenantId } },
       });
-    }
 
-    return profile;
+      if (!profile) {
+        profile = await tx.customerProfile.create({
+          data: { userId, tenantId },
+        });
+      }
+
+      return profile;
+    } catch (error) {
+      console.error(`[LoyaltyService] Error in getCustomerProfile:`, error);
+      throw error;
+    }
   }
 
-  async getCustomerPoints(userId: string, tenantId: string) {
-    const profile = await this.getCustomerProfile(userId, tenantId);
+  async getCustomerPoints(userId: string, tenantId: string, externalTx?: Prisma.TransactionClient) {
+    const profile = await this.getCustomerProfile(userId, tenantId, externalTx);
     return profile.pointsBalance;
   }
 
@@ -101,7 +108,8 @@ export class LoyaltyService {
     orderId: string,
     externalTx?: Prisma.TransactionClient,
   ) {
-    const config = await this.getOrCreateConfig(tenantId);
+    const tx = externalTx || this.prisma;
+    const config = await this.getOrCreateConfig(tenantId, tx);
     if (!config.isActive) return null;
 
     const pointsToEarn = Math.floor(
@@ -110,12 +118,17 @@ export class LoyaltyService {
 
     if (pointsToEarn <= 0) return null;
 
-    const profile = await this.getCustomerProfile(userId, tenantId);
-    const tx = externalTx || this.prisma;
+    const profile = await this.getCustomerProfile(userId, tenantId, tx);
 
     await tx.customerProfile.update({
       where: { id: profile.id },
       data: { pointsBalance: { increment: pointsToEarn } },
+    });
+
+    // Link the order to the customer profile for history
+    await tx.order.update({
+      where: { id: orderId },
+      data: { customerProfileId: profile.id },
     });
 
     return tx.pointsTransaction.create({
@@ -136,20 +149,19 @@ export class LoyaltyService {
     rewardId: string,
     externalTx?: Prisma.TransactionClient,
   ) {
-    const reward = await this.prisma.loyaltyReward.findFirst({
+    const tx = externalTx || this.prisma;
+    const reward = await tx.loyaltyReward.findFirst({
       where: { id: rewardId, tenantId, isActive: true },
     });
 
     if (!reward)
       throw new NotFoundException('Recompensa não encontrada ou inativa');
 
-    const profile = await this.getCustomerProfile(userId, tenantId);
+    const profile = await this.getCustomerProfile(userId, tenantId, tx);
 
     if (profile.pointsBalance < reward.pointsRequired) {
       throw new BadRequestException('Pontos insuficientes para este resgate');
     }
-
-    const tx = externalTx || this.prisma;
 
     await tx.customerProfile.update({
       where: { id: profile.id },

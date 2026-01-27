@@ -37,4 +37,9 @@ export class MenuController {
       throw error;
     }
   }
+
+  @Get(':tenantId/tables')
+  async getTables(@Param('tenantId') tenantId: string) {
+    return this.menuService.getPublicTables(tenantId);
+  }
 }

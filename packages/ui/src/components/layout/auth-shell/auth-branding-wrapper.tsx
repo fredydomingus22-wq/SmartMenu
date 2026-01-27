@@ -62,7 +62,7 @@ export function AuthBrandingWrapper({
     const fontHref = branding?.fontFamily ? GOOGLE_FONTS_HREF[branding.fontFamily] : null;
 
     return (
-        <div style={brandingStyles as React.CSSProperties} className="font-sans antialiased min-h-screen">
+        <div style={brandingStyles as React.CSSProperties} className="font-sans antialiased min-h-screen supports-[height:100dvh]:min-h-[100dvh]">
             {fontHref && (
                 <>
                     <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -10,6 +10,10 @@ import { LanguageSelector } from "./language-selector";
 import { SessionActions } from "./session-actions";
 import { useTranslation } from "@/hooks/use-translation";
 import { useHasMounted } from "@/hooks/use-has-mounted";
+import { Gift, LogIn } from "lucide-react";
+import { useState, useEffect } from "react";
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 import {
     Dialog,
     DialogContent,
@@ -30,6 +34,23 @@ export function PublicMenuHeader({ branding, tableId, enabledLanguages }: Public
     const tenantId = params.id as string;
     const { t } = useTranslation();
     const hasMounted = useHasMounted();
+    const router = useRouter();
+    const [user, setUser] = useState<unknown>(null);
+    const supabase = createClient();
+
+    useEffect(() => {
+        const checkUser = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            setUser(session?.user || null);
+        };
+        checkUser();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user || null);
+        });
+
+        return () => subscription.unsubscribe();
+    }, [supabase]);
 
     return (
         <SharedHeader
@@ -72,6 +93,29 @@ export function PublicMenuHeader({ branding, tableId, enabledLanguages }: Public
                     <div className="hidden sm:block">
                         <LanguageSelector enabledLanguages={enabledLanguages} />
                     </div>
+                    {hasMounted && (
+                        user ? (
+                            <button
+                                onClick={() => router.push(`/menu/${tenantId}/loyalty`)}
+                                className="inline-flex items-center justify-center rounded-full h-10 w-10 sm:h-12 sm:w-12 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative"
+                                aria-label={t('menu.view_points')}
+                            >
+                                <Gift className="h-5 w-5 sm:h-6 sm:w-6 text-orange-600" />
+                                <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-4 w-4 bg-orange-500"></span>
+                                </span>
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => router.push(`/login?tenantId=${tenantId}&returnUrl=${encodeURIComponent(window.location.pathname)}`)}
+                                className="inline-flex items-center justify-center rounded-full h-10 w-10 sm:h-12 sm:w-12 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                                aria-label={t('cart.login_now')}
+                            >
+                                <LogIn className="h-5 w-5 sm:h-6 sm:w-6 text-zinc-400" />
+                            </button>
+                        )
+                    )}
                     {tableId && <SessionActions tenantId={tenantId} tableId={tableId} />}
                     {hasMounted && <OrderHistory tenantId={tenantId} />}
                 </div>

@@ -39,8 +39,8 @@ export function UserNav({ user }: { user: User }) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                    <Avatar className="h-10 w-10 border border-border">
+                <Button variant="ghost" className="relative h-11 w-11 rounded-full">
+                    <Avatar className="h-11 w-11 border border-border">
                         <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email || ""} />
                         <AvatarFallback className="bg-gradient-to-br from-orange-400 to-orange-600 text-white font-bold">
                             {initials}

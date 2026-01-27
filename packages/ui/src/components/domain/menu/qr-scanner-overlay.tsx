@@ -1,10 +1,8 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
-import { Html5QrcodeScanner, Html5QrcodeSupportedFormats } from "html5-qrcode";
-import { X, Camera, Zap, ZapOff } from "lucide-react";
-import { Button } from "../../ui/button";
-import { motion, AnimatePresence } from "framer-motion";
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
+import { X, Camera, Zap, AlertCircle, RefreshCw } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface QRScannerOverlayProps {
     onScanSuccess: (decodedText: string) => void;
@@ -12,36 +10,64 @@ interface QRScannerOverlayProps {
 }
 
 export function QRScannerOverlay({ onScanSuccess, onClose }: QRScannerOverlayProps) {
-    const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+    const scannerRef = useRef<Html5Qrcode | null>(null);
     const [isFlashOn, setIsFlashOn] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [hasCamera, setHasCamera] = useState<boolean | null>(null);
 
     useEffect(() => {
-        const scanner = new Html5QrcodeScanner(
-            "qr-reader",
-            {
-                fps: 10,
-                qrbox: { width: 250, height: 250 },
-                aspectRatio: 1.0,
-                formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
-            },
-            /* verbose= */ false
-        );
-
-        scanner.render(
-            (decodedText) => {
-                scanner.clear();
-                onScanSuccess(decodedText);
-            },
-            (error) => {
-                // Ignore silent errors
-            }
-        );
-
+        const elementId = "qr-reader-custom";
+        const scanner = new Html5Qrcode(elementId, {
+            formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+            verbose: false
+        });
         scannerRef.current = scanner;
 
+        const startScanner = async () => {
+            try {
+                // Check if cameras exist first
+                const devices = await Html5Qrcode.getCameras();
+                if (!devices || devices.length === 0) {
+                    setError("Nenhuma câmera encontrada.");
+                    setHasCamera(false);
+                    return;
+                }
+                setHasCamera(true);
+
+                await scanner.start(
+                    { facingMode: "environment" },
+                    {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 },
+                        aspectRatio: 1.0,
+                    },
+                    (decodedText) => {
+                        scanner.stop().then(() => {
+                            scannerRef.current = null;
+                            onScanSuccess(decodedText);
+                        }).catch(console.error);
+                    },
+                    () => {
+                        // ignore frame scan errors
+                    }
+                );
+            } catch (err: any) {
+                console.error("Camera start error:", err);
+                if (err?.name === "NotAllowedError" || err?.message?.includes("Permission")) {
+                    setError("Permissão da câmera negada. Por favor, permita o acesso nas configurações do navegador.");
+                } else if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                    setError("A câmera requer conexão segura (HTTPS).");
+                } else {
+                    setError("Erro ao iniciar a câmera: " + (err.message || "Erro desconhecido"));
+                }
+            }
+        };
+
+        startScanner();
+
         return () => {
-            if (scannerRef.current) {
-                scannerRef.current.clear().catch(console.error);
+            if (scannerRef.current && scannerRef.current.isScanning) {
+                scannerRef.current.stop().catch(console.error);
             }
         };
     }, [onScanSuccess]);
@@ -51,7 +77,7 @@ export function QRScannerOverlay({ onScanSuccess, onClose }: QRScannerOverlayPro
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[var(--z-modal)] bg-black flex flex-col items-center justify-center p-6"
+            className="fixed inset-0 z-portal bg-black flex flex-col items-center justify-center p-6"
         >
             <div className="absolute top-6 left-6 right-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -61,33 +87,59 @@ export function QRScannerOverlay({ onScanSuccess, onClose }: QRScannerOverlayPro
                 </div>
                 <button
                     onClick={onClose}
-                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-xl transition-all hover:bg-white/20 active:scale-95"
+                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-xl transition-all hover:bg-white/20 active:scale-95 z-50 pointer-events-auto"
                 >
                     <X className="w-5 h-5 text-white" />
                 </button>
             </div>
 
-            <div className="relative w-full max-w-[320px] aspect-square rounded-[2rem] overflow-hidden border-2 border-white/20">
-                <div id="qr-reader" className="w-full h-full" />
+            <div className="relative w-full max-w-[320px] aspect-square rounded-[2rem] overflow-hidden border-2 border-white/20 bg-black">
+                <div id="qr-reader-custom" className="w-full h-full object-cover rounded-[2rem]" />
 
-                {/* Scanner UI Overlay */}
-                <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute inset-0 border-[40px] border-black/60" />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] border-2 border-orange-500 rounded-2xl shadow-[0_0_20px_rgba(249,115,22,0.5)]">
-                        {/* Scanning Line Animation */}
-                        <motion.div
-                            animate={{ top: ["10%", "90%"] }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                            className="absolute left-4 right-4 h-0.5 bg-orange-500/80 shadow-[0_0_10px_rgba(249,115,22,1)]"
-                        />
-
-                        {/* Corner Accents */}
-                        <div className="absolute -top-1 -left-1 w-6 h-6 border-t-4 border-l-4 border-orange-500 rounded-tl-xl" />
-                        <div className="absolute -top-1 -right-1 w-6 h-6 border-t-4 border-r-4 border-orange-500 rounded-tr-xl" />
-                        <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-orange-500 rounded-bl-xl" />
-                        <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-orange-500 rounded-br-xl" />
+                {/* Error State */}
+                {error && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-zinc-900/90 z-20">
+                        <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
+                        <p className="text-white font-medium mb-4">{error}</p>
+                        <button
+                            onClick={onClose}
+                            className="px-6 py-2 bg-white text-black rounded-full font-bold text-sm"
+                        >
+                            Fechar
+                        </button>
                     </div>
-                </div>
+                )}
+
+                {/* Scanner UI Overlay (Only show if no error) */}
+                {!error && hasCamera !== false && (
+                    <div className="absolute inset-0 pointer-events-none z-10">
+                        {/* We imitate the dark overlay with borders instead of full divs to keep video visible clearly */}
+                        {/* This approach uses a mask-like effect or just simple corner borders to keep it clean */}
+
+                        <div className="absolute inset-0 flex flex-col">
+                            <div className="flex-1 bg-black/40"></div>
+                            <div className="flex w-full h-[250px]">
+                                <div className="flex-1 bg-black/40"></div>
+                                <div className="w-[250px] relative border-2 border-transparent">
+                                    {/* Corners */}
+                                    <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-orange-500 rounded-tl-xl" />
+                                    <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-orange-500 rounded-tr-xl" />
+                                    <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-orange-500 rounded-bl-xl" />
+                                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-orange-500 rounded-br-xl" />
+
+                                    {/* Scanning Line */}
+                                    <motion.div
+                                        animate={{ top: ["5%", "95%"] }}
+                                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                        className="absolute left-2 right-2 h-0.5 bg-orange-500/80 shadow-[0_0_10px_rgba(249,115,22,1)]"
+                                    />
+                                </div>
+                                <div className="flex-1 bg-black/40"></div>
+                            </div>
+                            <div className="flex-1 bg-black/40"></div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className="mt-12 text-center space-y-4">
@@ -95,16 +147,6 @@ export function QRScannerOverlay({ onScanSuccess, onClose }: QRScannerOverlayPro
                 <p className="text-white/60 text-sm max-w-[200px] mx-auto leading-relaxed">
                     Aponte para o código na mesa para abrir o cardápio automaticamente.
                 </p>
-            </div>
-
-            <div className="absolute bottom-12 flex flex-col items-center gap-6">
-                <div className="flex items-center gap-4">
-                    <button className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-xl border border-white/10 transition-all hover:bg-white/20 active:scale-95">
-                        <Zap className="w-6 h-6 text-white" />
-                    </button>
-                </div>
-
-                <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
             </div>
         </motion.div>
     );

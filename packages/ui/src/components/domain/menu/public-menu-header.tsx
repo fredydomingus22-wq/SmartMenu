@@ -25,7 +25,7 @@ export function PublicMenuHeader({
     return (
         <header className={cn(
             "sticky top-0 w-full bg-background/80 backdrop-blur-xl border-b transition-all duration-300",
-            "z-[var(--z-header,50)]",
+            "z-50",
             className
         )}>
             <div className="w-full px-4 sm:px-8 lg:px-12 h-16 sm:h-20 flex items-center justify-between gap-4">

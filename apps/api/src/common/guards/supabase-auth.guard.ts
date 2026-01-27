@@ -26,13 +26,28 @@ export class SupabaseAuthGuard extends AuthGuard('supabase') {
       context.getClass(),
     ]);
 
-    if (isPublic) {
-      return true;
-    }
-    const result = (await super.canActivate(context)) as boolean;
-    if (!result) return false;
-
     const request: AuthenticatedRequest = context.switchToHttp().getRequest();
+    this.logger.debug(`Guard check: isPublic=${isPublic}, path=${request.url}`);
+
+    if (isPublic) {
+      // For Public routes, we still TRY to authenticate to get the userId if present
+      const authHeader = request.headers.authorization;
+      if (authHeader) {
+        try {
+          await super.canActivate(context);
+        } catch {
+          // If token is invalid on a public route, we just ignore it
+          return true;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      // For NON-PUBLIC routes, perform standard authentication
+      const result = (await super.canActivate(context)) as boolean;
+      if (!result) return false;
+    }
+
     const user = request.user;
 
     // Trigger lazy sync or forced fetch if tenantId is missing or incorrectly set to userId
@@ -60,12 +75,15 @@ export class SupabaseAuthGuard extends AuthGuard('supabase') {
           if (profile.organizationId)
             request.user.organizationId = profile.organizationId;
         }
-      } catch (err: unknown) {
+      } catch {
         this.logger.error(`Failed to force resolve tenant for ${user.userId}`);
       }
+      this.logger.debug(
+        `Final tenant context: ${user.tenantId} for ${user.email} (userId: ${user.userId})`,
+      );
     } else if (user) {
       this.logger.debug(
-        `Tenant context valid: ${user.tenantId} for ${user.email}`,
+        `Fast path: Tenant context ${user.tenantId} for ${user.email} (userId: ${user.userId})`,
       );
     }
 

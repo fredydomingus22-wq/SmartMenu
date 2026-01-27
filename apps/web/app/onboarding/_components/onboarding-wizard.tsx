@@ -77,15 +77,15 @@ export function OnboardingWizard() {
     return (
         <form onSubmit={handleSubmit} className="h-full flex flex-col">
             <div className="flex items-center justify-center space-x-4 mb-8">
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 ${step >= 1 ? 'border-orange-600 bg-orange-50 text-orange-600 dark:bg-orange-900/20' : 'border-zinc-200 text-zinc-400'}`}>
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 ${step >= 1 ? 'border-orange-600 bg-orange-600 text-white' : 'border-zinc-200 text-zinc-400'}`}>
                     <Building2 className="w-5 h-5" />
                 </div>
                 <div className={`h-1 flex-1 rounded transition-all duration-500 ${step >= 2 ? 'bg-orange-600' : 'bg-zinc-100 dark:bg-zinc-800'}`} />
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 ${step >= 2 ? 'border-orange-600 bg-orange-50 text-orange-600 dark:bg-orange-900/20' : 'border-zinc-200 text-zinc-400'}`}>
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 ${step >= 2 ? 'border-orange-600 bg-orange-600 text-white' : 'border-zinc-200 text-zinc-400'}`}>
                     <Store className="w-5 h-5" />
                 </div>
                 <div className={`h-1 flex-1 rounded transition-all duration-500 ${step >= 3 ? 'bg-orange-600' : 'bg-zinc-100 dark:bg-zinc-800'}`} />
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 ${step >= 3 ? 'border-orange-600 bg-orange-50 text-orange-600 dark:bg-orange-900/20' : 'border-zinc-200 text-zinc-400'}`}>
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 ${step >= 3 ? 'border-orange-600 bg-orange-600 text-white' : 'border-zinc-200 text-zinc-400'}`}>
                     <LayoutGrid className="w-5 h-5" />
                 </div>
             </div>

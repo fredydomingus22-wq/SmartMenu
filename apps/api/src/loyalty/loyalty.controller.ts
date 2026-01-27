@@ -76,20 +76,36 @@ export class LoyaltyController {
   }
 
   @Get('my-points')
-  getMyPoints(@Request() req: { user: { userId: string; tenantId: string } }) {
-    return this.loyaltyService.getCustomerPoints(
-      req.user.userId,
-      req.user.tenantId,
+  async getMyPoints(
+    @Request() req: { user: { userId: string; tenantId: string } },
+    @Query('tenantId') tenantId?: string,
+  ) {
+    const targetTenantId = tenantId || req.user.tenantId;
+    console.log(
+      `[LoyaltyController] getMyPoints for user ${req.user.userId} on tenant ${targetTenantId}`,
     );
+
+    const points = await this.loyaltyService.getCustomerPoints(
+      req.user.userId,
+      targetTenantId,
+    );
+
+    console.log(`[LoyaltyController] Found ${points} points`);
+    return { points };
   }
 
   @Get('my-transactions')
   getMyTransactions(
     @Request() req: { user: { userId: string; tenantId: string } },
+    @Query('tenantId') tenantId?: string,
   ) {
+    const targetTenantId = tenantId || req.user.tenantId;
+    console.log(
+      `[LoyaltyController] getMyTransactions for user ${req.user.userId} on tenant ${targetTenantId}`,
+    );
     return this.loyaltyService.getTransactions(
       req.user.userId,
-      req.user.tenantId,
+      targetTenantId,
     );
   }
 
@@ -108,17 +124,21 @@ export class LoyaltyController {
   redeem(
     @Request() req: { user: { userId: string; tenantId: string } },
     @Param('rewardId') rewardId: string,
+    @Query('tenantId') tenantId?: string,
   ) {
     return this.loyaltyService.redeemReward(
       req.user.userId,
-      req.user.tenantId,
+      tenantId || req.user.tenantId,
       rewardId,
     );
   }
 
   @Get('global-summary')
-  getGlobalSummary(@Request() req: { user: { userId: string } }) {
-    return this.loyaltyService.getGlobalSummary(req.user.userId);
+  async getGlobalSummary(@Request() req: { user: { userId: string } }) {
+    console.log(`[LoyaltyController] getGlobalSummary for user ${req.user.userId}`);
+    const summary = await this.loyaltyService.getGlobalSummary(req.user.userId);
+    console.log(`[LoyaltyController] Global summary:`, summary);
+    return summary;
   }
 
   @Get('my-profiles')

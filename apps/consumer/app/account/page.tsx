@@ -77,7 +77,7 @@ export default function AccountPage() {
                         <ArrowLeft className="w-5 h-5" />
                     </Button>
                     <h1 className="text-2xl font-black italic tracking-tighter">
-                        Minha <span className="text-orange-600">Conta</span>
+                        Minha <span className="text-orange-700 dark:text-orange-400">Conta</span>
                     </h1>
                 </div>
 
@@ -105,7 +105,7 @@ export default function AccountPage() {
                             className="w-full flex items-center justify-between p-5 rounded-[2rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all group active:scale-[0.98]"
                         >
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-orange-600 group-hover:bg-orange-50 transition-colors">
+                                <div className="w-12 h-12 rounded-2xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-orange-700 dark:group-hover:text-orange-400 group-hover:bg-orange-50 dark:group-hover:bg-orange-950/30 transition-colors">
                                     <item.icon className="w-5 h-5" />
                                 </div>
                                 <div className="text-left">
@@ -135,8 +135,8 @@ export default function AccountPage() {
             </PageContainer>
 
             {/* Footer Nav */}
-            <div className="fixed bottom-6 left-6 right-6 h-16 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-2xl flex items-center justify-around px-8">
-                <button onClick={() => router.push('/')} className="text-zinc-400 hover:text-zinc-600 flex flex-col items-center gap-1 transition-colors">
+            <div className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] left-6 right-6 h-16 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-2xl flex items-center justify-around px-8 z-50">
+                <button onClick={() => router.push('/')} className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 flex flex-col items-center gap-1 transition-colors">
                     <User className="w-6 h-6" /> { /* Should be Scan but using User for visual test if icons are swapped */}
                     <span className="text-[10px] font-bold uppercase tracking-tighter">Scan</span>
                 </button>
@@ -144,8 +144,8 @@ export default function AccountPage() {
                     <Star className="w-6 h-6" />
                     <span className="text-[10px] font-bold uppercase tracking-tighter">Pontos</span>
                 </button>
-                <button className="text-orange-600 flex flex-col items-center gap-1">
-                    <div className="w-6 h-6 rounded-full border-2 border-orange-600 overflow-hidden bg-orange-600/10 flex items-center justify-center">
+                <button className="text-orange-700 dark:text-orange-400 flex flex-col items-center gap-1">
+                    <div className="w-6 h-6 rounded-full border-2 border-orange-700 dark:border-orange-400 overflow-hidden bg-orange-700/10 dark:bg-orange-400/10 flex items-center justify-center">
                         <span className="text-[8px] font-black">{user?.name?.[0] || 'U'}</span>
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-tighter">Conta</span>

@@ -71,6 +71,13 @@ export function ProductDetailSheet({
         return (Number(product.price) + extra) * quantity;
     }, [product, selectedOptions, quantity]);
 
+    const canAddToCart = useMemo(() => {
+        if (!product) return false;
+        // Check if all required options have at least one selection
+        const requiredOptions = product.options?.filter(o => o.isRequired) || [];
+        return requiredOptions.every(opt => (selectedOptions[opt.id]?.length || 0) > 0);
+    }, [product, selectedOptions]);
+
     if (!product) return null;
 
     const handleAddToCart = () => {
@@ -123,6 +130,10 @@ export function ProductDetailSheet({
     };
 
     const toggleOption = (optionId: string, valueId: string, maxChoices: number) => {
+        if (typeof navigator !== 'undefined' && navigator.vibrate) {
+            navigator.vibrate(10);
+        }
+
         setSelectedOptions(prev => {
             const current = prev[optionId] || [];
             if (current.includes(valueId)) {
@@ -140,7 +151,10 @@ export function ProductDetailSheet({
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
-            <SheetContent side="right" className="w-full sm:max-w-lg p-0 flex flex-col gap-0 border-l-0 sm:border-l overflow-hidden bg-background">
+            <SheetContent
+                side="right"
+                className="w-full sm:max-w-lg p-0 flex flex-col gap-0 border-l-0 sm:border-l overflow-hidden bg-background h-[92vh] sm:h-full mt-[8vh] sm:mt-0 rounded-t-[2.5rem] sm:rounded-none"
+            >
                 <SheetHeader className="p-4 border-b shrink-0 flex flex-row items-center justify-between space-y-0">
                     <div>
                         <SheetTitle className="text-xl font-bold">{getTranslatedValue(product.name, locale)}</SheetTitle>
@@ -296,7 +310,7 @@ export function ProductDetailSheet({
                         <Button
                             className="w-full h-14 rounded-lg text-lg font-bold shadow-xl shadow-primary/20 hover:scale-[1.01] active:scale-[0.99] transition-all"
                             onClick={handleAddToCart}
-                            disabled={isAdding || success}
+                            disabled={isAdding || success || !canAddToCart}
                         >
                             {success ? (
                                 <>
@@ -308,6 +322,8 @@ export function ProductDetailSheet({
                                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                                     {t('cart.adding') || 'Adicionando...'}
                                 </>
+                            ) : !canAddToCart ? (
+                                t('menu.select_required') || "Selecione as opções obrigatórias"
                             ) : (
                                 t('cart.add_to_cart_full') || "Adicionar ao Carrinho"
                             )}

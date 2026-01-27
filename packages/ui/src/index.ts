@@ -62,10 +62,12 @@ export * from "./components/domain/menu/product-detail-sheet";
 export * from "./components/domain/menu/qr-scanner-overlay";
 export * from "./components/domain/menu/global-loyalty-summary";
 export * from "./components/domain/menu/recent-visit-card";
-export * from './components/layout/dashboard-nav';
-export * from './components/layout/content-transition';
 
 // Animation Components
 export * from './components/animations/animated-cart-icon';
 export * from './components/animations/flying-product';
 export * from './components/animations/route-transition';
+
+// Dashboard Layout Components (reused by apps/web)
+export * from './components/layout/dashboard-nav';
+export * from './components/layout/content-transition';

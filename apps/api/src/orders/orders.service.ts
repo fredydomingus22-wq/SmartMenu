@@ -44,26 +44,44 @@ export class OrdersService {
   async create(
     createOrderDto: CreateOrderDto,
     tenantId: string,
-    organizationId: string,
+    providedOrganizationId: string,
     userId?: string,
   ) {
     const { tableId, items, orderType, deliveryAddress } = createOrderDto;
 
+    // 0. Resolve correct organizationId from Tenant (Safety)
+    const tenant = await this.prisma.tenant.findUnique({
+      where: { id: tenantId },
+      select: { organizationId: true },
+    });
+    if (!tenant) throw new Error('Restaurant not found');
+    const organizationId = tenant.organizationId;
+
     // Resolve Table UUID if manual number provided
-    let finalTableId = tableId;
+    let finalTableId = tableId && tableId.trim() !== '' ? tableId : null;
     if (orderType === 'DINE_IN_GENERAL' && tableId) {
-      const tableNumber = parseInt(tableId, 10);
-      if (!isNaN(tableNumber)) {
-        const table = await this.prisma.table.findFirst({
-          where: {
-            tenantId,
-            number: tableNumber,
-          },
-        });
-        if (!table) {
-          throw new Error(`Table ${tableNumber} not found in this restaurant`);
+      // If it's not a UUID, assume it's a table number and resolve it
+      const isUuid =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+          tableId,
+        );
+
+      if (!isUuid) {
+        const tableNumber = parseInt(tableId, 10);
+        if (!isNaN(tableNumber)) {
+          const table = await this.prisma.table.findFirst({
+            where: {
+              tenantId,
+              number: tableNumber,
+            },
+          });
+          if (!table) {
+            throw new Error(
+              `Table ${tableNumber} not found in this restaurant`,
+            );
+          }
+          finalTableId = table.id;
         }
-        finalTableId = table.id;
       }
     }
 
@@ -78,7 +96,6 @@ export class OrdersService {
         where: {
           id: { in: productIds },
           tenantId,
-          organizationId,
           isAvailable: true,
         },
       }),
@@ -87,15 +104,26 @@ export class OrdersService {
           where: {
             id: { in: optionValueIds },
             tenantId,
-            organizationId,
             isAvailable: true,
           },
         })
         : [],
     ]);
 
-    if (products.length !== items.length) {
-      throw new Error('One or more products are invalid or unavailable');
+    const uniqueProductIds = new Set(productIds);
+    if (products.length !== uniqueProductIds.size) {
+      const foundIds = products.map((p: Product) => p.id);
+      const missingIds = productIds.filter((id) => !foundIds.includes(id));
+      console.error('[OrdersService] Product validation failed:', {
+        requestedIds: productIds,
+        foundIds,
+        missingIds,
+        tenantId,
+        organizationId,
+      });
+      throw new Error(
+        `One or more products are invalid or unavailable: ${missingIds.join(', ')}`,
+      );
     }
 
     // Identify missing option values if any were requested
@@ -131,8 +159,8 @@ export class OrdersService {
 
     let total = 0;
 
-    const order = await this.prisma.$transaction(async (tx) => {
-      // Calculate total and prepare items
+    try {
+      // Calculate total and prepare items (no DB calls needed here)
       const orderItemsData = items.map((item) => {
         const product = products.find((p: Product) => p.id === item.productId);
         if (!product) throw new Error(`Product ${item.productId} not found`);
@@ -146,7 +174,7 @@ export class OrdersService {
           itemSubtotal += Number(val.price);
           return {
             productOptionValueId: val.id,
-            price: val.price, // Use official DB price
+            price: val.price,
             tenantId,
             organizationId,
           };
@@ -154,9 +182,7 @@ export class OrdersService {
 
         // Handle Free Product Reward (applies only once)
         if (appliedReward?.productId === item.productId) {
-          // Effectively subtract one product price (base + options) from total
           total += itemSubtotal * (item.quantity - 1);
-          // Resetting appliedReward.productId so it only applies to ONE item
           appliedReward.productId = null;
         } else {
           total += itemSubtotal * item.quantity;
@@ -179,17 +205,30 @@ export class OrdersService {
         total = Math.max(0, total - Number(appliedReward.discountAmount));
       }
 
-      const newOrder = await tx.order.create({
+      // Resolve Customer Profile if userId present (sequential query)
+      let customerProfileId: string | null = null;
+      if (userId) {
+        const profile = await this.loyaltyService.getCustomerProfile(userId, tenantId);
+        customerProfileId = profile.id;
+      }
+
+      // Create the order (single atomic operation)
+      const order = await this.prisma.order.create({
         data: {
-          tenantId,
-          organizationId,
-          tableId: finalTableId,
-          userId,
+          tenant: { connect: { id: tenantId } },
+          organization: { connect: { id: organizationId } },
+          ...(finalTableId && { table: { connect: { id: finalTableId } } }),
+          ...(userId && { user: { connect: { id: userId } } }),
+          ...(customerProfileId && {
+            customerProfile: { connect: { id: customerProfileId } },
+          }),
           total,
           status: 'PENDING',
           orderType: orderType || 'DINE_IN',
           deliveryAddress: deliveryAddress || null,
-          loyaltyRewardId: loyaltyRewardId || null,
+          ...(loyaltyRewardId && {
+            loyaltyReward: { connect: { id: loyaltyRewardId } },
+          }),
           items: {
             create: orderItemsData,
           },
@@ -207,38 +246,34 @@ export class OrdersService {
         },
       });
 
-      // 4. Trigger points deduction
+      // Trigger points deduction (sequential, after order created)
       if (loyaltyRewardId && userId) {
-        await this.loyaltyService.redeemReward(
-          userId,
-          tenantId,
-          loyaltyRewardId,
-          tx,
-        );
+        await this.loyaltyService.redeemReward(userId, tenantId, loyaltyRewardId);
       }
 
-      return newOrder;
-    });
+      // Broadcast event
+      await this.broadcastOrderEvent(tenantId, 'ORDER_CREATED', order);
 
-    // 4. Broadcast event
-    await this.broadcastOrderEvent(tenantId, 'ORDER_CREATED', order);
+      // Emit internal event for automation
+      this.eventEmitter.emit(
+        'order.created',
+        new OrderCreatedEvent(
+          order.id,
+          tenantId,
+          userId || null,
+          order.items.map((i: { productId: string; quantity: number }) => ({
+            productId: i.productId,
+            quantity: i.quantity,
+          })),
+          Number(order.total),
+        ),
+      );
 
-    // 5. Emit internal event for automation
-    this.eventEmitter.emit(
-      'order.created',
-      new OrderCreatedEvent(
-        order.id,
-        tenantId,
-        userId || null,
-        order.items.map((i) => ({
-          productId: i.productId,
-          quantity: i.quantity,
-        })),
-        Number(order.total),
-      ),
-    );
-
-    return order;
+      return order;
+    } catch (error) {
+      console.error('[OrdersService] Error creating order:', error);
+      throw error;
+    }
   }
 
   async findAll(tenantId: string, organizationId: string, scope?: string) {

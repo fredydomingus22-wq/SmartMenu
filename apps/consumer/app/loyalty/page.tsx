@@ -64,8 +64,8 @@ export default function LoyaltyHubPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-black">
-                <Loader2 className="w-8 h-8 animate-spin text-orange-600" />
+            <div className="min-h-[100dvh] flex items-center justify-center bg-zinc-50 dark:bg-black">
+                <Loader2 className="w-8 h-8 animate-spin text-orange-700 dark:text-orange-400" />
             </div>
         );
     }
@@ -84,7 +84,7 @@ export default function LoyaltyHubPage() {
                         <ArrowLeft className="w-5 h-5" />
                     </Button>
                     <h1 className="text-2xl font-black italic tracking-tighter">
-                        Clube de <span className="text-orange-600">Pontos</span>
+                        Clube de <span className="text-orange-700 dark:text-orange-400">Pontos</span>
                     </h1>
                 </div>
 
@@ -114,7 +114,7 @@ export default function LoyaltyHubPage() {
                     <div className="flex items-center justify-between">
                         <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-400">Meus Restaurantes</h3>
                         <div className="w-8 h-8 rounded-full bg-orange-50 dark:bg-orange-950/20 flex items-center justify-center">
-                            <Gift className="w-4 h-4 text-orange-600" />
+                            <Gift className="w-4 h-4 text-orange-700 dark:text-orange-400" />
                         </div>
                     </div>
 
@@ -147,19 +147,19 @@ export default function LoyaltyHubPage() {
                                         <div className="flex items-center gap-4 text-left">
                                             <Avatar className="w-14 h-14 border-2 border-orange-500/10">
                                                 <AvatarImage src={profile.tenant.images?.[0]} alt={profile.tenant.name} />
-                                                <AvatarFallback className="bg-orange-50 text-orange-600 font-bold">{profile.tenant.name[0]}</AvatarFallback>
+                                                <AvatarFallback className="bg-orange-50 dark:bg-orange-950/30 text-orange-700 dark:text-orange-400 font-bold">{profile.tenant.name[0]}</AvatarFallback>
                                             </Avatar>
                                             <div>
                                                 <h4 className="font-bold text-zinc-900 dark:text-zinc-50">{profile.tenant.name}</h4>
                                                 <div className="flex items-center gap-1.5 mt-0.5">
                                                     <Star className="w-3 h-3 text-orange-500 fill-orange-500" />
-                                                    <span className="text-sm font-black text-orange-600">
+                                                    <span className="text-sm font-black text-orange-700 dark:text-orange-400">
                                                         {profile.pointsBalance} <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-tighter ml-0.5">pontos</span>
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="w-10 h-10 rounded-full bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-orange-600 group-hover:bg-orange-50 transition-colors">
+                                        <div className="w-10 h-10 rounded-full bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-orange-700 dark:group-hover:text-orange-400 group-hover:bg-orange-50 dark:group-hover:bg-orange-950/30 transition-colors">
                                             <ChevronRight className="w-5 h-5" />
                                         </div>
                                     </motion.button>
@@ -189,13 +189,13 @@ export default function LoyaltyHubPage() {
             </PageContainer>
 
             {/* Footer Nav */}
-            <div className="fixed bottom-6 left-6 right-6 h-16 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-2xl flex items-center justify-around px-8">
+            <div className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] left-6 right-6 h-16 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-2xl flex items-center justify-around px-8 z-50">
                 <button onClick={() => router.push('/')} className="text-zinc-400 hover:text-zinc-600 flex flex-col items-center gap-1 transition-colors">
                     <Star className="w-6 h-6" />
                     <span className="text-[10px] font-bold uppercase tracking-tighter">Scan</span>
                 </button>
-                <button className="text-orange-600 flex flex-col items-center gap-1">
-                    <Star className="w-6 h-6 fill-orange-600/20" />
+                <button className="text-orange-700 dark:text-orange-400 flex flex-col items-center gap-1">
+                    <Star className="w-6 h-6 fill-orange-700/20 dark:fill-orange-400/20" />
                     <span className="text-[10px] font-bold uppercase tracking-tighter">Pontos</span>
                 </button>
                 <button onClick={() => router.push('/account')} className="text-zinc-400 hover:text-zinc-600 flex flex-col items-center gap-1 transition-colors">

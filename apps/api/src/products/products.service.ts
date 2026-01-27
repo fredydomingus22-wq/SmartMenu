@@ -6,7 +6,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   private normalizeJson(value: any): Prisma.InputJsonValue {
     if (!value) return null as unknown as Prisma.InputJsonValue;
@@ -118,8 +118,15 @@ export class ProductsService {
     tenantId: string,
     organizationId: string,
   ): Promise<any> {
-    const { categoryId, images, options, upsells, recommendations, metadata, ...data } =
-      updateProductDto;
+    const {
+      categoryId,
+      images,
+      options,
+      upsells,
+      recommendations,
+      metadata,
+      ...data
+    } = updateProductDto;
 
     // Use transaction to ensure both operations succeed
     return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
@@ -158,57 +165,57 @@ export class ProductsService {
           ...(categoryId ? { categoryId } : {}),
           ...(images
             ? {
-              images: {
-                create: images.map((url, index) => ({
-                  url,
-                  order: index,
-                })),
-              },
-            }
+                images: {
+                  create: images.map((url, index) => ({
+                    url,
+                    order: index,
+                  })),
+                },
+              }
             : {}),
           ...(upsells
             ? {
-              upsells: {
-                create: upsells.map((upsellId) => ({
-                  upsellId,
-                  tenantId,
-                })),
-              },
-            }
+                upsells: {
+                  create: upsells.map((upsellId) => ({
+                    upsellId,
+                    tenantId,
+                  })),
+                },
+              }
             : {}),
           ...(recommendations
             ? {
-              recommendations: {
-                create: recommendations.map((recommendedId) => ({
-                  recommendedId,
-                  tenantId,
-                })),
-              },
-            }
+                recommendations: {
+                  create: recommendations.map((recommendedId) => ({
+                    recommendedId,
+                    tenantId,
+                  })),
+                },
+              }
             : {}),
           ...(options
             ? {
-              options: {
-                create: options.map((opt) => ({
-                  name: this.normalizeJson(opt.name),
-                  description: this.normalizeJson(opt.description),
-                  minChoices: opt.minChoices,
-                  maxChoices: opt.maxChoices,
-                  isRequired: opt.isRequired,
-                  tenantId,
-                  organizationId,
-                  values: {
-                    create: opt.values.map((v) => ({
-                      name: this.normalizeJson(v.name),
-                      price: v.price,
-                      isAvailable: v.isAvailable ?? true,
-                      tenantId,
-                      organizationId,
-                    })),
-                  },
-                })),
-              },
-            }
+                options: {
+                  create: options.map((opt) => ({
+                    name: this.normalizeJson(opt.name),
+                    description: this.normalizeJson(opt.description),
+                    minChoices: opt.minChoices,
+                    maxChoices: opt.maxChoices,
+                    isRequired: opt.isRequired,
+                    tenantId,
+                    organizationId,
+                    values: {
+                      create: opt.values.map((v) => ({
+                        name: this.normalizeJson(v.name),
+                        price: v.price,
+                        isAvailable: v.isAvailable ?? true,
+                        tenantId,
+                        organizationId,
+                      })),
+                    },
+                  })),
+                },
+              }
             : {}),
         },
         include: {

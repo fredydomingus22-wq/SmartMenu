@@ -34,13 +34,17 @@ async function bootstrap() {
     app.enableCors({
       origin:
         process.env.NODE_ENV === 'production'
-          ? ['https://yourdomain.com'] // Replace with actual domain
+          ? [
+              'https://smart-menu-consumer.vercel.app',
+              'https://smart-menu-admin.vercel.app',
+              /\.vercel\.app$/,
+            ]
           : [
-            'http://localhost:3000',
-            'http://localhost:3001',
-            'http://localhost:3002',
-            'exp://localhost:8081',
-          ],
+              'http://localhost:3000',
+              'http://localhost:3001',
+              'http://localhost:3002',
+              'exp://localhost:8081',
+            ],
       credentials: true,
     });
 

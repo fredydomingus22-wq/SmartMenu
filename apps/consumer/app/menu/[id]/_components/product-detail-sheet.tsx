@@ -19,7 +19,6 @@ export function ProductDetailSheet({ product, open, onOpenChange }: ProductDetai
             onOpenChange={onOpenChange}
             locale={locale}
             t={t}
-            removalsOptions={["Cebola", "Ketchup", "Maionese", "Alface", "Tomate"]}
         />
     );
 }

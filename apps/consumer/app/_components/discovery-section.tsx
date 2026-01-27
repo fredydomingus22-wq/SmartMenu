@@ -37,7 +37,7 @@ export function DiscoverySection() {
                     if (Array.isArray(data)) {
                         setRestaurants(data);
                     } else {
-                        console.error("Discovery API did not return an array", data);
+                        console.error("Discovery API did not return an array", JSON.stringify(data));
                         setRestaurants([]);
                     }
                     setFetching(false);
@@ -56,7 +56,7 @@ export function DiscoverySection() {
                 animate={{ opacity: 1, y: 0 }}
                 className="p-8 rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-white/5 shadow-xl shadow-orange-500/5 flex flex-col items-center text-center gap-6"
             >
-                <div className="w-16 h-16 rounded-full bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-600">
+                <div className="w-16 h-16 rounded-full bg-orange-50 dark:bg-orange-950/30 flex items-center justify-center text-orange-700 dark:text-orange-400">
                     <MapPin className="w-8 h-8" />
                 </div>
                 <div className="space-y-2">
@@ -89,7 +89,7 @@ export function DiscoverySection() {
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                     <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-400">Perto de você</h3>
                 </div>
-                <button className="text-[10px] font-black uppercase text-orange-600 tracking-tighter">Limpar</button>
+                <button className="text-[10px] font-black uppercase text-orange-700 dark:text-orange-400 tracking-tighter">Limpar</button>
             </div>
 
             <div className="space-y-4">
@@ -117,12 +117,12 @@ export function DiscoverySection() {
                                 <div className="flex items-center gap-4 text-left">
                                     <Avatar className="w-14 h-14 border-2 border-orange-500/10">
                                         <AvatarImage src={rest.logoUrl} alt={rest.name} />
-                                        <AvatarFallback className="bg-orange-50 text-orange-600 font-bold">{rest.name[0]}</AvatarFallback>
+                                        <AvatarFallback className="bg-orange-50 dark:bg-orange-950/30 text-orange-700 dark:text-orange-400 font-bold">{rest.name[0]}</AvatarFallback>
                                     </Avatar>
                                     <div>
                                         <div className="flex items-center gap-2">
                                             <h4 className="font-bold text-zinc-900 dark:text-zinc-50">{rest.name}</h4>
-                                            <span className="text-[9px] font-black bg-orange-100 dark:bg-orange-900/30 text-orange-600 px-2 py-0.5 rounded-full">
+                                            <span className="text-[9px] font-black bg-orange-100 dark:bg-orange-950/30 text-orange-700 dark:text-orange-400 px-2 py-0.5 rounded-full">
                                                 {rest.distance}
                                             </span>
                                         </div>
@@ -131,7 +131,7 @@ export function DiscoverySection() {
                                         </p>
                                     </div>
                                 </div>
-                                <div className="w-10 h-10 rounded-full bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-orange-600 group-hover:bg-orange-50 transition-colors">
+                                <div className="w-10 h-10 rounded-full bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-orange-700 dark:group-hover:text-orange-400 group-hover:bg-orange-50 dark:group-hover:bg-orange-950/30 transition-colors">
                                     <ChevronRight className="w-5 h-5" />
                                 </div>
                             </motion.button>

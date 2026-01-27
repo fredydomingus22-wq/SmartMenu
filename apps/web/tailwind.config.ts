@@ -7,6 +7,7 @@ const config: Config = {
         "./components/**/*.{ts,tsx}",
         "./app/**/*.{ts,tsx}",
         "./src/**/*.{ts,tsx}",
+        "../../packages/ui/src/**/*.{ts,tsx}",
     ],
     prefix: "",
     theme: {
@@ -81,6 +82,14 @@ const config: Config = {
             animation: {
                 "accordion-down": "accordion-down 0.2s ease-out",
                 "accordion-up": "accordion-up 0.2s ease-out",
+            },
+            zIndex: {
+                header: "var(--z-header)",
+                portal: "var(--z-portal)",
+                toast: "var(--z-toast)",
+                "flying-item": "var(--z-flying-item)",
+                "category-nav": "var(--z-category-nav)",
+                "sticky-cta": "var(--z-sticky-cta)",
             },
         },
     },

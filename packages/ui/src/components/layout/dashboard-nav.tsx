@@ -55,7 +55,7 @@ export interface DashboardNavProps {
 
 export function DashboardNav({
     items,
-    activeClassName = "text-orange-600 dark:text-orange-500",
+    activeClassName = "text-orange-700 dark:text-orange-400",
     inactiveClassName = "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
 }: DashboardNavProps) {
     const pathname = usePathname();
@@ -91,7 +91,7 @@ export function DashboardNav({
                         <div className="relative flex items-center gap-3">
                             <IconComponent className={cn(
                                 "h-5 w-5 transition-transform duration-300 group-hover:scale-110",
-                                isActive ? "text-orange-600" : "text-zinc-400"
+                                isActive ? "text-orange-700 dark:text-orange-400" : "text-zinc-400"
                             )} />
                             <span className="tracking-tight">{item.label}</span>
                         </div>

@@ -57,9 +57,8 @@ export function Hero({
                         src={imageUrl}
                         alt={title}
                         fill
-                        className="object-cover transition-transform duration-[2s] scale-105 hover:scale-100"
+                        className="object-cover transition-transform duration-[2s] scale-100 group-hover:scale-105"
                         priority
-                        unoptimized
                     />
                 ) : (
                     <div className="w-full h-full bg-primary/10 animate-pulse" />
