@@ -1,0 +1,141 @@
+# Marketing Audit – Core Templates
+
+This document contains execution-ready templates used across the Marketing, SEO & Narrative Audit Workflow.
+
+---
+
+## 1. Strategic Gap Map Template
+
+### Context
+
+* **Page / Flow:**
+* **Target Audience:**
+* **Primary Job-To-Be-Done:**
+* **Stage of Funnel:** Awareness / Activation / Conversion / Retention
+
+### Current Perception vs Intended Positioning
+
+| Dimension           | Current State | Intended State | Gap Severity (Low / Medium / High) |
+| ------------------- | ------------- | -------------- | ---------------------------------- |
+| Value Proposition   |               |                |                                    |
+| Differentiation     |               |                |                                    |
+| Clarity             |               |                |                                    |
+| Trust & Credibility |               |                |                                    |
+| CTA Effectiveness   |               |                |                                    |
+
+### Key Observations
+
+*
+*
+*
+
+### Strategic Risks
+
+* What users may misunderstand:
+* Where users may hesitate:
+* Where users may drop:
+
+### Strategic Recommendations
+
+* Priority fixes:
+* Messaging shifts required:
+* Elements to remove or simplify:
+
+---
+
+## 2. Copy & Microcopy Specification Template
+
+### Scope
+
+* **Surface:** Landing Page / Dashboard / System Flow / Feature
+* **User Type:** First-time / Returning / Power User
+* **System State:** Default / Empty / Loading / Error / Success
+
+### Macro Copy
+
+**Headline (Final):**
+
+## **Alternative Headline(s):**
+
+*
+
+**Subheadline (Final):**
+
+**Value Proposition Statement:**
+
+**Rationale:**
+
+* Why this wording was chosen
+* Which objection it resolves
+
+---
+
+### Microcopy
+
+| Element         | Current Copy | Proposed Copy | Intent | Notes |
+| --------------- | ------------ | ------------- | ------ | ----- |
+| Button          |              |               |        |       |
+| Label           |              |               |        |       |
+| Helper Text     |              |               |        |       |
+| Empty State     |              |               |        |       |
+| Error Message   |              |               |        |       |
+| Success Message |              |               |        |       |
+
+### UX Writing Rules Applied
+
+* Verb-first language
+* Outcome-oriented wording
+* Reduced cognitive load
+
+### A/B Testing Notes (Optional)
+
+* What can be tested:
+* Hypothesis:
+* Success metric:
+
+---
+
+## 3. Flywheel Opportunity Matrix Template
+
+### Opportunity Overview
+
+* **Name:**
+* **Category:** SEO / Product-Led / Content / Distribution
+* **Primary Trigger:**
+
+### Flywheel Definition
+
+| Step               | Description |
+| ------------------ | ----------- |
+| Trigger            |             |
+| User Action        |             |
+| System Response    |             |
+| Reinforcement Loop |             |
+
+### Value Exchange
+
+* **User Gains:**
+* **Business Gains:**
+
+### Evaluation Matrix
+
+| Criteria              | Score (1–5) | Notes |
+| --------------------- | ----------- | ----- |
+| Impact Potential      |             |       |
+| Implementation Effort |             |       |
+| Time-to-Value         |             |       |
+| Scalability           |             |       |
+
+### Recommendation
+
+* **Priority Level:** Low / Medium / High
+* **Next Action:** Validate / Prototype / Implement
+* **Dependencies & Risks:**
+
+---
+
+## Usage Notes
+
+* These templates are mandatory outputs for the Marketing, SEO & Narrative Audit Workflow.
+* All sections should be concise, factual, and action-oriented.
+* Avoid generic language and unsupported assumptions.

@@ -9,6 +9,7 @@ export async function login(formData: FormData) {
     const email = formData.get('email') as string
     const password = formData.get('password') as string
     const tenantId = formData.get('tenantId') as string | null
+    const returnTo = formData.get('returnTo') as string | null
 
     const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -16,10 +17,14 @@ export async function login(formData: FormData) {
     })
 
     if (error) {
-        const errorUrl = tenantId
-            ? `/login?tenantId=${tenantId}&error=${encodeURIComponent(error.message)}`
-            : `/login?error=${encodeURIComponent(error.message)}`;
+        let errorUrl = `/login?error=${encodeURIComponent(error.message)}`;
+        if (tenantId) errorUrl += `&tenantId=${tenantId}`;
+        if (returnTo) errorUrl += `&returnTo=${encodeURIComponent(returnTo)}`;
         return redirect(errorUrl);
+    }
+
+    if (returnTo) {
+        return redirect(returnTo);
     }
 
     if (tenantId) {
@@ -36,6 +41,7 @@ export async function signup(formData: FormData) {
     const password = formData.get('password') as string
     const name = formData.get('name') as string
     const tenantId = formData.get('tenantId') as string | null
+    const returnTo = formData.get('returnTo') as string | null
 
     const { error } = await supabase.auth.signUp({
         email,
@@ -45,21 +51,23 @@ export async function signup(formData: FormData) {
                 full_name: name,
                 role: 'CUSTOMER',
             },
+            emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback${returnTo ? `?next=${encodeURIComponent(returnTo)}` : ''}`
         }
     })
 
     if (error) {
-        const errorUrl = tenantId
-            ? `/login?tenantId=${tenantId}&error=${encodeURIComponent(error.message)}`
-            : `/login?error=${encodeURIComponent(error.message)}`;
+        let errorUrl = `/login?error=${encodeURIComponent(error.message)}`;
+        if (tenantId) errorUrl += `&tenantId=${tenantId}`;
+        if (returnTo) errorUrl += `&returnTo=${encodeURIComponent(returnTo)}`;
         return redirect(errorUrl);
     }
 
-    if (tenantId) {
-        return redirect(`/menu/${tenantId}?message=${encodeURIComponent("Conta criada com sucesso! Verifique o seu email.")}`);
-    }
+    const successMsg = "Conta criada! Verifique o seu email para confirmar.";
+    let successUrl = `/login?message=${encodeURIComponent(successMsg)}`;
+    if (tenantId) successUrl += `&tenantId=${tenantId}`;
+    if (returnTo) successUrl += `&returnTo=${encodeURIComponent(returnTo)}`;
 
-    return redirect(`/login?message=${encodeURIComponent("Conta criada com sucesso! Verifique o seu email.")}`);
+    return redirect(successUrl);
 }
 
 export async function signOut(tenantId?: string) {

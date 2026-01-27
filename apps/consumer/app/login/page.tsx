@@ -8,9 +8,9 @@ import { login, signup } from "../actions/auth";
 export default async function ConsumerLoginPage({
     searchParams
 }: {
-    searchParams: Promise<{ tenantId?: string; error?: string; message?: string }>
+    searchParams: Promise<{ tenantId?: string; error?: string; message?: string; returnTo?: string }>
 }) {
-    const { tenantId, error, message } = await searchParams;
+    const { tenantId, error, message, returnTo } = await searchParams;
 
     let branding: TenantBranding | null = null;
     if (tenantId) {
@@ -47,8 +47,8 @@ export default async function ConsumerLoginPage({
                             <h2 className="text-2xl font-bold">{restaurantName}</h2>
                             <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
                                 {tenantId
-                                    ? `Inicie sessão para ganhar pontos no ${restaurantName}.`
-                                    : "Bem-vindo ao SmartMenu."}
+                                    ? `Junte-se ao clube e comece a ganhar pontos no ${restaurantName}.`
+                                    : "Entre para o universo SmartMenu e ganhe benefícios reais."}
                             </p>
                         </div>
                     </div>
@@ -81,6 +81,7 @@ export default async function ConsumerLoginPage({
                                 </CardHeader>
                                 <form action={login}>
                                     <input type="hidden" name="tenantId" value={tenantId} />
+                                    <input type="hidden" name="returnTo" value={returnTo} />
                                     <CardContent className="space-y-4">
                                         <div className="space-y-2">
                                             <Label htmlFor="email">Email</Label>
@@ -121,6 +122,7 @@ export default async function ConsumerLoginPage({
                                 </CardHeader>
                                 <form action={signup}>
                                     <input type="hidden" name="tenantId" value={tenantId} />
+                                    <input type="hidden" name="returnTo" value={returnTo} />
                                     <ScrollArea className="max-h-[80dvh]">
                                         <CardContent className="space-y-4 pr-4">
                                             <div className="space-y-2">

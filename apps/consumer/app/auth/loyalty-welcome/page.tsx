@@ -5,8 +5,6 @@ import {
     AppShell,
     PageContainer,
     Button,
-    Card,
-    CardContent
 } from "@smart-menu/ui";
 import { Star, Gift, Zap, ArrowRight, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
@@ -66,22 +64,43 @@ export default function LoyaltyWelcomePage() {
                     >
                         <Star className="w-10 h-10 text-orange-600 fill-orange-600" />
                     </motion.div>
+
                     <motion.h1
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        className="text-3xl font-black italic tracking-tighter leading-tight"
+                        className="text-3xl font-black italic tracking-tighter leading-tight uppercase"
                     >
-                        TRANSFORME CADA SABOR EM <br />
-                        <span className="text-orange-600">RECOMPENSAS</span>
+                        PEÇA O SEU FAVORITO E <br />
+                        <span className="text-orange-600">GANHE RECOMPENSAS</span>
                     </motion.h1>
+
                     <motion.p
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.1 }}
-                        className="text-zinc-500 font-medium max-w-[280px] mx-auto"
+                        className="text-zinc-500 font-medium max-w-[280px] mx-auto text-sm"
                     >
-                        Junte-se ao nosso clube exclusivo e aproveite o melhor da gastronomia com vantagens reais.
+                        O Clube SmartMenu é a sua chave para experiências exclusivas e pratos por conta da casa.
                     </motion.p>
+
+                    {/* Social Proof Badge */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50 dark:bg-zinc-900 border border-orange-100 dark:border-white/5 mx-auto"
+                    >
+                        <div className="flex -space-x-1.5">
+                            {[1, 2, 3].map(i => (
+                                <div key={i} className="w-4 h-4 rounded-full bg-orange-200 border border-white dark:border-zinc-900 flex items-center justify-center overflow-hidden">
+                                    <Star className="w-2 h-2 text-orange-600 fill-orange-600" />
+                                </div>
+                            ))}
+                        </div>
+                        <span className="text-[9px] font-black text-orange-700 dark:text-orange-500 uppercase tracking-tighter">
+                            +10k membros na rede
+                        </span>
+                    </motion.div>
                 </header>
 
                 {/* Benefits List */}
@@ -111,11 +130,11 @@ export default function LoyaltyWelcomePage() {
                         onClick={handleProceed}
                         className="w-full h-18 rounded-[2rem] bg-orange-600 hover:bg-orange-700 text-white text-lg font-bold shadow-2xl shadow-orange-600/30 gap-3"
                     >
-                        Criar minha conta agora
+                        Quero meus benefícios VIP
                         <ArrowRight className="w-5 h-5" />
                     </Button>
                     <p className="text-center text-[10px] text-zinc-400 font-bold uppercase tracking-widest">
-                        Leva menos de 1 minuto • Grátis para sempre
+                        Grátis para sempre • Seguro • 100% Digital
                     </p>
                 </div>
             </PageContainer>

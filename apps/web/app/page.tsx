@@ -75,13 +75,13 @@ export default function LandingPage() {
                 <span>TECNOLOGIA DE PONTA PARA O SEU RESTAURANTE</span>
               </div>
               <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1]">
-                Menu Digital para <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-500">
-                  Restaurantes em Angola
+                A Nova Era do <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-600">
+                  Paladar Digital.
                 </span>
               </h1>
-              <p className="text-xl text-muted-foreground max-w-xl mx-auto md:mx-0">
-                Aumente o seu ticket médio em 20% com menus interativos via QR Code, KDS inteligente e fidelização de clientes. Sugira pratos típicos angolanos como muamba de galinha ou calulu para encantar seus clientes em Luanda e outras cidades.
+              <p className="text-xl text-zinc-400 max-w-xl mx-auto md:mx-0 font-medium">
+                Venda mais e opere com precisão cirúrgica. O sistema líder em Angola para menus QR Code, gestão de pedidos e fidelização que os seus clientes adoram.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4 lg:justify-start">
                 <Button size="lg" className="h-14 px-8 text-lg font-bold rounded-full gap-2 shadow-xl shadow-primary/20" asChild>
@@ -230,7 +230,10 @@ export default function LandingPage() {
                     <span className="text-4xl font-bold">50.000</span>
                     <span className="text-muted-foreground">KZ/mês</span>
                   </div>
-                  <p className="text-sm text-muted-foreground">Ideal para começar a digitalizar.</p>
+                  <div className="inline-block px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase tracking-widest mb-1">
+                    Trial de 14 dias grátis
+                  </div>
+                  <p className="text-sm text-muted-foreground">Ideal para pequenos cafés e bistros.</p>
                 </div>
                 <ul className="space-y-3 text-sm">
                   <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-primary" /> Até 50 mesas</li>

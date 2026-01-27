@@ -95,17 +95,18 @@ export function OnboardingWizard() {
                     {step === 1 && (
                         <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
                             <div className="space-y-2">
-                                <Label htmlFor="companyName">{t('onboarding.company_name_label')}</Label>
+                                <Label htmlFor="companyName">Qual o nome da sua empresa/grupo?</Label>
                                 <Input
                                     id="companyName"
                                     name="companyName"
-                                    placeholder={t('onboarding.company_name_placeholder')}
+                                    placeholder="Ex: Grupo Gourmet Angola"
                                     value={formData.companyName}
                                     onChange={handleInputChange}
                                     required
                                     autoFocus
+                                    className="h-12 text-lg rounded-xl"
                                 />
-                                <p className="text-xs text-zinc-500">{t('onboarding.company_name_help')}</p>
+                                <p className="text-xs text-zinc-500">Este nome será usado para fins de faturação e gestão de múltiplos restaurantes.</p>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="nif">{t('onboarding.nif_label')}</Label>
@@ -131,15 +132,16 @@ export function OnboardingWizard() {
                     {step === 2 && (
                         <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
                             <div className="space-y-2">
-                                <Label htmlFor="restaurantName">{t('onboarding.restaurant_name_label')}</Label>
+                                <Label htmlFor="restaurantName">E como se chama o seu restaurante?</Label>
                                 <Input
                                     id="restaurantName"
                                     name="restaurantName"
-                                    placeholder={t('onboarding.restaurant_name_placeholder')}
+                                    placeholder="Ex: Luanda Grill"
                                     value={formData.restaurantName}
                                     onChange={handleInputChange}
                                     required
                                     autoFocus
+                                    className="h-12 text-lg rounded-xl"
                                 />
                             </div>
 
