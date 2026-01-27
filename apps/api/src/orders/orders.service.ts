@@ -7,6 +7,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { LoyaltyService } from '../loyalty/loyalty.service';
 import { OrderStatus, Product } from '@prisma/client';
 import { OrderStatusUpdatedEvent } from '../workflows/events/order-status-updated.event';
+import { OrderCreatedEvent } from '../workflows/events/order-created.event';
 
 @Injectable()
 export class OrdersService {
@@ -221,6 +222,21 @@ export class OrdersService {
 
     // 4. Broadcast event
     await this.broadcastOrderEvent(tenantId, 'ORDER_CREATED', order);
+
+    // 5. Emit internal event for automation
+    this.eventEmitter.emit(
+      'order.created',
+      new OrderCreatedEvent(
+        order.id,
+        tenantId,
+        userId || null,
+        order.items.map((i) => ({
+          productId: i.productId,
+          quantity: i.quantity,
+        })),
+        Number(order.total),
+      ),
+    );
 
     return order;
   }
