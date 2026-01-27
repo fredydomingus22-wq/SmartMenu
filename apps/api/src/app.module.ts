@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PaymentModule } from './payment/payment.module';
@@ -17,12 +18,14 @@ import { TenantsModule } from './tenants/tenants.module';
 import { TablesModule } from './tables/tables.module';
 import { LoyaltyModule } from './loyalty/loyalty.module';
 import { SearchModule } from './search/search.module';
+import { WorkflowsModule } from './workflows/workflows.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    EventEmitterModule.forRoot(),
     ThrottlerModule.forRoot([
       {
         ttl: 60000, // 1 minute
@@ -41,6 +44,7 @@ import { SearchModule } from './search/search.module';
     TablesModule,
     LoyaltyModule,
     SearchModule,
+    WorkflowsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, SupabaseStrategy],

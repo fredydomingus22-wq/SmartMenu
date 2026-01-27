@@ -1,120 +1,151 @@
-# Automação de Workflows – SmartMenu
+# Arquitetura Completa: Motor de Automação SmartMenu
 
-## 21. Automação de Workflows (No-Code / Low-Code + IA)
-
-### Visão Geral
-
-Este módulo transforma o sistema num **orquestrador operacional inteligente**, inspirado em ferramentas como **n8n / Zapier**, mas **nativo para restaurantes**.
-
-**Objetivo:** Eliminar tarefas repetitivas, reduzir erros humanos e aumentar eficiência.
-
-**Arquitetura base:**
-- Event-driven (Order, Payment, Stock, Time, User Action)
-- Workflow Engine (visual)
-- Nodes (ações)
-- Triggers (gatilhos)
-- Execução síncrona ou assíncrona
+**Data:** 27/01/2026
+**Versão:** 1.0
+**Status:** ✅ Implementado (Fase 1)
 
 ---
 
-## 21.1 Motor de Workflow (Core)
+## 1. Visão Geral da Arquitetura
 
-### Funcionalidades
-- Criador visual de fluxos (drag & drop)
-- Triggers baseados em eventos
-- Condições (if / else)
-- Ações encadeadas
-- Execução programada ou em tempo real
+O SmartMenu implementa uma **Arquitetura Orientada a Eventos (Event-Driven Architecture)** para desacoplar lógica de negócio e permitir automações escaláveis.
 
-### Lógica de Funcionamento
-1. Evento ocorre (ex: pedido criado)
-2. Trigger dispara
-3. Condições são avaliadas
-4. Ações executadas
-5. Logs e auditoria por tenant
-
----
-
-## 21.2 Automações Prontas (Templates)
-
-### 🔁 1. Pedido → Notificação Inteligente
-- **Trigger:** Novo pedido
-- **Ações:** Notificação sonora na cozinha, WhatsApp para gerente se valor > X
-- **Benefícios:** Resposta imediata, menos falhas humanas
-
-### 📦 2. Estoque Baixo → Ação Automática
-- **Trigger:** Estoque < limite
-- **Ações:** Marcar item como esgotado, notificar gerente, criar tarefa de reposição
-- **Benefícios:** Menu sempre correto
-
-### ⏰ 3. Happy Hour Automático
-- **Trigger:** Horário configurado
-- **Ações:** Alterar preço de itens, ativar banner promocional
-- **Benefícios:** Aumento de vendas sem esforço
-
-### 🧠 4. Upsell Automático com IA
-- **Trigger:** Item adicionado ao carrinho
-- **Ações:** IA sugere extra/combo, exibe sugestão ao cliente
-- **Benefícios:** Mais receita por pedido
-
-### 💬 5. Reclamação → Fluxo de Resolução
-- **Trigger:** Feedback negativo
-- **Ações:** Registrar ocorrência, notificar gerente, gerar cupom automático
-- **Benefícios:** Retenção de clientes
-
-### 💰 6. Fechamento Diário Automático
-- **Trigger:** Horário (ex: 23:59)
-- **Ações:** Gerar relatório, enviar por email/WhatsApp
-- **Benefícios:** Controle financeiro automático
-
-### 🎁 7. Fidelidade → Recompensa Automática
-- **Trigger:** Pedido finalizado (status: DELIVERED)
-- **Ações:** Calcular pontos (valor * conversion_rate), atualizar saldo do cliente, notificar via Push/Toast.
-- **Benefícios:** Engajamento contínuo do cliente.
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                         SmartMenu API                                │
+├─────────────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐    ┌─────────────────┐    ┌──────────────────────┐ │
+│  │  Services   │───▶│  EventEmitter   │───▶│  WorkflowsModule     │ │
+│  │ (Orders,    │    │  (NestJS)       │    │  ┌────────────────┐  │ │
+│  │  Products)  │    │                 │    │  │   Listeners    │  │ │
+│  └─────────────┘    └─────────────────┘    │  │ ─────────────  │  │ │
+│                                             │  │ • Order Events │  │ │
+│                                             │  │ • Stock Events │  │ │
+│                                             │  └────────────────┘  │ │
+│                                             │  ┌────────────────┐  │ │
+│                                             │  │   Services     │  │ │
+│                                             │  │ ─────────────  │  │ │
+│                                             │  │ • Upsell       │  │ │
+│                                             │  └────────────────┘  │ │
+│                                             └──────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 21.3 Automações com IA (Avançadas)
+## 2. Componentes Implementados
 
-### 🤖 IA de Previsão de Demanda
-- Analisa histórico, prevê pico por dia/horário, sugere escala e estoque
+### 2.1. Event System (`@nestjs/event-emitter`)
 
-### 🧠 IA de Análise Operacional
-- Detecta gargalos, sugere ajustes de menu/preço
+**Ficheiro:** `apps/api/src/app.module.ts`
 
-### ✍️ IA para Conteúdo de Menu
-- Gera descrições atrativas, sugere nomes de combos
-- **Auto-Translation (IA):** Tradução automática para idiomas ativados.
+O `EventEmitterModule.forRoot()` inicializa o barramento de eventos interno.
 
----
+### 2.2. Eventos Definidos
 
-## 21.4 Integrações Externas
+| Evento | Ficheiro | Payload |
+|--------|----------|---------|
+| `order.status.updated` | `events/order-status-updated.event.ts` | `orderId, tenantId, userId, status, total` |
+| `order.created` | `events/order-created.event.ts` | `orderId, tenantId, userId, items[], total` |
+| `stock.low` | `events/stock-low.event.ts` | `productId, tenantId, currentStock, threshold` |
 
-| Categoria | Integrações |
-|-----------|-------------|
-| Comunicação | WhatsApp Business API, Email (SMTP), SMS |
-| Financeiro | Multicaixa Express, POS local, Excel/Sheets |
-| Operação | Impressoras térmicas, Displays externos |
+### 2.3. Listeners (Automações)
 
----
+| Listener | Evento | Ação |
+|----------|--------|------|
+| `OrderEventsListener` | `order.status.updated` | Se `DELIVERED`, chama `LoyaltyService.earnPoints()` |
+| `StockEventsListener` | `stock.low` | Se `stock <= 0`, desativa produto (`isAvailable = false`) |
 
-## 21.5 Benefícios Diretos
+### 2.4. Serviços de Automação
 
-- Menos trabalho manual
-- Menos erros operacionais
-- Mais velocidade
-- Aumento de ticket médio
-- Melhor experiência do cliente
+| Serviço | Endpoint Público | Descrição |
+|---------|------------------|-----------|
+| `UpsellService` | `GET /public/suggestions/:tenantId/upsell?products=...` | Retorna sugestões de upsell baseadas no carrinho |
 
 ---
 
-## 21.6 Diferencial Competitivo
+## 3. Fluxo de Dados
 
-Nenhum concorrente local oferece:
-- Workflows nativos
-- IA operacional
-- Automação orientada a eventos de restaurante
+### 3.1. Fluxo: Pedido Entregue → Pontos de Fidelidade
+
+```
+OrdersService.updateStatus(DELIVERED)
+       │
+       ▼
+eventEmitter.emit('order.status.updated', OrderStatusUpdatedEvent)
+       │
+       ▼
+OrderEventsListener.handleOrderStatusUpdated()
+       │
+       ▼
+LoyaltyService.earnPoints()
+```
+
+### 3.2. Fluxo: Estoque Baixo → Desativar Produto
+
+```
+(Futuro: ProductsService ou OrdersService após venda)
+       │
+       ▼
+eventEmitter.emit('stock.low', StockLowEvent)
+       │
+       ▼
+StockEventsListener.handleStockLow()
+       │
+       ▼
+prisma.product.update({ isAvailable: false })
+```
 
 ---
 
-**Documento de referência para Automação de Workflows do SmartMenu.**
+## 4. Estrutura de Ficheiros
+
+```
+apps/api/src/workflows/
+├── events/
+│   ├── index.ts                       # Barrel export
+│   ├── order-created.event.ts
+│   ├── order-status-updated.event.ts
+│   └── stock-low.event.ts
+├── listeners/
+│   ├── order-events.listener.ts       # Loyalty automation
+│   └── stock-events.listener.ts       # Stock automation
+├── services/
+│   └── upsell.service.ts              # Upsell suggestions
+├── suggestions.controller.ts           # Public API
+└── workflows.module.ts                 # Module definition
+```
+
+---
+
+## 5. Próximos Passos (Fase 2)
+
+1. **Emitir `stock.low`:** Integrar com `OrdersService` após cada venda para verificar níveis de stock.
+2. **Notificações:** Criar `NotificationListener` para enviar alertas via WebSocket/Push.
+3. **Workflow Visual (Fase 3):** Criar tabelas `workflows`, `workflow_triggers`, `workflow_actions` para configuração dinâmica por tenant.
+
+---
+
+## 6. Endpoints Disponíveis
+
+### Upsell Suggestions
+```http
+GET /public/suggestions/:tenantId/upsell?products=productId1,productId2
+```
+
+**Response:**
+```json
+[
+  {
+    "productId": "uuid",
+    "name": "Coca-Cola 350ml",
+    "price": 3.50,
+    "imageUrl": "https://...",
+    "reason": "Combina bem com seu pedido"
+  }
+]
+```
+
+---
+
+**Documento de Arquitetura do Motor de Automação SmartMenu.**

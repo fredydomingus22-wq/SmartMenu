@@ -2,9 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { PrismaService } from '../prisma/prisma.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { LoyaltyService } from '../loyalty/loyalty.service';
 import { OrderStatus, Product } from '@prisma/client';
+import { OrderStatusUpdatedEvent } from '../workflows/events/order-status-updated.event';
 
 @Injectable()
 export class OrdersService {
@@ -14,6 +16,7 @@ export class OrdersService {
     private prisma: PrismaService,
     private configService: ConfigService,
     private loyaltyService: LoyaltyService,
+    private eventEmitter: EventEmitter2,
   ) {
     const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
     const supabaseAnonKey = this.configService.get<string>('SUPABASE_ANON_KEY');
@@ -80,13 +83,13 @@ export class OrdersService {
       }),
       optionValueIds.length > 0
         ? this.prisma.productOptionValue.findMany({
-            where: {
-              id: { in: optionValueIds },
-              tenantId,
-              organizationId,
-              isAvailable: true,
-            },
-          })
+          where: {
+            id: { in: optionValueIds },
+            tenantId,
+            organizationId,
+            isAvailable: true,
+          },
+        })
         : [],
     ]);
 
@@ -318,19 +321,17 @@ export class OrdersService {
     // Broadcast update
     await this.broadcastOrderEvent(tenantId, 'STATUS_UPDATED', order);
 
-    // Loyalty Points Logic
-    if (status === 'DELIVERED' && order.userId) {
-      try {
-        await this.loyaltyService.earnPoints(
-          order.userId,
-          tenantId,
-          Number(order.total),
-          order.id,
-        );
-      } catch (error) {
-        console.error(`Failed to award points for order ${id}:`, error);
-      }
-    }
+    // Emit internal event for automation (Loyalty, Notifications, etc)
+    this.eventEmitter.emit(
+      'order.status.updated',
+      new OrderStatusUpdatedEvent(
+        order.id,
+        tenantId,
+        order.userId,
+        status,
+        Number(order.total),
+      ),
+    );
 
     return order;
   }
