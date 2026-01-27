@@ -25,15 +25,15 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* Skip Links */}
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded z-50">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded z-[100]">
         Pular para conteúdo principal
       </a>
-      <a href="#navigation" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:translate-y-12 bg-primary text-primary-foreground px-4 py-2 rounded z-50">
+      <a href="#navigation" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:translate-y-12 bg-primary text-primary-foreground px-4 py-2 rounded z-[100]">
         Pular para navegação
       </a>
 
       {/* Navigation */}
-      <header id="navigation" className="fixed top-0 w-full z-[var(--z-header)] bg-background/80 backdrop-blur-md border-b">
+      <header id="navigation" className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center" aria-label="SmartMenu Logo">
