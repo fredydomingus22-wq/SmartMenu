@@ -68,7 +68,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              className="space-y-8"
+              className="space-y-8 relative z-20"
             >
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold border border-primary/20">
                 <Zap className="h-3 w-3 fill-current" />
@@ -400,18 +400,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Google My Business Simulation */}
-        <section className="py-12 px-6 bg-primary text-primary-foreground">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <h2 className="text-2xl md:text-4xl font-bold">Aumente Visibilidade no Google</h2>
-            <p className="text-lg">Registre seu restaurante no Google My Business gratuitamente e apareça nos primeiros resultados de busca para &quot;restaurantes em Luanda&quot; ou &quot;menu digital Angola&quot;.</p>
-            <Button size="lg" className="bg-white text-primary hover:bg-zinc-100 rounded-full px-8" asChild>
-              <a href="https://www.google.com/business/" target="_blank" rel="noopener noreferrer" aria-label="Registrar no Google My Business - Abre em nova aba">
-                <Tooltip content="Melhore a visibilidade do seu restaurante no Google">Registrar no Google My Business</Tooltip>
-              </a>
-            </Button>
-          </div>
-        </section>
       </main>
 
       <footer className="border-t py-12 px-6">
