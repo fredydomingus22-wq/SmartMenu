@@ -63,7 +63,7 @@ export default function LandingPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
           </div>
 
-          <div className="max-w-7xl mx-auto text-center md:text-left grid lg:grid-cols-2 gap-12 items-center">
+          <div className="max-w-7xl mx-auto text-center md:text-left grid lg:grid-cols-2 gap-16 xl:gap-24 items-center">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -80,8 +80,8 @@ export default function LandingPage() {
                   Paladar Digital.
                 </span>
               </h1>
-              <p className="text-xl text-zinc-400 max-w-xl mx-auto md:mx-0 font-medium">
-                Venda mais e opere com precisão cirúrgica. O sistema líder em Angola para menus QR Code, gestão de pedidos e fidelização que os seus clientes adoram.
+              <p className="text-xl text-zinc-400 max-w-lg mx-auto md:mx-0 font-medium">
+                Venda mais e opere com precisão cirúrgica. O sistema líder em Angola para menus QR Code, gestão de pedidos e fidelização.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4 lg:justify-start">
                 <Button size="lg" className="h-14 px-8 text-lg font-bold rounded-full gap-2 shadow-xl shadow-primary/20" asChild>
