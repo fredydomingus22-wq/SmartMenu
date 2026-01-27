@@ -1,18 +1,50 @@
-import { IsObject } from 'class-validator';
-
-export class CreateProductOptionDto {
-  @IsObject()
-  name!: Record<string, string>;
-  description?: Record<string, string>;
-  minChoices?: number;
-  maxChoices?: number;
-  isRequired?: boolean;
-  values?: CreateProductOptionValueDto[];
-}
+import {
+  IsString,
+  IsNumber,
+  IsBoolean,
+  IsOptional,
+  IsArray,
+  IsObject,
+  ValidateNested,
+  IsDefined,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateProductOptionValueDto {
-  @IsObject()
-  name!: Record<string, string>;
+  @IsDefined()
+  name!: any;
+
+  @IsNumber()
+  @IsOptional()
   price?: number;
+
+  @IsBoolean()
+  @IsOptional()
   isAvailable?: boolean;
+}
+
+export class CreateProductOptionDto {
+  @IsDefined()
+  name!: any;
+
+  @IsOptional()
+  description?: any;
+
+  @IsNumber()
+  @IsOptional()
+  minChoices?: number;
+
+  @IsNumber()
+  @IsOptional()
+  maxChoices?: number;
+
+  @IsBoolean()
+  @IsOptional()
+  isRequired?: boolean;
+
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => CreateProductOptionValueDto)
+  values?: CreateProductOptionValueDto[];
 }

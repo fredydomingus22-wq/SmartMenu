@@ -1,4 +1,10 @@
+import { IsDefined, IsOptional, IsEnum } from 'class-validator';
+
 export class CreateCategoryDto {
-  name!: Record<string, string>;
+  @IsDefined()
+  name!: any;
+
+  @IsOptional()
+  @IsEnum(['KITCHEN', 'BAR'])
   preparationSector?: 'KITCHEN' | 'BAR';
 }
