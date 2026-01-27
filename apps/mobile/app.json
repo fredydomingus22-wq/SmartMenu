@@ -29,18 +29,13 @@
           "data": {
             "scheme": "smartmenu"
           },
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
-    "plugins": [
-      [
-        "@stripe/stripe-react-native",
-        {
-          "merchantIdentifier": "merchant.com.smartmenu",
-          "enableGooglePay": false
-        }
-      ]
-    ]
+    "plugins": []
   }
 }
