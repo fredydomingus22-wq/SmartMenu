@@ -12,21 +12,6 @@ export class ApiError extends Error {
     }
 }
 
-function sanitizeMenuSections(sections: any[]) {
-  return sections.map((s) => ({
-    id: s.id,
-    type: s.type,
-    name: s.name,
-    isActive: s.isActive,
-    config: s.config,
-  }));
-}
-export async function updateMenuConfig(sections: any[]) {
-  return api.patch('/tenants/me/menu-config', {
-    sections: sanitizeMenuSections(sections),
-  });
-}
-
 /**
  * Core API Client
  * ⚠️ Safe for both Client and Server environments.
