@@ -3,17 +3,6 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { Request, Response, NextFunction } from 'express';
 
-export function updateMenuConfig(sections: any[]) {
-  return api.patch('/tenants/me/menu-config', {
-    sections: sections.map(({ id, type, name, isActive, config }) => ({
-      id,
-      type,
-      name,
-      isActive,
-      config,
-    })),
-  });
-}
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   try {
