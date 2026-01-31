@@ -5,7 +5,8 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-  private supabaseAdmin!: SupabaseClient;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private supabaseAdmin!: SupabaseClient<any, any, any>;
 
   constructor(
     private prisma: PrismaService,

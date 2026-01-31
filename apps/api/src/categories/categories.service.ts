@@ -7,6 +7,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 export class CategoriesService {
   constructor(private prisma: PrismaService) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private normalizeJson(value: any): any {
     if (!value) return value;
     if (typeof value === 'string') {

@@ -31,6 +31,7 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   async create(
     @Body() createProductDto: CreateProductDto,
     @Request() req: AuthenticatedRequest,
@@ -107,6 +108,7 @@ export class ProductsController {
   }
 
   @Patch(':id')
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   async update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,

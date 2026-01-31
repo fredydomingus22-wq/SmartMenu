@@ -8,6 +8,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private normalizeJson(value: any): Prisma.InputJsonValue {
     if (!value) return null as unknown as Prisma.InputJsonValue;
     if (typeof value === 'string') {
@@ -20,8 +21,8 @@ export class ProductsService {
     createProductDto: CreateProductDto,
     tenantId: string,
     organizationId: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
-    // TODO: Define exact return type if needed, or use Prisma.ProductGetPayload
     if (!tenantId || !organizationId) {
       throw new Error('Tenant or Organization ID missing in request');
     }
@@ -117,6 +118,7 @@ export class ProductsService {
     updateProductDto: UpdateProductDto,
     tenantId: string,
     organizationId: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     const {
       categoryId,
@@ -128,110 +130,118 @@ export class ProductsService {
       ...data
     } = updateProductDto;
 
-    // Use transaction to ensure both operations succeed
-    return this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      // If images are provided, we replace the gallery
-      if (images) {
-        await tx.productImage.deleteMany({
-          where: { productId: id },
-        });
-      }
+    return this.prisma.$transaction(
+      async (tx: Prisma.TransactionClient) => {
+        try {
+          if (images) {
+            await tx.productImage.deleteMany({
+              where: { productId: id },
+            });
+          }
 
-      if (options) {
-        // Simple replace for options too
-        await tx.productOption.deleteMany({
-          where: { productId: id },
-        });
-      }
+          if (options) {
+            await tx.productOption.deleteMany({
+              where: { productId: id },
+            });
+          }
 
-      if (upsells) {
-        await tx.productUpsell.deleteMany({
-          where: { productId: id },
-        });
-      }
-      if (recommendations) {
-        await tx.productRecommendation.deleteMany({
-          where: { productId: id },
-        });
-      }
+          if (upsells) {
+            await tx.productUpsell.deleteMany({
+              where: { productId: id },
+            });
+          }
+          if (recommendations) {
+            await tx.productRecommendation.deleteMany({
+              where: { productId: id },
+            });
+          }
 
-      return tx.product.update({
-        where: { id, tenantId, organizationId },
-        data: {
-          ...data,
-          name: this.normalizeJson(data.name),
-          description: this.normalizeJson(data.description),
-          metadata: metadata ?? undefined,
-          ...(categoryId ? { categoryId } : {}),
-          ...(images
-            ? {
-                images: {
-                  create: images.map((url, index) => ({
-                    url,
-                    order: index,
-                  })),
-                },
-              }
-            : {}),
-          ...(upsells
-            ? {
-                upsells: {
-                  create: upsells.map((upsellId) => ({
-                    upsellId,
-                    tenantId,
-                  })),
-                },
-              }
-            : {}),
-          ...(recommendations
-            ? {
-                recommendations: {
-                  create: recommendations.map((recommendedId) => ({
-                    recommendedId,
-                    tenantId,
-                  })),
-                },
-              }
-            : {}),
-          ...(options
-            ? {
-                options: {
-                  create: options.map((opt) => ({
-                    name: this.normalizeJson(opt.name),
-                    description: this.normalizeJson(opt.description),
-                    minChoices: opt.minChoices,
-                    maxChoices: opt.maxChoices,
-                    isRequired: opt.isRequired,
-                    tenantId,
-                    organizationId,
-                    values: {
-                      create: opt.values.map((v) => ({
-                        name: this.normalizeJson(v.name),
-                        price: v.price,
-                        isAvailable: v.isAvailable ?? true,
-                        tenantId,
-                        organizationId,
+          return await tx.product.update({
+            where: { id, tenantId, organizationId },
+            data: {
+              ...data,
+              name: this.normalizeJson(data.name),
+              description: this.normalizeJson(data.description),
+              metadata: metadata ?? undefined,
+              ...(categoryId ? { categoryId } : {}),
+              ...(images
+                ? {
+                    images: {
+                      create: images.map((url, index) => ({
+                        url,
+                        order: index,
                       })),
                     },
-                  })),
-                },
-              }
-            : {}),
-        },
-        include: {
-          images: true,
-          upsells: {
-            include: { upsell: true },
-          },
-          recommendations: {
-            include: { recommended: true },
-          },
-          options: {
-            include: { values: true },
-          },
-        },
-      });
-    });
+                  }
+                : {}),
+              ...(upsells
+                ? {
+                    upsells: {
+                      create: upsells.map((upsellId) => ({
+                        upsellId,
+                        tenantId,
+                      })),
+                    },
+                  }
+                : {}),
+              ...(recommendations
+                ? {
+                    recommendations: {
+                      create: recommendations.map((recommendedId) => ({
+                        recommendedId,
+                        tenantId,
+                      })),
+                    },
+                  }
+                : {}),
+              ...(options
+                ? {
+                    options: {
+                      create: options.map((opt) => ({
+                        name: this.normalizeJson(opt.name),
+                        description: this.normalizeJson(opt.description),
+                        minChoices: opt.minChoices,
+                        maxChoices: opt.maxChoices,
+                        isRequired: opt.isRequired,
+                        tenantId,
+                        organizationId,
+                        values: {
+                          create: opt.values.map((v) => ({
+                            name: this.normalizeJson(v.name),
+                            price: v.price,
+                            isAvailable: v.isAvailable ?? true,
+                            tenantId,
+                            organizationId,
+                          })),
+                        },
+                      })),
+                    },
+                  }
+                : {}),
+            },
+            include: {
+              images: true,
+              upsells: {
+                include: { upsell: true },
+              },
+              recommendations: {
+                include: { recommended: true },
+              },
+              options: {
+                include: { values: true },
+              },
+            },
+          });
+        } catch (error) {
+          console.error(
+            `[ProductsService] Transaction failed for product ${id}:`,
+            error,
+          );
+          throw error;
+        }
+      },
+      { timeout: 15000 },
+    );
   }
 
   async remove(id: string, tenantId: string, organizationId: string) {
@@ -258,12 +268,11 @@ export class ProductsService {
     const {
       id: _id,
       createdAt: _createdAt,
-      options,
+      options: _options,
       description,
       ...rest
     } = originalProduct;
 
-    // Create a new product with " (Cópia)" appended to the name
     return this.prisma.product.create({
       data: {
         ...rest,
@@ -334,8 +343,6 @@ export class ProductsService {
       },
     });
   }
-
-  // ============ Product Options ============
 
   async createOption(
     productId: string,

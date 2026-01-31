@@ -6,7 +6,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  UseInterceptors,
   Req,
 } from '@nestjs/common';
 import { TablesService } from './tables.service';

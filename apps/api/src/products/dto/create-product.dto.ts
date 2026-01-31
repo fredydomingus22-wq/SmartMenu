@@ -4,7 +4,6 @@ import {
   IsBoolean,
   IsOptional,
   IsArray,
-  IsObject,
   IsUUID,
   ValidateNested,
   IsDefined,
@@ -13,6 +12,7 @@ import { Type } from 'class-transformer';
 
 export class CreateProductValueDto {
   @IsDefined()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   name!: any;
 
   @IsNumber()
@@ -26,9 +26,11 @@ export class CreateProductValueDto {
 
 export class CreateProductOptionFromProductDto {
   @IsDefined()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   name!: any;
 
   @IsOptional()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   description?: any;
 
   @IsNumber()
@@ -51,9 +53,11 @@ export class CreateProductOptionFromProductDto {
 
 export class CreateProductDto {
   @IsDefined()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   name!: any;
 
   @IsOptional()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   description?: any;
 
   @IsNumber()
@@ -103,7 +107,7 @@ export class CreateProductDto {
   @IsOptional()
   isBestSeller?: boolean;
 
-  @IsObject()
   @IsOptional()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata?: Record<string, any>;
 }

@@ -3,7 +3,7 @@ import { ServiceRequestType } from '@prisma/client';
 
 export class CreateServiceRequestDto {
   @IsEnum(ServiceRequestType)
-  type: ServiceRequestType;
+  type!: ServiceRequestType;
 
   @IsOptional()
   @IsString()

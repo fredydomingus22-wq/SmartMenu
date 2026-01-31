@@ -11,6 +11,7 @@ import { OrderCreatedEvent } from '../workflows/events/order-created.event';
 
 @Injectable()
 export class OrdersService {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private supabase!: SupabaseClient<any, any, any>;
 
   constructor(
@@ -101,12 +102,12 @@ export class OrdersService {
       }),
       optionValueIds.length > 0
         ? this.prisma.productOptionValue.findMany({
-          where: {
-            id: { in: optionValueIds },
-            tenantId,
-            isAvailable: true,
-          },
-        })
+            where: {
+              id: { in: optionValueIds },
+              tenantId,
+              isAvailable: true,
+            },
+          })
         : [],
     ]);
 
