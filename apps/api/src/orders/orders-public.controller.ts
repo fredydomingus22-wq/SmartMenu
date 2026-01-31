@@ -17,11 +17,14 @@ import { CreateOrderDto } from './dto/create-order.dto';
 @Controller('public/orders')
 @UseGuards(SupabaseAuthGuard)
 export class OrdersPublicController {
-  constructor(private readonly ordersService: OrdersService) { }
+  constructor(private readonly ordersService: OrdersService) {}
 
   @Public()
   @Post()
-  async create(@Body() createOrderDto: CreateOrderDto, @Request() req: unknown) {
+  async create(
+    @Body() createOrderDto: CreateOrderDto,
+    @Request() req: unknown,
+  ) {
     console.log('[OrdersPublicController] Checkout request received:', {
       tenantId: createOrderDto.tenantId,
       organizationId: createOrderDto.organizationId,
@@ -47,10 +50,14 @@ export class OrdersPublicController {
         userId,
       );
 
-      console.log('[OrdersPublicController] Order created successfully:', order.id);
+      console.log(
+        '[OrdersPublicController] Order created successfully:',
+        order.id,
+      );
       return order;
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Erro desconhecido';
+      const message =
+        error instanceof Error ? error.message : 'Erro desconhecido';
       console.error('[OrdersPublicController] CHECKOUT ERROR:', message, error);
 
       // If it's already a NestJS HTTP exception, re-throw
@@ -63,7 +70,9 @@ export class OrdersPublicController {
         throw new BadRequestException(message);
       }
 
-      throw new InternalServerErrorException(`Erro ao criar pedido: ${message}`);
+      throw new InternalServerErrorException(
+        `Erro ao criar pedido: ${message}`,
+      );
     }
   }
 

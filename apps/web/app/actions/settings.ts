@@ -84,7 +84,17 @@ export async function getMenuConfig(tenantId: string) {
 
 export async function updateMenuConfig(sections: MenuSection[]) {
     try {
-        await apiClient.patch("/tenants/me/menu-config", { sections });
+        // Sanitize payload to remove server-managed fields (tenantId, order, dates, etc.)
+        // that cause validation errors in the API DTO
+        const sanitizedSections = sections.map(({ id, type, name, isActive, config }) => ({
+            id,
+            type,
+            name,
+            isActive,
+            config
+        }));
+
+        await apiClient.patch("/tenants/me/menu-config", { sections: sanitizedSections });
         revalidatePath("/dashboard/settings/menu-design");
         return { success: true };
     } catch (error: unknown) {

@@ -54,8 +54,9 @@ export function LandingContent() {
         setIsScannerOpen(false);
         try {
             const urlObj = new URL(url);
-            const path = urlObj.pathname;
-            router.push(path);
+            // Include pathname, search (query params), and hash
+            const fullPath = urlObj.pathname + urlObj.search + urlObj.hash;
+            router.push(fullPath);
         } catch {
             // If it's not a full URL, try to parse as ID
             router.push(`/menu/${url}`);
@@ -169,7 +170,7 @@ export function LandingContent() {
             </AnimatePresence>
 
             {/* Footer Nav (Floating style) */}
-            <div className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] left-6 right-6 h-16 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-2xl flex items-center justify-around px-8 z-50">
+            <div className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-full sm:max-w-md h-16 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-2xl flex items-center justify-evenly z-50">
                 <button
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                     className="text-orange-700 dark:text-orange-400 flex flex-col items-center gap-1"

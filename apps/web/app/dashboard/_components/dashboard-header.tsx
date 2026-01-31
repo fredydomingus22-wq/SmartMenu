@@ -1,9 +1,21 @@
 "use client";
 
 import { Menu } from "lucide-react";
-import { DashboardNav, NavItem, Button, Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, Input, ScrollArea } from "@smart-menu/ui";
+import {
+    DashboardNav,
+    NavItem,
+    Button,
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+    Input,
+    ScrollArea
+} from "@smart-menu/ui";
 import { UserNav } from "./user-nav";
 import { User } from "@supabase/supabase-js";
+import { ServiceRequestsWidget } from "./service-requests-widget";
 
 interface DashboardHeaderProps {
     user: User;
@@ -15,14 +27,16 @@ interface DashboardHeaderProps {
  * Composes library components (Sheet, DashboardNav) without duplication.
  */
 export function DashboardHeader({ user, navItems }: DashboardHeaderProps) {
+    const tenantId = user.user_metadata?.tenantId as string;
+
     return (
-        <div className="flex items-center justify-between px-4 py-3">
+        <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             {/* Left: Mobile Menu Trigger */}
             <div className="flex items-center gap-3">
                 <Sheet>
                     <SheetTrigger asChild>
                         <Button variant="ghost" size="icon" className="md:hidden">
-                            <Menu className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
+                            <Menu className="h-5 w-5 text-muted-foreground" />
                             <span className="sr-only">Menu</span>
                         </Button>
                     </SheetTrigger>
@@ -45,12 +59,15 @@ export function DashboardHeader({ user, navItems }: DashboardHeaderProps) {
                 <Input
                     type="search"
                     placeholder="Pesquisar..."
-                    className="w-full"
+                    className="w-full bg-background"
                 />
             </div>
 
-            {/* Right: User Nav */}
-            <UserNav user={user} />
-        </div>
+            {/* Right: Actions & User Nav */}
+            <div className="flex items-center gap-2">
+                {tenantId && <ServiceRequestsWidget tenantId={tenantId} />}
+                <UserNav user={user} />
+            </div>
+        </header>
     );
 }

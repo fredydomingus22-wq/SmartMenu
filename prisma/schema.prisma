@@ -28,6 +28,7 @@ model Organization {
   tables     Table[]
   tenants    Tenant[]
   users      UserProfile[]
+  serviceRequests ServiceRequest[]
 
   @@map("organizations")
   @@schema("public")
@@ -71,6 +72,7 @@ model Tenant {
   menuSections    MenuSection[]
   footerConfig    FooterConfig?
   settings        TenantSettings?
+  serviceRequests ServiceRequest[]
 
   @@map("tenants")
   @@schema("public")
@@ -178,6 +180,38 @@ enum OrderType {
   DINE_IN_GENERAL
   TAKEAWAY
 
+  @@schema("public")
+}
+
+enum ServiceRequestType {
+  CALL_WAITER
+  REQUEST_BILL
+
+  @@schema("public")
+}
+
+enum ServiceRequestStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+
+  @@schema("public")
+}
+
+model ServiceRequest {
+  id             String               @id @default(uuid())
+  tenantId       String               @map("tenant_id")
+  organizationId String               @map("organization_id")
+  tableId        String?              @map("table_id")
+  type           ServiceRequestType
+  status         ServiceRequestStatus @default(PENDING)
+  createdAt      DateTime             @default(now()) @map("created_at")
+  updatedAt      DateTime             @updatedAt @map("updated_at")
+  tenant         Tenant               @relation(fields: [tenantId], references: [id])
+  organization   Organization         @relation(fields: [organizationId], references: [id])
+  table          Table?               @relation(fields: [tableId], references: [id])
+
+  @@map("service_requests")
   @@schema("public")
 }
 
@@ -315,6 +349,7 @@ model Table {
   organizationId String       @map("organization_id")
   tenantId       String       @map("tenant_id")
   orders         Order[]
+  serviceRequests ServiceRequest[]
   organization   Organization @relation(fields: [organizationId], references: [id])
   tenant         Tenant       @relation(fields: [tenantId], references: [id])
 

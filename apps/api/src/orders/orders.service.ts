@@ -11,7 +11,7 @@ import { OrderCreatedEvent } from '../workflows/events/order-created.event';
 
 @Injectable()
 export class OrdersService {
-  private supabase!: SupabaseClient;
+  private supabase!: SupabaseClient<any, any, any>;
 
   constructor(
     private prisma: PrismaService,
@@ -208,7 +208,10 @@ export class OrdersService {
       // Resolve Customer Profile if userId present (sequential query)
       let customerProfileId: string | null = null;
       if (userId) {
-        const profile = await this.loyaltyService.getCustomerProfile(userId, tenantId);
+        const profile = await this.loyaltyService.getCustomerProfile(
+          userId,
+          tenantId,
+        );
         customerProfileId = profile.id;
       }
 
@@ -248,7 +251,11 @@ export class OrdersService {
 
       // Trigger points deduction (sequential, after order created)
       if (loyaltyRewardId && userId) {
-        await this.loyaltyService.redeemReward(userId, tenantId, loyaltyRewardId);
+        await this.loyaltyService.redeemReward(
+          userId,
+          tenantId,
+          loyaltyRewardId,
+        );
       }
 
       // Broadcast event

@@ -14,9 +14,9 @@ export async function createCategory(formData: FormData) {
 
         console.log('Action: createCategory success')
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        revalidateTag('categories', 'layout' as any)
+        revalidateTag('categories', 'max' as any)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        revalidateTag('menu', 'layout' as any)
+        revalidateTag('menu', 'max' as any)
     } catch (error) {
         console.error('Action Exception (createCategory):', error)
         throw error
@@ -30,9 +30,9 @@ export async function deleteCategory(id: string) {
 
         console.log('Action: deleteCategory success')
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        revalidateTag('categories', 'layout' as any)
+        revalidateTag('categories', 'max' as any)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        revalidateTag('menu', 'layout' as any)
+        revalidateTag('menu', 'max' as any)
     } catch (error) {
         console.error('Action Exception (deleteCategory):', error)
         throw error
@@ -106,9 +106,9 @@ export async function createProduct(formData: FormData) {
         console.log('Action: createProduct success')
         revalidatePath('/dashboard/menu/products')
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        revalidateTag('products', 'layout' as any)
+        revalidateTag('products', 'max' as any)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        revalidateTag('menu', 'layout' as any)
+        revalidateTag('menu', 'max' as any)
     } catch (error) {
         console.error('Action Exception (createProduct):', error)
         throw error
@@ -122,9 +122,9 @@ export async function deleteProduct(id: string) {
 
         console.log('Action: deleteProduct success')
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        revalidateTag('products', 'layout' as any)
+        revalidateTag('products', 'max' as any)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        revalidateTag('menu', 'layout' as any)
+        revalidateTag('menu', 'max' as any)
     } catch (error) {
         console.error('Action Exception (deleteProduct):', error)
     }
@@ -199,9 +199,9 @@ export async function updateProduct(id: string, formData: FormData) {
         console.log('Action: updateProduct success')
         revalidatePath('/dashboard/menu/products')
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        revalidateTag('products', 'layout' as any)
+        revalidateTag('products', 'max' as any)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        revalidateTag('menu', 'layout' as any)
+        revalidateTag('menu', 'max' as any)
     } catch (error) {
         console.error('Action Exception (updateProduct):', error)
         throw error

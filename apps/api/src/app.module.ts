@@ -19,6 +19,7 @@ import { TablesModule } from './tables/tables.module';
 import { LoyaltyModule } from './loyalty/loyalty.module';
 import { SearchModule } from './search/search.module';
 import { WorkflowsModule } from './workflows/workflows.module';
+import { ServiceRequestsModule } from './service-requests/service-requests.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { WorkflowsModule } from './workflows/workflows.module';
     LoyaltyModule,
     SearchModule,
     WorkflowsModule,
+    ServiceRequestsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, SupabaseStrategy],

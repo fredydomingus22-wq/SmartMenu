@@ -17,7 +17,7 @@ export function DashboardSidebar({ navItems }: DashboardSidebarProps) {
             {/* Branding */}
             <div className="p-4 border-b">
                 <Link href="/dashboard" className="flex items-center gap-2">
-                    <span className="text-xl font-bold tracking-tight text-orange-600">SmartMenu</span>
+                    <span className="text-xl font-bold tracking-tight text-primary">SmartMenu</span>
                 </Link>
             </div>
 

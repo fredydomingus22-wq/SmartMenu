@@ -4,9 +4,7 @@ import {
     Avatar,
     AvatarFallback,
     AvatarImage,
-} from "@smart-menu/ui";
-import { Button } from "@smart-menu/ui";
-import {
+    Button,
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuGroup,
@@ -42,7 +40,7 @@ export function UserNav({ user }: { user: User }) {
                 <Button variant="ghost" className="relative h-11 w-11 rounded-full">
                     <Avatar className="h-11 w-11 border border-border">
                         <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email || ""} />
-                        <AvatarFallback className="bg-gradient-to-br from-orange-400 to-orange-600 text-white font-bold">
+                        <AvatarFallback className="bg-primary text-primary-foreground font-bold">
                             {initials}
                         </AvatarFallback>
                     </Avatar>
@@ -71,7 +69,7 @@ export function UserNav({ user }: { user: User }) {
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut} className="text-red-500 focus:text-red-500">
+                <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Sair</span>
                     <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>

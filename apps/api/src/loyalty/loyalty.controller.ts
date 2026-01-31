@@ -19,7 +19,7 @@ import { Public } from '../common/decorators/public.decorator';
 @Controller('loyalty')
 @UseGuards(SupabaseAuthGuard)
 export class LoyaltyController {
-  constructor(private readonly loyaltyService: LoyaltyService) { }
+  constructor(private readonly loyaltyService: LoyaltyService) {}
 
   // --- Manager Endpoints ---
 
@@ -103,10 +103,7 @@ export class LoyaltyController {
     console.log(
       `[LoyaltyController] getMyTransactions for user ${req.user.userId} on tenant ${targetTenantId}`,
     );
-    return this.loyaltyService.getTransactions(
-      req.user.userId,
-      targetTenantId,
-    );
+    return this.loyaltyService.getTransactions(req.user.userId, targetTenantId);
   }
 
   @Post('ensure-profile')
@@ -135,7 +132,9 @@ export class LoyaltyController {
 
   @Get('global-summary')
   async getGlobalSummary(@Request() req: { user: { userId: string } }) {
-    console.log(`[LoyaltyController] getGlobalSummary for user ${req.user.userId}`);
+    console.log(
+      `[LoyaltyController] getGlobalSummary for user ${req.user.userId}`,
+    );
     const summary = await this.loyaltyService.getGlobalSummary(req.user.userId);
     console.log(`[LoyaltyController] Global summary:`, summary);
     return summary;

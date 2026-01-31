@@ -10,9 +10,12 @@ import { TransactionType, Prisma } from '@prisma/client';
 
 @Injectable()
 export class LoyaltyService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
-  async getOrCreateConfig(tenantId: string, externalTx?: Prisma.TransactionClient) {
+  async getOrCreateConfig(
+    tenantId: string,
+    externalTx?: Prisma.TransactionClient,
+  ) {
     if (!tenantId || tenantId === 'undefined') {
       throw new BadRequestException('Invalid tenant ID');
     }
@@ -76,7 +79,11 @@ export class LoyaltyService {
     });
   }
 
-  async getCustomerProfile(userId: string, tenantId: string, externalTx?: Prisma.TransactionClient) {
+  async getCustomerProfile(
+    userId: string,
+    tenantId: string,
+    externalTx?: Prisma.TransactionClient,
+  ) {
     const tx = externalTx || this.prisma;
     try {
       let profile = await tx.customerProfile.findUnique({
@@ -96,7 +103,11 @@ export class LoyaltyService {
     }
   }
 
-  async getCustomerPoints(userId: string, tenantId: string, externalTx?: Prisma.TransactionClient) {
+  async getCustomerPoints(
+    userId: string,
+    tenantId: string,
+    externalTx?: Prisma.TransactionClient,
+  ) {
     const profile = await this.getCustomerProfile(userId, tenantId, externalTx);
     return profile.pointsBalance;
   }

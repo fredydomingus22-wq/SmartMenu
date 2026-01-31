@@ -200,7 +200,41 @@ Todo componente de destaque (Hero) deve seguir este contrato:
 
 ---
 
+---
+
+## 13. Modelo de Governança do Design System (Federado)
+
+### 13.1 Visão Geral
+Adotamos um modelo **Federado** para garantir agilidade e consistência.
+*   **Core Team (Arquitetura):** Mantém os "Primitives" (Tokens, Layouts, Componentes Base).
+*   **Product Teams (Features):** Criam e mantêm "Composite Components" específicos de domínio.
+
+### 13.2 Papéis e Responsabilidades
+
+| Papel | Responsabilidade | Exemplos |
+| :--- | :--- | :--- |
+| **Maintainers (Core)** | Definir tokens, regras de layout, manter `components/ui` (shadcn). | Atualizar cor primária, corrigir bug no Button. |
+| **Contributors (Product)** | Criar componentes de negócio, propor novos primitives via RFC. | Criar `KDSOrderCard`, `MenuGrid`. |
+| **Consumers (Devs)** | Usar componentes existentes sem "ejectar" ou hackear estilos. | Usar `<Button>` na tela de Login. |
+
+### 13.3 Fluxo de Contribuição (RFC)
+1.  **Identificação:** Time precisa de um componente novo.
+2.  **Verificação:** Existe algo similar no System?
+    *   *Sim:* Usa ou propõe melhoria.
+    *   *Não:* Cria no projeto local (`app/_components`).
+3.  **Promoção (Opcional):** Se o componente for útil para outros apps:
+    *   Abre PR para mover para `packages/design-system` (futuro).
+    *   Revisão pelos Maintainers.
+
+### 13.4 Regras de Ouro
+1.  **Separação Estrita:** Componentes de UI **nunca** definem margens externas. Quem define o espaço é o **Layout Component** pai (`Stack`, `Grid`).
+2.  **Tokens First:** Nunca use hardcoded hex values (`#fff`). Use `bg-background`.
+3.  **Sem Business Logic:** Componentes do Design System recebem dados via props, não fazem fetch.
+
+---
+
 ## 14. Documentação de UI/UX – Design System Oficial
+
 
 ### 14.1 Objetivo
 
@@ -342,12 +376,11 @@ Base: **4px (0.25rem)**
 | Text Secondary | #94A3B8 | - |
 
 ### Ações
-| Token | Cor |
-|-------|-----|
-| Primary | #2563EB |
-| Success | #16A34A |
-| Warning | #F59E0B |
-| Error | #DC2626 |
+| Token | Cor | OKLCH (Ref) |
+|-------|-----|-------------|
+| Primary | Orange | `0.6 0.22 45` |
+| Secondary | Red/Muted | `0.97 0 0` |
+| Destructive | Red | `0.577 0.245 27.325` |
 
 ### Glassmorphism (Premium)
 | Token | Style |
@@ -592,4 +625,59 @@ To ensure robust, scalable mobile layouts beyond quick CSS fixes, adhere to thes
 
 ---
 
-**Documento de referência para Design System do SmartMenu.**
+### 14.11 Requisitos de Componentes de Layout (Topbar, Sidebar, Footbar)
+
+Todos os componentes estruturais devem seguir estas regras rígidas de **Branding e Tokens** e **Unidades Relativas**:
+
+> [!TIP]
+> **Evite Pixel-Perfect estático.** Prefira `rem`, `em`, `%` ou `dvh`.
+
+#### 14.11.1 Topbar (Header)
+*   **Altura:** `h-16` (4rem) padrão ou `h-14` (3.5rem) no mobile.
+*   **Fundo:** DEVE usar `bg-background/95 backdrop-blur` ou `bg-primaria` (se brand-heavy). **Nunca** cor fixa.
+*   **Z-Index:** `--z-header` (50).
+*   **Conteúdo:**
+    *   Logo (Esquerda).
+    *   Breadcrumb ou Título da Página (Centro/Esquerda).
+    *   UserNav / Ações Globais (Direita).
+
+#### 14.11.2 Sidebar (Navigation)
+*   **Largura:** `w-64` (16rem) expandida, `w-fit` ou `w-[4.5rem]` (auto/rem) colapsada.
+*   **Comportamento:**
+    *   Desktop: Fixa (`sticky`) ou `fixed`.
+    *   Mobile: Drawer (`Sheet`) vindo da esquerda.
+*   **Styling:**
+    *   Borda direita: `border-r border-border`.
+    *   Item Ativo: `bg-accent text-accent-foreground`.
+    *   Item Hover: `hover:bg-muted`.
+
+#### 14.11.3 Footbar (Mobile Actions)
+*   **Posição:** `fixed bottom-0 left-0 right-0`.
+*   **Uso:** Apenas mobile, para ações primárias rápidas (ex: "Ver Carrinho", "Checkout").
+*   **Padding:** Deve incluir `pb-[env(safe-area-inset-bottom)]`.
+
+---
+
+## 15. Checklist de Auditoria (System & Architecture)
+
+Este checklist deve ser rodado antes de qualquer Release Major.
+
+### 15.1 Design System & UI
+- [ ] **Zero Hardcoded Colors:** Nenhuma ocorrência de hex (`#`) em arquivos `.tsx`. Apenas em `globals.css` ou `tailwind.config`.
+- [ ] **Dynamic Units:** Evite `px` para layout. Use `rem` (Tailwind classes padrão) ou `dvh` para alturas de viewport.
+- [ ] **Responsive:** Topbar e Sidebar colapsam corretamente em mobile (< 640px).
+- [ ] **Touch Targets:** Botões em mobile tem min-height de 44px (ou `h-11`).
+
+### 15.2 Arquitetura & Código
+- [ ] **Import Cycles:** Nenhum warning de dependência circular.
+- [ ] **Client vs Server:**
+    - [ ] Páginas (`page.tsx`) são Server Components por padrão.
+    - [ ] Interatividade (`onClick`, `useState`) movida para `client-components`.
+- [ ] **Package Boundaries:**
+    - [ ] `apps/web` não importa de `apps/consumer`.
+    - [ ] UI compartilhada vem de `@smart-menu/ui`.
+
+### 15.3 Performance & Assets
+- [ ] **Imagens:** Todas usam `next/image` ou `NImage` (wrapper).
+- [ ] **Fonts:** Carregadas via `next/font` (sem @import CSS externo bloqueante).
+

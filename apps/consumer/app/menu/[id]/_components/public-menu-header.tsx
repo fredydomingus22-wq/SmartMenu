@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, MapPin } from "lucide-react";
+import { Search, MapPin, Bell, HandPlatter, Receipt } from "lucide-react";
 import Image from "next/image";
 import { TenantBranding } from "../_types";
 import { ProductSearch } from "./product-search";
@@ -14,13 +14,20 @@ import { Gift, LogIn } from "lucide-react";
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    PublicMenuHeader as SharedHeader
+    PublicMenuHeader as SharedHeader,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@smart-menu/ui";
 
 interface PublicMenuHeaderProps {
@@ -51,6 +58,33 @@ export function PublicMenuHeader({ branding, tableId, enabledLanguages }: Public
 
         return () => subscription.unsubscribe();
     }, [supabase]);
+
+    const handleServiceRequest = async (type: 'CALL_WAITER' | 'REQUEST_BILL') => {
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            const response = await fetch(`${apiUrl}/service-requests/public/${tenantId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    type,
+                    tableId,
+                }),
+            });
+
+            if (!response.ok) throw new Error('Failed to create request');
+
+            toast.success(
+                type === 'CALL_WAITER'
+                    ? t('menu.waiter_called')
+                    : t('menu.bill_requested')
+            );
+        } catch (error) {
+            console.error('Service request failed:', error);
+            toast.error(t('common.error_occurred'));
+        }
+    };
 
     return (
         <SharedHeader
@@ -89,6 +123,30 @@ export function PublicMenuHeader({ branding, tableId, enabledLanguages }: Public
                                 </div>
                             </DialogContent>
                         </Dialog>
+                    )}
+                    {hasMounted && tableId && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button
+                                    className="inline-flex items-center justify-center rounded-full h-10 w-10 sm:h-12 sm:w-12 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                    aria-label={t('menu.service_options')}
+                                >
+                                    <Bell className="h-5 w-5 sm:h-6 sm:w-6" />
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-56">
+                                <DropdownMenuLabel>{t('menu.service_requests')}</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => handleServiceRequest('CALL_WAITER')}>
+                                    <HandPlatter className="mr-2 h-4 w-4" />
+                                    <span>{t('menu.call_waiter')}</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleServiceRequest('REQUEST_BILL')}>
+                                    <Receipt className="mr-2 h-4 w-4" />
+                                    <span>{t('menu.request_bill')}</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     )}
                     <div className="hidden sm:block">
                         <LanguageSelector enabledLanguages={enabledLanguages} />

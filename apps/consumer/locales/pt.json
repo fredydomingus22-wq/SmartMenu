@@ -59,7 +59,13 @@
         "best_sellers_title": "Mais Vendidos",
         "best_sellers_subtitle": "Os favoritos da galera",
         "new_arrivals_title": "Novidades",
-        "new_arrivals_subtitle": "Acabaram de chegar"
+        "new_arrivals_subtitle": "Acabaram de chegar",
+        "service_options": "Opções de Serviço",
+        "service_requests": "Solicitações de Serviço",
+        "call_waiter": "Chamar Garçom",
+        "request_bill": "Pedir Conta",
+        "waiter_called": "Garçom chamado com sucesso!",
+        "bill_requested": "Conta solicitada com sucesso!"
     },
     "cart": {
         "title": "Seu Pedido",

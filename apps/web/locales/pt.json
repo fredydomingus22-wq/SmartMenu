@@ -169,6 +169,17 @@
                 "save_changes": "Guardar Alterações",
                 "create_product": "Criar Produto"
             }
+        },
+        "service_requests": {
+            "title": "Solicitações de Serviço",
+            "waiter_called": "Chamada de Garçom!",
+            "bill_requested": "Pedido de Conta!",
+            "completed": "Solicitação atendida",
+            "error": "Erro ao completar solicitação",
+            "empty": "Nenhuma solicitação pendente.",
+            "waiter_label": "🔔 Garçom",
+            "bill_label": "💳 Conta",
+            "table_prefix": "Mesa"
         }
     },
     "kds": {

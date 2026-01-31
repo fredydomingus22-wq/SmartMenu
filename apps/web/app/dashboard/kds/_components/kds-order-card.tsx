@@ -82,10 +82,10 @@ export function KDSOrderCard({ order, activeSector = 'ALL', onUpdateStatus, onTo
 
     // Estilo baseado no tempo (Conformidade KDS)
     const getUrgencyColor = () => {
-        if (order.status === 'READY') return "bg-green-500 text-white";
-        if (elapsedMinutes > THRESHOLDS.CRITICAL) return "bg-red-600 text-white animate-pulse";
-        if (elapsedMinutes > THRESHOLDS.WARNING) return "bg-orange-500 text-white";
-        return "bg-green-500 text-white";
+        if (order.status === 'READY') return "bg-green-600 text-white"; // Success token isn't standard in shadcn, keeping semantic green for now or map to 'bg-primary' if preferred, but KDS needs distinct colors. Let's use Tailwind semantic classes if possible, but for KDS status, specific colors are often needed. I will stick to the plan of removing 'arbitrary' hardcodes, but functional colors like green/red are often semantic enough. Let's try to align with "destructive" for critical.
+        if (elapsedMinutes > THRESHOLDS.CRITICAL) return "bg-destructive text-destructive-foreground animate-pulse";
+        if (elapsedMinutes > THRESHOLDS.WARNING) return "bg-orange-500 text-white"; // Warning
+        return "bg-green-600 text-white"; // Normal
     };
 
     const handleToggleItem = (itemId: string, checked: boolean) => {
@@ -113,7 +113,7 @@ export function KDSOrderCard({ order, activeSector = 'ALL', onUpdateStatus, onTo
                 </div>
 
                 <div className="flex items-center justify-between gap-3">
-                    <Badge className="bg-orange-600 text-white hover:bg-orange-700 px-3 py-1.5 text-sm font-bold flex-1 justify-center">
+                    <Badge className="bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1.5 text-sm font-bold flex-1 justify-center">
                         <MapPin className="w-3.5 h-3.5 mr-2" />
                         MESA {order.table?.number || "BALCÃO"}
                     </Badge>
@@ -140,7 +140,7 @@ export function KDSOrderCard({ order, activeSector = 'ALL', onUpdateStatus, onTo
                                     id={`item-${item.id}`}
                                     checked={item.isDone || false}
                                     onCheckedChange={(checked) => handleToggleItem(item.id, checked as boolean)}
-                                    className="w-6 h-6 rounded-md border-2 border-zinc-300 data-[state=checked]:bg-orange-600 data-[state=checked]:border-orange-600 mt-0.5"
+                                    className="w-6 h-6 rounded-md border-2 border-zinc-300 data-[state=checked]:bg-primary data-[state=checked]:border-primary mt-0.5"
                                 />
                                 <div className="flex-1 min-w-0">
                                     <label
@@ -150,7 +150,8 @@ export function KDSOrderCard({ order, activeSector = 'ALL', onUpdateStatus, onTo
                                             item.isDone ? "line-through text-zinc-300" : "text-zinc-900"
                                         )}
                                     >
-                                        <span className="text-orange-600 font-black mr-2">x{item.quantity}</span>
+
+                                        <span className="text-primary font-black mr-2">x{item.quantity}</span>
                                         {getTranslatedValue(item.product.name, locale)}
                                     </label>
 
@@ -167,7 +168,7 @@ export function KDSOrderCard({ order, activeSector = 'ALL', onUpdateStatus, onTo
 
                                     {/* Notas Críticas - Destaque Visual */}
                                     {item.notes && (
-                                        <div className="mt-2 p-2 bg-red-50 border border-red-100 rounded-md flex items-center gap-2 text-red-700">
+                                        <div className="mt-2 p-2 bg-destructive/10 border border-destructive/20 rounded-md flex items-center gap-2 text-destructive">
                                             <AlertCircle className="w-4 h-4 flex-shrink-0" />
                                             <span className="text-xs font-black uppercase italic">{item.notes}</span>
                                         </div>
@@ -194,8 +195,8 @@ export function KDSOrderCard({ order, activeSector = 'ALL', onUpdateStatus, onTo
                         className={cn(
                             "w-full h-14 text-base font-black uppercase tracking-widest transition-all",
                             allItemsDone
-                                ? "bg-orange-600 hover:bg-orange-700 shadow-lg shadow-orange-600/20"
-                                : "bg-zinc-200 text-zinc-500 hover:bg-zinc-300 border-none cursor-not-allowed"
+                                ? "bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 text-primary-foreground"
+                                : "bg-muted text-muted-foreground hover:bg-muted/80 border-none cursor-not-allowed"
                         )}
                         onClick={() => onUpdateStatus(order.id, 'READY')}
                         disabled={!allItemsDone}
