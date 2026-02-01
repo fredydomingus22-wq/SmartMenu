@@ -73,6 +73,7 @@ export class OrdersController {
         id,
         updateOrderStatusDto.status,
         req.user.tenantId,
+        updateOrderStatusDto.notes,
       );
     } catch (error) {
       console.error(`[OrdersController] Error in updateStatus (${id}):`, error);

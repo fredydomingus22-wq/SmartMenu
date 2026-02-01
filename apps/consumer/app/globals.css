@@ -65,6 +65,8 @@
         padding: 0;
         /* Prevent rubber-banding on iOS while keeping scroll inside AppShell slots */
         overscroll-behavior-y: none;
+        /* NC-05: Contenção global para prevenir scroll horizontal */
+        overflow-x: hidden;
         -webkit-font-smoothing: antialiased;
         -moz-osx-smoothing: grayscale;
     }

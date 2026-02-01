@@ -35,7 +35,11 @@
 1. **Sprint 9:** App Mobile KDS (1 semana) ✅ CONCLUÍDO - Interface para cozinha
 2. **Sprint 10:** PWA Integration (1 semana) ✅ CONCLUÍDO - Dashboard como PWA  
 3. **Sprint 11:** Integração e Testes (1.5 semanas) - Validação completa
-4. **FASE BACKEND:** Setup APIs NestJS + Database (4 semanas)
+4. **Sprint 12: Advanced BI & Orders Upgrade (ATUAL)**
+   - [ ] Implementação de BI (Horários de pico, Rankings)
+   - [ ] Refatoração de Orders (Ações, Filtros Avançados)
+   - [ ] Otimização Mobile (Gestos, Bottom Sheets)
+5. **FASE BACKEND:** Setup APIs NestJS + Database (4 semanas)
 
 ---
 

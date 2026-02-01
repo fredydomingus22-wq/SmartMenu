@@ -36,6 +36,7 @@ export async function signup(formData: FormData) {
                 restaurant_name: restaurantName,
                 role: 'OWNER',
             },
+            emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
         }
     })
 

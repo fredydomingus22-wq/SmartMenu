@@ -446,9 +446,15 @@ Table, Card, Accordion
 ### RewardItemCard
 - Visual similar ao MenuItemCard, mas exibe o custo em pontos em destaque e botão "Resgatar".
 
-### ProductGallery
-- **Visualização (Form):** Grid de thumbnails com upload drag-and-drop.
-- **Visualização (Cliente):** Carousel deslizável (Embla Carousel ou Framer Motion drag) com paginação por pontos.
+### BI & Analytics Components (Advanced)
+- **Heatmap (Peak Hours):** Grid of 24 cells (hours) x 7 days. Intensity based on CSS opacity (e.g., `bg-primary/20` to `bg-primary`).
+- **Ranking Boards:** Modern table without borders, high-contrast typography for positions 1-3.
+- **Metric Grids:** 3+ columns on desktop, 1 column on mobile with horizontal scroll for overflow if critical.
+
+### Mobile Gestures & Patterns
+- **Swipe-to-Action:** Right-to-left swipe on ListItems to reveal status change buttons (blue/green).
+- **BottomSheet Details:** All deep data (Order details, Customer BI) must open in a `Vaul` (Drawer) component on mobile.
+- **Faceted Filters:** Horizontal scrollable list (Inline) of filter chips/badges above the list.
 
 ### ProductDetailSheet
 - **Header:** Botão de fechar, nome do item fixo ao rolar.

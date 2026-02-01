@@ -49,6 +49,10 @@ export * from './components/ui/radio-group';
 export * from './components/ui/avatar';
 export * from './components/ui/breadcrumb';
 export * from "./components/ui/tooltip";
+export * from "./components/ui/table-primitives";
+export * from "./components/ui/data-table";
+export * from "./components/features/analytics/kpi-card";
+export * from "./components/features/analytics/dashboard-chart";
 
 // Types
 export * from "./types/menu";

@@ -25,6 +25,9 @@ export class OrdersService {
 
     if (supabaseUrl && supabaseAnonKey) {
       this.supabase = createClient(supabaseUrl, supabaseAnonKey);
+      console.log('[OrdersService] Supabase client initialized');
+    } else {
+      console.error('[OrdersService] Missing Supabase credentials');
     }
   }
 
@@ -33,13 +36,27 @@ export class OrdersService {
     event: 'ORDER_CREATED' | 'STATUS_UPDATED',
     payload: unknown,
   ) {
-    if (!this.supabase) return;
+    if (!this.supabase) {
+      console.warn(
+        '[OrdersService] Supabase client not ready, skipping broadcast',
+      );
+      return;
+    }
 
-    await this.supabase.channel(`orders:${tenantId}`).send({
+    console.log(
+      `[OrdersService] Broadcasting event ${event} to channel orders:${tenantId}`,
+    );
+    const status = await this.supabase.channel(`orders:${tenantId}`).send({
       type: 'broadcast',
       event,
       payload,
     });
+
+    if (status !== 'ok') {
+      console.error(`[OrdersService] Broadcast failed with status: ${status}`);
+    } else {
+      console.log('[OrdersService] Broadcast success');
+    }
   }
 
   async create(
@@ -360,10 +377,18 @@ export class OrdersService {
     return order;
   }
 
-  async updateStatus(id: string, status: OrderStatus, tenantId: string) {
+  async updateStatus(
+    id: string,
+    status: OrderStatus,
+    tenantId: string,
+    reason?: string,
+  ) {
     const order = await this.prisma.order.update({
       where: { id },
-      data: { status },
+      data: {
+        status,
+        ...(reason && { cancellationReason: reason }),
+      },
       include: {
         items: {
           include: {

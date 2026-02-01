@@ -50,8 +50,16 @@
 
 ### 3.2 Atendimento / Caixa
 
-- Tela de pedidos em tempo real
-- Notificação sonora e visual de novos pedidos
+- **Tela de pedidos de alta densidade (Professional View):**
+  - **Visualização Tabular:** Lista compacta com múltiplas colunas (ID, Mesa, Cliente, Status, Tempo decorrido, Total).
+  - **Métricas em tempo real:** Notificação sonora e visual de novos pedidos.
+  - **Filtros Avançados:** Filtragem multi-critério por status, mesa, intervalo de tempo, cliente e valor.
+  - **Ações Rápidas & Menu:** Botões de mudança de status e menu de ações ("três pontinhos") com:
+    - **Visualizar Detalhes:** Modal/Drawer com resumo completo.
+    - **Imprimir Recibo:** Geração de versão para impressão térmica.
+    - **Cancelar Pedido:** Com justificativa obrigatória.
+  - **Pesquisa Global:** Busca por ID do pedido ou nome do cliente.
+- **Mobile Experience:** Swipe-to-action para mudar status e Bottom Sheet para detalhes do pedido.
 - Visualização por mesa, cliente e horário
 - Atualização manual ou automática de status
 - Gestão de pagamentos (local / digital)
@@ -74,12 +82,31 @@
 
 ### 3.4 Gerência
 
-- **Dashboard analítico:**
-  - Vendas por período
-  - Ticket médio
-  - Tempo de preparo
-  - Produtos mais vendidos
-  - Performance por turno
+- **Dashboard analítico (Management Hub):**
+  - **Visualização de KPIs (Cards de Métricas):**
+    - Vendas totais (Hoje, Ontem, Últimos 7 dias, Mês atual).
+    - Ticket médio consolidado.
+    - Contagem total de pedidos e volume por hora.
+    - Comparativo de performance (Crescimento % vs período anterior).
+  - **Gráficos e Analytics Avançado (BI):**
+    - **Horários de Pico:** Mapa de calor ou gráfico de barras por hora do dia.
+    - **Ranking de Produtos:** Top 10 mais vendidos por quantidade e receita.
+    - **Ranking de Clientes:** Clientes que mais geraram receita (Loyalty ID).
+    - **Ranking de Mesas:** Mesas com maior rotatividade e ticket médio.
+    - **Performance por Turno:** Comparativo Almoço vs Jantar.
+  - **Global Business Analytics (Business Intelligence):** ⭐ NOVO
+    - **Métricas Consolidadas:**
+      - Vendas Totais: Visão por Dia, Mês Corrente e Ano Corrente.
+      - Ticket Médio Global: Evolução temporal.
+    - **Análise de Produtos:**
+      - **Campeões de Venda:** Item com maior quantidade vendida.
+      - **Campeões de Receita:** Item com maior arrecadação financeira.
+      - **Comparador de Performace:** Seleção de 2+ produtos para comparação gráfica (Vendas x Tempo).
+    - **AI Insights (SmartMenu Intelligence):**
+      - **Sugestões de Campanhas:** O sistema analisa dias de baixa e sugere promoções (ex: "Terças com -30% movimento -> Sugestão: Happy Hour de Burritos").
+      - **Oportunidades de Preço:** Alerta de preços desatualizados vs inflação ou concorrência (simulado).
+      - **Análise de Tendência:** Previsão simples de demanda baseada no histórico.
+  - **Exportação:** Exportação de relatórios consolidados em CSV/PDF.
 - **Gestão de menu:**
   - Ativar/desativar itens
   - Controle de estoque básico

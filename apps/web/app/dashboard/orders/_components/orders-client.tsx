@@ -1,189 +1,437 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useOrderRealtime } from "@/hooks/use-order-realtime";
 import { updateOrderStatus } from "@/app/actions/orders";
-import { Button } from "@smart-menu/ui";
-import { CardContent, CardHeader, CardTitle } from "@smart-menu/ui";
-
+import {
+    DataTable,
+    Badge,
+    Button,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+    Label,
+    Input,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetDescription,
+} from "@smart-menu/ui";
 import { toast } from "sonner";
-import { Clock, CheckCircle2, PlayCircle, XCircle, ChevronRight } from "lucide-react";
-import { format } from "date-fns";
+import { Clock, MoreHorizontal, CheckCircle2, PlayCircle, XCircle, Printer, Eye } from "lucide-react";
+import { formatDistanceToNow, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { motion, AnimatePresence } from "framer-motion";
-import { InteractiveCard } from "@smart-menu/ui";
+import { ColumnDef } from "@tanstack/react-table";
+import { Order } from "../_types";
 import { getTranslatedValue } from "@/lib/utils";
 import { useTranslation } from "@/hooks/use-translation";
 
-const container = {
-    hidden: { opacity: 0 },
-    show: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1
-        }
-    }
-};
 
-const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-};
-
-import { Order } from "../_types";
 
 export function OrdersClient({ orders: initialOrders, tenantId }: { orders: Order[], tenantId: string }) {
     const [orders, setOrders] = useState(initialOrders);
     const { lastEvent } = useOrderRealtime(tenantId);
     const { locale } = useTranslation();
 
+    // Cancellation Dialog State
+    const [cancellationOrderId, setCancellationOrderId] = useState<string | null>(null);
+    const [cancellationReason, setCancellationReason] = useState("");
+    const [isCancelling, setIsCancelling] = useState(false);
+
+    // Details Sheet State
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+    // Filters
+    const [statusFilter, setStatusFilter] = useState<string>("ALL");
+    const [tableFilter, setTableFilter] = useState("");
+    const [date, setDate] = useState<{ from?: Date; to?: Date } | undefined>(undefined);
+
+
     useEffect(() => {
         if (lastEvent) {
             if (lastEvent.event === "ORDER_CREATED") {
                 const payload = lastEvent.payload as Order;
-                setTimeout(() => setOrders(prev => [payload, ...prev]), 0);
-                toast.info(`Novo pedido recebido: Mesa ${payload.table?.number || 'N/A'}`);
-                // Play notification sound
-                const audio = new Audio("/sounds/notification.mp3");
-                audio.play().catch(e => console.warn("Audio play failed:", e));
+                setOrders(prev => [payload, ...prev]);
+                toast.info(`Novo pedido: Mesa ${payload.table?.number || "N/A"}`);
             } else if (lastEvent.event === "STATUS_UPDATED") {
                 const payload = lastEvent.payload as Order;
-                setTimeout(() => setOrders(prev => prev.map(o => o.id === payload.id ? payload : o)), 0);
+                setOrders(prev => prev.map(o => o.id === payload.id ? payload : o));
             }
         }
     }, [lastEvent]);
 
-    const handleUpdateStatus = async (id: string, newStatus: string) => {
-        const result = await updateOrderStatus(id, newStatus);
+    const handleUpdateStatus = async (id: string, newStatus: string, notes?: string) => {
+        const result = await updateOrderStatus(id, newStatus, notes);
         if (!result.success) {
             toast.error(result.error);
+        } else {
+            toast.success(`Status atualizado para ${newStatus}`);
+            if (newStatus === "CANCELLED") {
+                setCancellationOrderId(null);
+                setCancellationReason("");
+            }
         }
     };
 
-    const sortedOrders = [...orders].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-    const getStatusConfig = (status: string) => {
-        switch (status) {
-            case "PENDING":
-                return { label: "Pendente", color: "bg-orange-100 text-orange-600 dark:bg-orange-900/20 dark:text-orange-500", icon: Clock };
-            case "CONFIRMED":
-                return { label: "Confirmado", color: "bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-500", icon: CheckCircle2 };
-            case "PREPARING":
-                return { label: "Em Preparo", color: "bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-500", icon: PlayCircle };
-            case "READY":
-                return { label: "Pronto", color: "bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-500", icon: CheckCircle2 };
-            case "DELIVERED":
-                return { label: "Entregue", color: "bg-zinc-100 text-zinc-600 dark:bg-zinc-900/20 dark:text-zinc-400", icon: ChevronRight };
-            case "CANCELLED":
-                return { label: "Cancelado", color: "bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-500", icon: XCircle };
-            default:
-                return { label: status, color: "bg-gray-100 text-gray-600", icon: Clock };
+    const confirmCancellation = async () => {
+        if (!cancellationOrderId || !cancellationReason.trim()) {
+            toast.error("Por favor, informe o motivo do cancelamento.");
+            return;
         }
+        setIsCancelling(true);
+        await handleUpdateStatus(cancellationOrderId, "CANCELLED", cancellationReason);
+        setIsCancelling(false);
     };
+
+    const filteredOrders = useMemo(() => {
+        return orders.filter(order => {
+            // Status Filter
+            if (statusFilter !== "ALL" && order.status !== statusFilter) return false;
+
+            // Table Filter
+            if (tableFilter && !order.table?.number?.toString().includes(tableFilter)) return false;
+
+            // Date Filter
+            if (date?.from) {
+                const orderDate = new Date(order.createdAt);
+                if (orderDate < date.from) return false;
+                if (date.to && orderDate > new Date(new Date(date.to).setHours(23, 59, 59, 999))) return false;
+            }
+
+            return true;
+        });
+    }, [orders, statusFilter, tableFilter, date]);
+
+    const columns: ColumnDef<Order>[] = useMemo(() => [
+        {
+            accessorKey: "id",
+            header: "ID",
+            cell: ({ row }) => (
+                <span className="font-mono text-[10px] text-zinc-500 uppercase">
+                    #{row.original.id.slice(0, 8)}
+                </span>
+            ),
+        },
+        {
+            accessorKey: "table.number",
+            header: "Mesa",
+            cell: ({ row }) => (
+                <span className="font-bold">
+                    Mesa {row.original.table?.number || "N/A"}
+                </span>
+            ),
+        },
+        {
+            accessorKey: "items",
+            header: "Itens",
+            cell: ({ row }) => (
+                <div className="flex flex-col gap-0.5">
+                    {row.original.items.map((item) => (
+                        <span key={item.id} className="text-[11px] leading-tight text-zinc-600 dark:text-zinc-400">
+                            {item.quantity}x {getTranslatedValue(item.product.name, locale)}
+                        </span>
+                    )).slice(0, 2)}
+
+                    {row.original.items.length > 2 && (
+                        <span className="text-[10px] text-zinc-400">+{row.original.items.length - 2} outros...</span>
+                    )}
+                </div>
+            )
+        },
+        {
+            accessorKey: "createdAt",
+            header: "Tempo",
+            cell: ({ row }) => (
+                <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+                    <Clock className="h-3 w-3" />
+                    {formatDistanceToNow(new Date(row.original.createdAt), { addSuffix: true, locale: ptBR })}
+                </div>
+            ),
+        },
+        {
+            accessorKey: "total",
+            header: "Total",
+            cell: ({ row }) => (
+                <span className="font-bold">
+                    {new Intl.NumberFormat('pt-AO', { style: 'currency', currency: 'AOA', maximumFractionDigits: 0 }).format(row.original.total)}
+                </span>
+            ),
+        },
+        {
+            accessorKey: "status",
+            header: "Status",
+            cell: ({ row }) => {
+                const status = row.original.status;
+                const config: Record<string, { label: string, color: string }> = {
+                    PENDING: { label: "Pendente", color: "bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400" },
+                    CONFIRMED: { label: "Confirmado", color: "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400" },
+                    PREPARING: { label: "Preparo", color: "bg-purple-100 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400" },
+                    READY: { label: "Pronto", color: "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400" },
+                    DELIVERED: { label: "Entregue", color: "bg-zinc-100 text-zinc-600 dark:bg-zinc-900/20 dark:text-zinc-400" },
+                    CANCELLED: { label: "Cancelado", color: "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400" },
+                };
+                const item = config[status] || { label: status, color: "bg-gray-100" };
+
+                return (
+                    <Badge className={`${item.color} border-0 shadow-none font-bold text-[10px]`}>
+                        {item.label}
+                    </Badge>
+                );
+            },
+        },
+        {
+            id: "actions",
+            cell: ({ row }) => {
+                const order = row.original;
+
+                return (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Menu</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => setSelectedOrder(order)}>
+                                <Eye className="mr-2 h-4 w-4" />
+                                Detalhes
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => console.log("Imprimir", order.id)}>
+                                <Printer className="mr-2 h-4 w-4" />
+                                Imprimir
+                            </DropdownMenuItem>
+                            {order.status === "PENDING" && (
+                                <DropdownMenuItem onClick={() => handleUpdateStatus(order.id, "PREPARING")} className="text-orange-600 font-bold">
+                                    <PlayCircle className="mr-2 h-4 w-4" />
+                                    Preparar
+                                </DropdownMenuItem>
+                            )}
+                            {order.status === "PREPARING" && (
+                                <DropdownMenuItem onClick={() => handleUpdateStatus(order.id, "READY")} className="text-green-600 font-bold">
+                                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                                    Pronto
+                                </DropdownMenuItem>
+                            )}
+                            {order.status === "READY" && (
+                                <DropdownMenuItem onClick={() => handleUpdateStatus(order.id, "DELIVERED")}>
+                                    Entregar
+                                </DropdownMenuItem>
+                            )}
+                            {(order.status === "PENDING" || order.status === "CONFIRMED") && (
+                                <DropdownMenuItem
+                                    onClick={() => setCancellationOrderId(order.id)}
+                                    className="text-red-600 focus:bg-red-100 dark:focus:bg-red-900/40"
+                                >
+                                    <XCircle className="mr-2 h-4 w-4" />
+                                    Cancelar
+                                </DropdownMenuItem>
+                            )}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                );
+            },
+        },
+    ], [locale]);
 
     return (
-        <div className="space-y-6">
-            <motion.div
-                variants={container}
-                initial="hidden"
-                animate="show"
-                className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
-            >
-                <AnimatePresence mode="popLayout">
-                    {sortedOrders.map((order) => {
-                        const statusConfig = getStatusConfig(order.status);
-                        const StatusIcon = statusConfig.icon;
+        <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-between">
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                        <SelectTrigger className="w-full sm:w-[150px]">
+                            <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="ALL">Todos os Status</SelectItem>
+                            <SelectItem value="PENDING">Pendentes</SelectItem>
+                            <SelectItem value="CONFIRMED">Confirmados</SelectItem>
+                            <SelectItem value="PREPARING">Em Preparo</SelectItem>
+                            <SelectItem value="READY">Prontos</SelectItem>
+                            <SelectItem value="DELIVERED">Entregues</SelectItem>
+                            <SelectItem value="CANCELLED">Cancelados</SelectItem>
+                        </SelectContent>
+                    </Select>
 
-                        return (
-                            <motion.div
-                                key={order.id}
-                                variants={item}
-                                layout
-                                initial="hidden"
-                                animate="show"
-                                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                            >
-                                <InteractiveCard glass className="h-full flex flex-col">
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                                        <div className="space-y-1">
-                                            <CardTitle className="text-base font-bold tracking-tight">
-                                                Mesa {order.table?.number || "N/A"}
-                                            </CardTitle>
-                                            <div className="text-[10px] text-zinc-500 font-medium">
-                                                ID: {order.id.slice(0, 8).toUpperCase()}
-                                            </div>
-                                        </div>
-                                        <div className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold shadow-sm ${statusConfig.color}`}>
-                                            <StatusIcon className="h-3.5 w-3.5" />
-                                            {statusConfig.label}
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent className="flex-1 flex flex-col">
-                                        <div className="text-xs text-zinc-500 mb-6 flex items-center gap-1.5 font-medium">
-                                            <Clock className="h-3 w-3" />
-                                            {format(new Date(order.createdAt), "HH:mm '·' d 'de' MMMM", { locale: ptBR })}
-                                        </div>
+                    <Input
+                        placeholder="Filtrar por Mesa..."
+                        value={tableFilter}
+                        onChange={(e) => setTableFilter(e.target.value)}
+                        className="w-full sm:w-[150px]"
+                    />
 
-                                        <div className="space-y-3 mb-8 flex-1">
-                                            {order.items.map((item) => (
-                                                <div key={item.id} className="flex justify-between items-start gap-4 p-2 rounded-lg bg-zinc-50/50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800/50">
-                                                    <div className="flex flex-col">
-                                                        <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                                                            {item.quantity}x {getTranslatedValue(item.product.name, locale)}
-                                                        </span>
-                                                        {item.notes && (
-                                                            <span className="text-[11px] text-orange-600 dark:text-orange-400 font-medium mt-0.5">Note: {item.notes}</span>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
+                    <div className="flex items-center gap-2">
+                        <Input
+                            type="date"
+                            value={date?.from ? format(date.from, "yyyy-MM-dd") : ""}
+                            onChange={(e) => setDate(prev => ({ ...prev, from: e.target.value ? new Date(e.target.value) : undefined }))}
+                            className="w-[140px]"
+                        />
+                        <span className="text-zinc-500">-</span>
+                        <Input
+                            type="date"
+                            value={date?.to ? format(date.to, "yyyy-MM-dd") : ""}
+                            onChange={(e) => setDate(prev => ({ ...prev, to: e.target.value ? new Date(e.target.value) : undefined }))}
+                            className="w-[140px]"
+                        />
+                    </div>
 
-                                        <div className="flex items-center justify-between pt-6 border-t border-zinc-100 dark:border-zinc-800 mt-auto">
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Total</span>
-                                                <span className="text-xl font-black text-zinc-900 dark:text-zinc-50">
-                                                    {new Intl.NumberFormat('pt-AO', { style: 'currency', currency: 'AOA' }).format(order.total)}
-                                                </span>
-                                            </div>
-
-                                            <div className="flex gap-2">
-                                                {order.status === "PENDING" && (
-                                                    <Button size="sm" onClick={() => handleUpdateStatus(order.id, "PREPARING")} className="bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-full px-4 transform transition-transform hover:scale-105 active:scale-95">
-                                                        Confirmar
-                                                    </Button>
-                                                )}
-                                                {order.status === "PREPARING" && (
-                                                    <Button size="sm" onClick={() => handleUpdateStatus(order.id, "READY")} className="bg-green-600 hover:bg-green-700 text-white font-bold rounded-full px-4 transform transition-transform hover:scale-105 active:scale-95">
-                                                        Pronto
-                                                    </Button>
-                                                )}
-                                                {order.status === "READY" && (
-                                                    <Button size="sm" onClick={() => handleUpdateStatus(order.id, "DELIVERED")} variant="outline" className="font-bold rounded-full px-4 border-2">
-                                                        Entregar
-                                                    </Button>
-                                                )}
-                                                {(order.status === "PENDING" || order.status === "CONFIRMED") && (
-                                                    <Button size="sm" variant="ghost" onClick={() => handleUpdateStatus(order.id, "CANCELLED")} className="text-red-500 hover:bg-red-50 hover:text-red-600 rounded-full h-9 w-9 p-0">
-                                                        <XCircle className="h-5 w-5" />
-                                                    </Button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </InteractiveCard>
-                            </motion.div>
-                        );
-                    })}
-                </AnimatePresence>
-            </motion.div>
-
-            {orders.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-20 text-zinc-500">
-                    <Clock className="h-12 w-12 mb-4 opacity-20" />
-                    <p>Nenhum pedido encontrado no momento.</p>
+                    {(statusFilter !== "ALL" || tableFilter || date?.from || date?.to) && (
+                        <Button
+                            variant="ghost"
+                            onClick={() => {
+                                setStatusFilter("ALL");
+                                setTableFilter("");
+                                setDate(undefined);
+                            }}
+                            className="px-2"
+                        >
+                            Limpar
+                        </Button>
+                    )}
                 </div>
-            )}
+            </div>
+
+            <div className="bg-white dark:bg-zinc-950 p-6 rounded-2xl border shadow-sm">
+                <DataTable
+                    columns={columns}
+                    data={filteredOrders}
+                    searchKey="id"
+                    placeholder="Pesquisar por ID..."
+                />
+            </div>
+
+            <Dialog open={!!cancellationOrderId} onOpenChange={(open) => !open && setCancellationOrderId(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Cancelar Pedido</DialogTitle>
+                        <DialogDescription>
+                            Por favor, informe o motivo do cancelamento deste pedido. Esta ação é irreversível.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="reason">Motivo</Label>
+                            <Input
+                                id="reason"
+                                value={cancellationReason}
+                                onChange={(e) => setCancellationReason(e.target.value)}
+                                placeholder="Ex: Cliente desistiu, Ingrediente indisponível..."
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setCancellationOrderId(null)}>
+                            Voltar
+                        </Button>
+                        <Button
+                            variant="destructive"
+                            onClick={confirmCancellation}
+                            disabled={isCancelling || !cancellationReason.trim()}
+                        >
+                            {isCancelling ? "Cancelando..." : "Confirmar Cancelamento"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <Sheet open={!!selectedOrder} onOpenChange={(open) => !open && setSelectedOrder(null)}>
+                <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto">
+                    <SheetHeader>
+                        <SheetTitle>Detalhes do Pedido #{selectedOrder?.id.slice(0, 8)}</SheetTitle>
+                        <SheetDescription>
+                            Criado em {selectedOrder && format(new Date(selectedOrder.createdAt), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+                        </SheetDescription>
+                    </SheetHeader>
+                    {selectedOrder && (
+                        <div className="py-6 space-y-6">
+                            {/* Status and Table Info */}
+                            <div className="flex justify-between items-center bg-zinc-50 dark:bg-zinc-900 p-4 rounded-lg">
+                                <div>
+                                    <p className="text-sm text-zinc-500">Mesa</p>
+                                    <p className="font-bold text-lg">{selectedOrder.table?.number || "Balcão"}</p>
+                                </div>
+                                <div className="text-right">
+                                    <Badge className="mb-1">{selectedOrder.status}</Badge>
+                                    <p className="text-sm font-mono text-zinc-500">{selectedOrder.orderType.replace("_", " ")}</p>
+                                </div>
+                            </div>
+
+                            {/* Items List */}
+                            <div>
+                                <h4 className="font-bold mb-3 text-sm uppercase text-zinc-500">Itens do Pedido</h4>
+                                <div className="space-y-3">
+                                    {selectedOrder.items.map((item) => (
+                                        <div key={item.id} className="flex justify-between items-start border-b pb-3 last:border-0">
+                                            <div>
+                                                <p className="font-bold text-sm">
+                                                    {item.quantity}x {getTranslatedValue(item.product.name, locale)}
+                                                </p>
+                                                {item.options && item.options.length > 0 && (
+                                                    <div className="ml-2 mt-1 space-y-0.5">
+                                                        {item.options.map((opt) => (
+                                                            <p key={opt.id} className="text-xs text-zinc-500">
+                                                                + {getTranslatedValue(opt.optionValue.name, locale)}
+                                                            </p>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                                {item.notes && (
+                                                    <p className="text-xs text-orange-600 mt-1 italic">Obs: {item.notes}</p>
+                                                )}
+                                            </div>
+                                            <p className="font-mono text-sm">
+                                                {new Intl.NumberFormat('pt-AO', { style: 'currency', currency: 'AOA' }).format(Number(item.price) * item.quantity)}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Total Summary */}
+                            <div className="border-t pt-4 space-y-2">
+                                <div className="flex justify-between text-lg font-bold">
+                                    <span>Total</span>
+                                    <span>{new Intl.NumberFormat('pt-AO', { style: 'currency', currency: 'AOA' }).format(selectedOrder.total)}</span>
+                                </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="grid grid-cols-2 gap-3 pt-4">
+                                <Button variant="outline" onClick={() => console.log("Imprimir")}>
+                                    <Printer className="mr-2 h-4 w-4" />
+                                    Imprimir
+                                </Button>
+                                {selectedOrder.status !== "CANCELLED" && selectedOrder.status !== "DELIVERED" && (
+                                    <Button
+                                        variant="default"
+                                        onClick={() => {
+                                            handleUpdateStatus(selectedOrder.id, "READY");
+                                            setSelectedOrder(null);
+                                        }}
+                                    >
+                                        <CheckCircle2 className="mr-2 h-4 w-4" />
+                                        Marcar Pronto
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </SheetContent>
+            </Sheet>
         </div>
     );
 }

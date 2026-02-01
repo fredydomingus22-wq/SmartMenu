@@ -123,9 +123,9 @@ export function RestaurantFooter({ branding, footerConfig }: FooterProps) {
                     </div>
                 </div>
 
-                <div className="mt-16 pt-8 border-t flex flex-col sm:row justify-between items-center gap-4 text-[10px] uppercase font-bold tracking-widest text-muted-foreground/60">
+                <div className="mt-16 pt-8 border-t flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] uppercase font-bold tracking-widest text-muted-foreground/60">
                     <p>{t('footer.rights', { year: currentYear, name: branding?.tenantName || 'SmartMenu' })}</p>
-                    <div className="flex gap-6">
+                    <div className="flex flex-wrap justify-center gap-3 sm:gap-6">
                         <Link href={`/menu/${branding?.tenantId}/about`} className="hover:text-primary transition-colors">{t('footer.about')}</Link>
                         <Link href={`/menu/${branding?.tenantId}/allergens`} className="hover:text-primary transition-colors">{t('footer.allergens')}</Link>
                         <Link href={`/menu/${branding?.tenantId}/privacy`} className="hover:text-primary transition-colors">{t('footer.privacy')}</Link>

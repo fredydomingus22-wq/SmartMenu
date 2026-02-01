@@ -1,4 +1,4 @@
-import { IsEnum } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 export enum OrderStatus {
   PENDING = 'PENDING',
@@ -12,4 +12,8 @@ export enum OrderStatus {
 export class UpdateOrderStatusDto {
   @IsEnum(OrderStatus)
   status!: OrderStatus;
+
+  @IsString()
+  @IsOptional()
+  notes?: string;
 }

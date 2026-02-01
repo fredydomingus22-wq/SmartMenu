@@ -49,6 +49,8 @@
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",
+    "@supabase/supabase-js": "^2.93.3",
+    "dotenv": "^17.2.3",
     "jsonwebtoken": "^9.0.3",
     "ts-node": "^10.9.2"
   }

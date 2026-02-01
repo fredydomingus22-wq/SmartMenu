@@ -21,9 +21,9 @@ export async function getOrders(token?: string | null) {
     }
 }
 
-export async function updateOrderStatus(id: string, status: string) {
+export async function updateOrderStatus(id: string, status: string, notes?: string) {
     try {
-        await apiClient.patch(`/orders/${id}/status`, { status });
+        await apiClient.patch(`/orders/${id}/status`, { status, notes });
 
         revalidatePath("/dashboard/orders");
         revalidatePath("/dashboard/kds");

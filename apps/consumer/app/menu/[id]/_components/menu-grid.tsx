@@ -131,7 +131,7 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                         <h2 className="text-3xl font-black tracking-tighter text-zinc-900">{section.config?.title || "Destaques"}</h2>
                                     </div>
                                 </div>
-                                <div className="flex gap-4 overflow-x-auto pb-8 pt-2 px-1 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+                                <div className="flex gap-4 overflow-x-auto pb-8 pt-2 scrollbar-hide max-w-full">
                                     {featuredProducts.map((product) => (
                                         <div key={product.id} className="w-[280px] sm:w-[320px] flex-shrink-0">
                                             <ProductCard product={product} tenantId={tenantId} locale={locale} t={t} />
@@ -143,7 +143,7 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
 
                     case "best_sellers":
                         return (
-                            <section key={`section-${idx}`} className="space-y-4 bg-orange-50/50 -mx-4 px-4 py-8 sm:rounded-3xl sm:mx-0">
+                            <section key={`section-${idx}`} className="space-y-4 bg-orange-50/50 rounded-2xl sm:rounded-3xl px-4 py-8">
                                 <div className="flex items-center gap-2 mb-6">
                                     <div className="h-8 w-1 bg-orange-500 rounded-full" />
                                     <h2 className="text-2xl font-black tracking-tight text-orange-900">{section.config?.title || "Mais Vendidos"}</h2>
@@ -174,7 +174,7 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                         return (
                             <div key={`section-${idx}`} className="space-y-10">
                                 {/* Horizontal Tabs Navigation */}
-                                <div className="sticky top-0 bg-background/95 backdrop-blur-xl border-b -mx-4 px-4 py-4 z-[var(--z-category-nav)] overflow-x-auto scrollbar-hide">
+                                <div className="sticky top-0 bg-background/95 backdrop-blur-xl border-b py-4 z-[var(--z-category-nav)] overflow-x-auto scrollbar-hide max-w-full">
                                     <div className="flex gap-2 min-w-max">
                                         {categories.map((category) => (
                                             <button

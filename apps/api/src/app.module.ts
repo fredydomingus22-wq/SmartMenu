@@ -20,6 +20,7 @@ import { LoyaltyModule } from './loyalty/loyalty.module';
 import { SearchModule } from './search/search.module';
 import { WorkflowsModule } from './workflows/workflows.module';
 import { ServiceRequestsModule } from './service-requests/service-requests.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { ServiceRequestsModule } from './service-requests/service-requests.modul
     SearchModule,
     WorkflowsModule,
     ServiceRequestsModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, SupabaseStrategy],

@@ -21,21 +21,27 @@ export function KDSGrid({ initialOrders, tenantId }: KDSGridProps) {
     const [activeSector, setActiveSector] = useState<'KITCHEN' | 'BAR' | 'ALL'>('KITCHEN');
     const { isEnabled: isSoundEnabled, initAudio, playNewOrder } = useKDSSound();
     const { t } = useTranslation();
-    const supabase = createClient();
+    const supabase = useMemo(() => createClient(), []);
 
     useEffect(() => {
         setOrders(initialOrders);
     }, [initialOrders]);
 
     useEffect(() => {
+        if (!tenantId) {
+            console.error('[KDSGrid] Missing tenantId, cannot subscribe');
+            return;
+        }
+
+        console.log(`[KDSGrid] Subscribing to orders:${tenantId}`);
         const channel = supabase.channel(`orders:${tenantId}`)
             .on('broadcast', { event: 'ORDER_CREATED' }, (payload) => {
-                console.log('Novo Pedido:', payload);
+                console.log('[KDSGrid] Novo Pedido:', payload);
                 setOrders(prev => [...prev, payload.payload]);
                 playNewOrder();
             })
             .on('broadcast', { event: 'STATUS_UPDATED' }, (payload) => {
-                console.log('Pedido Atualizado:', payload);
+                console.log('[KDSGrid] Pedido Atualizado:', payload);
                 const updatedOrder = payload.payload;
 
                 // Real-time Filtering: Remove se status for finalizado/entregue
@@ -52,9 +58,13 @@ export function KDSGrid({ initialOrders, tenantId }: KDSGridProps) {
                     });
                 }
             })
-            .subscribe();
+            .subscribe((status, err) => {
+                console.log(`[KDSGrid] Subscription status: ${status}`);
+                if (err) console.error('[KDSGrid] Subscription error:', err);
+            });
 
         return () => {
+            console.log(`[KDSGrid] Cleaning up subscription for orders:${tenantId}`);
             supabase.removeChannel(channel);
         };
     }, [tenantId, supabase, playNewOrder]);

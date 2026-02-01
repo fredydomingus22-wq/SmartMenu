@@ -2,7 +2,6 @@ import { getAuthorizedClient } from "@/utils/auth-server";
 import { redirect } from "next/navigation";
 import { Button } from "@smart-menu/ui";
 import { Card, CardContent, CardHeader, CardTitle } from "@smart-menu/ui";
-import { signOut } from "../actions/auth";
 import { QRGenerator } from "@smart-menu/ui";
 import Link from "next/link";
 

@@ -46,6 +46,16 @@
 - **OpenAI + LangChain**
 - **Pandas** (Processamento de dados)
 
+- **Analytics & BI Core:**
+  - **Data Aggregation:** Advanced Prisma / Raw SQL queries for complex BI (Window functions for growth, PostGIS for location, GROUP BY for peaks).
+  - **Peak Hour Logic:** Aggregation of `Order.createdAt` grouped by `EXTRACT(HOUR FROM ...)`.
+  - **Customer BI:** Join between `Order`, `CustomerProfile` and `LoyaltyPoint` for ranking.
+- **Data Table & Management:**
+  - **TanStack Table v8:** Advanced multi-column filtering and global faceted search.
+  - **Real-time Engine:** Supabase Realtime for order list synchronization.
+  - **Printing:** Thermal receipt generation via specific CSS print media queries.
+- **Chart Library:** `Recharts` for analytical visualization (Heatmaps, Area charts).
+
 #### Database & Infra
 - **Supabase** (PostgreSQL gerido)
 - **RLS (Row Level Security)** em todas as tabelas
@@ -121,6 +131,7 @@ Para garantir performance e "Zero Distraction" em cozinhas movimentadas, a arqui
 3.  **Real-Time Optimistic UI:**
     - O frontend KDS deve subscrever a eventos `UPDATE` na tabela `orders`.
     - Ao receber um evento com `new.status = 'DELIVERED'`, o item deve ser removido da lista local imediatamente.
+    - **Connection Persistence:** A conexão WebSocket deve ser instanciada apenas uma vez por sessão (Singleton/Memoized) para evitar reconexões desnecessárias e perda de eventos (Anti-pattern de re-render).
 
 ---
 
@@ -145,6 +156,8 @@ Para garantir performance e "Zero Distraction" em cozinhas movimentadas, a arqui
 | Orders | `/orders` | Private | SupabaseAuthGuard |
 | Tables | `/tables` | Private | SupabaseAuthGuard (Tenant Scoped) |
 | Loyalty | `/loyalty` | Public/Private | SupabaseAuthGuard |
+| Analytics | `/analytics` | Private | SupabaseAuthGuard |
+| BI | `/analytics/bi` | Private | Manager + Admin |
 | Discovery | `/discovery` | Public | None |
 | Config | `/public/menu/:tenantId/config` | Public | None |
 

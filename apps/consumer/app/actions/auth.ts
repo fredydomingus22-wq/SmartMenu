@@ -51,7 +51,7 @@ export async function signup(formData: FormData) {
                 full_name: name,
                 role: 'CUSTOMER',
             },
-            emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback${returnTo ? `?next=${encodeURIComponent(returnTo)}` : ''}`
+            emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback${returnTo ? `?next=${encodeURIComponent(returnTo)}` : ''}`
         }
     })
 

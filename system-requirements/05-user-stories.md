@@ -56,11 +56,19 @@
 1. Como gerente, quero uma página dedicada para o cadastro de produtos com transições suaves, para que o processo de configuração do menu seja mais intuitivo e menos cansativo.
 2. Como gerente, quero gerenciar menu e categorias através de formulários com rolagem interna (ScrollArea), para visualizar todos os campos sem quebrar o layout da página.
 2. Como gerente, quero ativar/desativar itens e gerenciar estoque, para refletir disponibilidade real.
-3. Como gerente, quero visualizar dashboards de vendas, ticket médio e performance de mesas, para tomar decisões estratégicas.
-4. Como gerente, quero configurar promoções e combos, para aumentar vendas.
-6. Como gerente, quero configurar produtos como "Upsell" de outros itens, para aumentar o valor médio dos pedidos de forma automatizada.
-7. Como gerente, quero oferecer o meu cardápio em múltiplos idiomas (PT, EN, ES) e traduzir os nomes e descrições dos meus pratos, para atender melhor os clientes estrangeiros.
-8. Como administrador SaaS, quero gerenciar múltiplos tenants, planos e assinaturas, para operar negócio escalável.
+3. Como gerente, quero visualizar dashboards de vendas em tempo real com KPIs (vendas, ticket médio, volume) e gráficos de tendência, para tomar decisões estratégicas baseadas em dados.
+4. Como gerente, quero ver o ranking dos produtos mais vendidos e a performance por turno, para otimizar meu menu e escala de equipe.
+5. Como gerente, quero uma visão de pedidos de alta densidade em formato de tabela com filtros avançados e busca rápida, para gerenciar grandes volumes de operação sem perder o controle.
+6. Como gerente, quero visualizar os horários de pico de vendas, para otimizar a escala de funcionários da cozinha e atendimento.
+7. Como gerente, quero ver o ranking de mesas e clientes que mais geram receita, para oferecer cortesias ou otimizar o layout do salão.
+8. Como gerente, quero aplicar filtros avançados na lista de pedidos (data, mesa, status, cliente) simultaneamente, para encontrar informações específicas em segundos.
+9. Como gerente, quero acessar um menu de ações em cada pedido para imprimir o recibo ou ver detalhes completos em um modal, para agilizar a operação.
+10. Como gerente, quero uma experiência mobile impecável, com gestos de deslizar para mudar status de pedidos e gavetas (bottom sheets) para detalhes, para gerir o restaurante em movimento.
+11. Como administrador SaaS, quero gerenciar múltiplos tenants, planos e assinaturas, para operar negócio escalável.
+12. Como gerente, quero analisar minhas vendas por dia, mês e ano em gráficos comparativos, para entender a sazonalidade do meu negócio.
+13. Como gerente, quero saber exatamente qual é meu produto "Hero" (mais vendido) e minha "Cash Cow" (maior receita), para focar meus esforços de marketing.
+14. Como gerente, quero comparar a performance de vendas entre dois produtos (ex: Coca-Cola vs Pepsi) ao longo do tempo, para decidir qual manter no cardápio.
+15. Como gerente, quero receber sugestões inteligentes da IA sobre campanhas promocionais para dias de baixo movimento, para aumentar meu faturamento sem esforço criativo.
 
 ---
 
