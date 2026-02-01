@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { User, Building2, Grid3X3, CreditCard, Palette, Layout, LucideIcon } from "lucide-react";
+import { User, Building2, Grid3X3, CreditCard, Palette, Layout, Image, LucideIcon } from "lucide-react";
 
 const IconMap: Record<string, LucideIcon> = {
     "building": Building2,
@@ -12,6 +12,7 @@ const IconMap: Record<string, LucideIcon> = {
     "credit-card": CreditCard,
     "palette": Palette,
     "layout": Layout,
+    "image": Image,
 };
 
 const sidebarNavItems = [
@@ -29,6 +30,11 @@ const sidebarNavItems = [
         title: "Layout do Cardápio",
         href: "/dashboard/settings/menu-design",
         icon: "layout"
+    },
+    {
+        title: "Banners & Links",
+        href: "/dashboard/settings/banners",
+        icon: "image"
     },
     {
         title: "Mesas",
@@ -64,8 +70,8 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
                 </p>
             </div>
             <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-                <aside className="-mx-4 lg:w-1/5">
-                    <nav className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
+                <aside className="-mx-4 lg:w-1/5 overflow-x-auto lg:overflow-visible">
+                    <nav className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1 min-w-max lg:min-w-0 px-4 lg:px-0 pb-2 lg:pb-0">
                         {sidebarNavItems.map((item) => {
                             const IconComponent = IconMap[item.icon] || User;
                             return (

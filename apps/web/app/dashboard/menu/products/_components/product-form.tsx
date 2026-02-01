@@ -244,7 +244,7 @@ export function ProductForm({ categories, initialData, products = [] }: {
     return (
         <form action={handleSubmit} className="relative flex flex-col bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl rounded-[2.5rem] border border-white/20 dark:border-white/5 shadow-2xl shadow-orange-500/5 group">
             <ScrollArea className="h-[calc(100dvh-14rem)] rounded-[2.5rem]">
-                <div className="flex-1 p-8 space-y-12 pb-40">
+                <div className="flex-1 p-4 sm:p-6 lg:p-8 space-y-8 sm:space-y-12 pb-24 sm:pb-40">
                     <motion.div
                         variants={container}
                         initial="hidden"
@@ -371,7 +371,7 @@ export function ProductForm({ categories, initialData, products = [] }: {
                                             name="isAvailable"
                                             value="true"
                                             defaultChecked={initialData ? initialData.isAvailable : true}
-                                            className="h-6 w-6 rounded-lg border-zinc-300 text-orange-600 focus:ring-orange-600 transition-all cursor-pointer"
+                                            className="h-7 w-7 sm:h-6 sm:w-6 rounded-lg border-zinc-300 text-orange-600 focus:ring-orange-600 transition-all cursor-pointer"
                                         />
                                         <div className="grid gap-1 leading-none">
                                             <Label htmlFor="isAvailable" className="text-base font-bold cursor-pointer">
@@ -397,7 +397,7 @@ export function ProductForm({ categories, initialData, products = [] }: {
                         </div>
 
                         {/* Galeria e Opções */}
-                        <div className="grid lg:grid-cols-5 gap-8">
+                        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5 lg:gap-8">
                             <motion.div variants={item} className="lg:col-span-2 p-8 rounded-[2rem] border border-zinc-100 dark:border-white/5 bg-zinc-50/30 dark:bg-white/[0.02] space-y-6">
                                 <div className="flex items-center justify-between">
                                     <Label className="text-sm font-bold uppercase tracking-widest text-zinc-400">{t('dashboard.products.form.gallery_label')}</Label>
@@ -504,14 +504,14 @@ export function ProductForm({ categories, initialData, products = [] }: {
                                                             }}
                                                             className="h-9 text-sm rounded-lg"
                                                         />
-                                                        <div className="w-36 flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800 pr-2 rounded-lg">
+                                                        <div className="w-full sm:w-36 flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800 pr-2 rounded-lg">
                                                             <span className="text-[10px] font-black text-zinc-400 pl-3">AOA</span>
                                                             <Input
                                                                 type="number"
                                                                 value={val.price}
                                                                 onChange={(e) => {
                                                                     const newOptions = [...productOptions];
-                                                                    newOptions[groupIdx].values[valIdx].price = parseFloat(e.target.value);
+                                                                    newOptions[groupIdx].values[valIdx].price = parseFloat(e.target.value) || 0;
                                                                     setProductOptions(newOptions);
                                                                 }}
                                                                 className="h-9 text-xs border-0 bg-transparent focus-visible:ring-0 shadow-none font-bold text-orange-600"
@@ -577,7 +577,7 @@ export function ProductForm({ categories, initialData, products = [] }: {
                                                 }
                                             }
                                         }}
-                                        className="max-w-md h-12 rounded-xl"
+                                        className="flex-1 h-12 rounded-xl"
                                     />
                                     <Button
                                         type="button"
@@ -640,7 +640,7 @@ export function ProductForm({ categories, initialData, products = [] }: {
                     </motion.div>
 
                     {/* Actions Footer - Nested in flow */}
-                    <div className="mt-12 flex items-center justify-between gap-4 p-8 bg-zinc-50/50 dark:bg-white/[0.02] rounded-[2rem] border border-zinc-100 dark:border-white/5">
+                    <div className="mt-8 sm:mt-12 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 p-4 sm:p-8 bg-zinc-50/50 dark:bg-white/[0.02] rounded-[2rem] border border-zinc-100 dark:border-white/5">
                         <Button
                             type="button"
                             variant="ghost"
@@ -653,7 +653,7 @@ export function ProductForm({ categories, initialData, products = [] }: {
                         <Button
                             type="submit"
                             disabled={loading}
-                            className="bg-orange-600 hover:bg-orange-700 h-12 px-10 min-w-[200px] shadow-xl shadow-orange-600/30 font-bold transition-all hover:scale-[1.02] active:scale-[0.98] rounded-xl text-white"
+                            className="bg-orange-600 hover:bg-orange-700 h-12 px-6 sm:px-10 w-full sm:w-auto sm:min-w-[200px] shadow-xl shadow-orange-600/30 font-bold transition-all hover:scale-[1.02] active:scale-[0.98] rounded-xl text-white"
                         >
                             {loading ? (
                                 <div className="flex items-center gap-2">

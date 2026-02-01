@@ -36,7 +36,7 @@ export default async function KDSPage() {
         console.error('Falha ao buscar pedidos KDS:', error);
     }
 
-    const tenantId = user.user_metadata?.tenantId || user.app_metadata?.tenant_id;
+    const tenantId = user.user_metadata?.tenantId || user.app_metadata?.tenant_id || user.id;
 
     return (
         <div className="flex flex-col h-full space-y-6">

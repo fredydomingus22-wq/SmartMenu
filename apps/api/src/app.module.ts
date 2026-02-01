@@ -21,6 +21,7 @@ import { SearchModule } from './search/search.module';
 import { WorkflowsModule } from './workflows/workflows.module';
 import { ServiceRequestsModule } from './service-requests/service-requests.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { MarketingModule } from './marketing/marketing.module';
 
 @Module({
   imports: [
@@ -49,8 +50,9 @@ import { AnalyticsModule } from './analytics/analytics.module';
     WorkflowsModule,
     ServiceRequestsModule,
     AnalyticsModule,
+    MarketingModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, SupabaseStrategy],
 })
-export class AppModule {}
+export class AppModule { }

@@ -13,11 +13,15 @@ import { Reorder } from "framer-motion";
 import { MenuSection } from "../../../menu/[id]/_types";
 import { ImageUpload } from "@smart-menu/ui";
 
+import { Banner } from "../../../menu/[id]/_types/marketing";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@smart-menu/ui";
+
 interface MenuDesignFormProps {
     initialSections: MenuSection[] | null;
+    banners?: Banner[];
 }
 
-export function MenuDesignForm({ initialSections }: MenuDesignFormProps) {
+export function MenuDesignForm({ initialSections, banners = [] }: MenuDesignFormProps) {
     const [sections, setSections] = useState<MenuSection[]>(initialSections || [
         { type: "hero", name: "Banner Principal", isActive: true, config: { title: "Bem-vindo", subtitle: "As melhores opções", imageUrl: "" } },
         { type: "featured", name: "Destaques", isActive: true, config: { label: "MAIS PEDIDOS", title: "Os Favoritos" } },
@@ -34,6 +38,30 @@ export function MenuDesignForm({ initialSections }: MenuDesignFormProps) {
             config: { title: "Espaço para Sobremesa?", subtitle: "Confira nossas opções artesanais", buttonText: "Ver Ofertas", imageUrl: "" }
         }]);
     }
+
+    // Helper to load banner data
+    const loadBannerData = (index: number, bannerId: string) => {
+        const banner = banners.find(b => b.id === bannerId);
+        if (banner) {
+            const newSections = [...sections];
+            // Handle potentially localized content
+            const getLocalized = (field: any) => {
+                if (typeof field === 'string') return field;
+                if (typeof field === 'object' && field !== null) return field.pt || field.en || Object.values(field)[0] || "";
+                return "";
+            };
+
+            newSections[index].config = {
+                ...newSections[index].config,
+                title: getLocalized(banner.title),
+                subtitle: getLocalized(banner.subtitle),
+                imageUrl: banner.imageUrl || "",
+                buttonText: getLocalized(banner.buttonText),
+            };
+            setSections(newSections);
+            toast.success("Dados do banner carregados!");
+        }
+    };
 
     const [isSaving, setIsSaving] = useState(false);
 
@@ -99,6 +127,22 @@ export function MenuDesignForm({ initialSections }: MenuDesignFormProps) {
                                             {section.type === 'hero' && (
                                                 <>
                                                     <div className="grid gap-2">
+                                                        <Label>Carregar do Marketing (Opcional)</Label>
+                                                        <Select onValueChange={(val) => loadBannerData(index, val)}>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Selecione um banner..." />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {banners.filter(b => b.type === 'hero').map((banner) => (
+                                                                    <SelectItem key={banner.id} value={banner.id}>
+                                                                        {/* Handle potentially localized title */}
+                                                                        {(typeof banner.title === 'string' ? banner.title : banner.title?.pt || "Sem título")}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                    <div className="grid gap-2">
                                                         <Label>Título do Banner</Label>
                                                         <Input
                                                             value={section.config?.title || ""}
@@ -128,6 +172,21 @@ export function MenuDesignForm({ initialSections }: MenuDesignFormProps) {
                                             )}
                                             {section.type === 'global_upsell' && (
                                                 <>
+                                                    <div className="grid gap-2">
+                                                        <Label>Carregar do Marketing (Opcional)</Label>
+                                                        <Select onValueChange={(val) => loadBannerData(index, val)}>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Selecione um banner..." />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {banners.filter(b => b.type === 'footer').map((banner) => (
+                                                                    <SelectItem key={banner.id} value={banner.id}>
+                                                                        {(typeof banner.title === 'string' ? banner.title : banner.title?.pt || "Sem título")}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
                                                     <div className="grid gap-2">
                                                         <Label>Título do Banner</Label>
                                                         <Input

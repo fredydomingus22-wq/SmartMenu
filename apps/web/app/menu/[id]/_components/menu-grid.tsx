@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -5,6 +6,7 @@ import { useSearchParams, useParams } from "next/navigation";
 import { UtensilsCrossed, Eye } from "lucide-react";
 import { useTranslation } from "@/hooks/use-translation";
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useMemo } from "react";
 import { ProductCard } from "@smart-menu/ui"; // Shared component
 import { ProductGrid } from "./product-grid";
@@ -15,9 +17,16 @@ import { cn, getTranslatedValue } from "@/lib/utils";
 interface MenuGridProps {
     categories: Category[];
     config?: MenuConfig | null;
+    mode?: "menu" | "group";
 }
 
-export function MenuGrid({ categories, config }: MenuGridProps) {
+interface ExtendedSectionConfig {
+    [key: string]: any;
+    buttonLink?: string;
+    buttonText?: string;
+}
+
+export function MenuGrid({ categories, config, mode = "menu" }: MenuGridProps) {
     const params = useParams();
     const searchParams = useSearchParams();
     const { t, locale } = useTranslation();
@@ -45,8 +54,13 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
     const newProducts = useMemo(() => allProducts.filter(p => p.isNew), [allProducts]);
     const bestSellerProducts = useMemo(() => allProducts.filter(p => p.isBestSeller), [allProducts]);
 
-    const sections = useMemo(() => {
-        if (config?.sections) return config.sections;
+    const sections = useMemo((): MenuSection[] => {
+        if (config?.sections) return config.sections as MenuSection[];
+
+        // In group mode, we might want fewer default sections or just the grid
+        if (mode === "group") {
+            return [{ type: "category_grid", isActive: true }];
+        }
 
         const defaults: MenuSection[] = [
             { type: "hero", isActive: true, config: { title: t('menu.hero_title') } }
@@ -67,7 +81,7 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
         defaults.push({ type: "category_grid", isActive: true });
 
         return defaults;
-    }, [config, featuredProducts, bestSellerProducts, newProducts, t]);
+    }, [config, featuredProducts, bestSellerProducts, newProducts, t, mode]);
 
     return (
         <div className="space-y-12 sm:space-y-20 pb-12">
@@ -115,9 +129,21 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                         <h1 className="text-4xl sm:text-6xl font-black tracking-tighter mb-4 leading-none">
                                             {section.config?.title || t('menu.hero_title')}
                                         </h1>
-                                        <p className="text-base sm:text-lg opacity-80 max-w-lg font-medium leading-relaxed">
+                                        <p className="text-base sm:text-lg opacity-80 max-w-lg font-medium leading-relaxed mb-6">
                                             {section.config?.subtitle || t('menu.hero_subtitle')}
                                         </p>
+
+                                        {/* Button Logic for Hero */}
+                                        {(() => {
+                                            const cfg = section.config as ExtendedSectionConfig;
+                                            return cfg?.buttonText && cfg?.buttonLink && (
+                                                <Link href={cfg.buttonLink}>
+                                                    <Button className="bg-primary hover:bg-primary/90 text-white border-0 font-bold rounded-full px-8">
+                                                        {cfg.buttonText}
+                                                    </Button>
+                                                </Link>
+                                            );
+                                        })()}
                                     </motion.div>
                                 </div>
                             </motion.section>
@@ -143,6 +169,7 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                         );
 
                     case "best_sellers":
+                        // ... similar implementation ...
                         return (
                             <section key={`section-${idx}`} className="space-y-4 bg-orange-50/50 rounded-2xl sm:rounded-3xl px-4 py-8">
                                 <div className="flex items-center gap-2 mb-6">
@@ -172,27 +199,32 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                         );
 
                     case "category_grid":
+                        // Hide tabs in group mode or if only 1 category exists and we are not in 'menu' mode specifically wanting to look at "Categorias"
+                        const showTabs = mode !== "group" && categories.length > 1;
+
                         return (
                             <div key={`section-${idx}`} className="space-y-10">
                                 {/* Horizontal Tabs Navigation */}
-                                <div className="sticky top-0 bg-background/95 backdrop-blur-xl border-b py-4 z-[var(--z-category-nav)] overflow-x-auto scrollbar-hide max-w-full">
-                                    <div className="flex gap-2 min-w-max">
-                                        {categories.map((category) => (
-                                            <button
-                                                key={category.id}
-                                                onClick={() => handleCategoryChange(category.id)}
-                                                className={cn(
-                                                    "px-6 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap border-2",
-                                                    activeCategoryId === category.id
-                                                        ? "bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-105"
-                                                        : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
-                                                )}
-                                            >
-                                                {getTranslatedValue(category.name, locale)}
-                                            </button>
-                                        ))}
+                                {showTabs && (
+                                    <div className="sticky top-0 bg-background/95 backdrop-blur-xl border-b py-4 z-[var(--z-category-nav)] overflow-x-auto scrollbar-hide max-w-full">
+                                        <div className="flex gap-2 min-w-max">
+                                            {categories.map((category) => (
+                                                <button
+                                                    key={category.id}
+                                                    onClick={() => handleCategoryChange(category.id)}
+                                                    className={cn(
+                                                        "px-6 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap border-2",
+                                                        activeCategoryId === category.id
+                                                            ? "bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-105"
+                                                            : "bg-muted/50 border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
+                                                    )}
+                                                >
+                                                    {getTranslatedValue(category.name, locale)}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
 
                                 {/* Active Category Content */}
                                 <AnimatePresence mode="wait">
@@ -204,12 +236,15 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                         transition={{ duration: 0.2, ease: "easeOut" }}
                                         className="space-y-8"
                                     >
-                                        <div className="flex items-center gap-4">
-                                            <h2 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic px-4 py-1">
-                                                {getTranslatedValue(activeCategory?.name, locale)}
-                                            </h2>
-                                            <div className="h-px bg-border flex-1" />
-                                        </div>
+                                        {/* Only show category title if we are showing tabs, or if in group mode we usually have a custom header, but let's keep it consistent */}
+                                        {showTabs && (
+                                            <div className="flex items-center gap-4">
+                                                <h2 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic px-4 py-1">
+                                                    {getTranslatedValue(activeCategory?.name, locale)}
+                                                </h2>
+                                                <div className="h-px bg-border flex-1" />
+                                            </div>
+                                        )}
 
                                         {isChangingCategory ? (
                                             <ProductGrid columns={4}>
@@ -225,6 +260,7 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                             </ProductGrid>
                                         )}
 
+                                        {/* Empty State */}
                                         {activeCategory?.products.length === 0 && (
                                             <div className="py-20 flex flex-col items-center justify-center text-center space-y-4 animate-in fade-in zoom-in-95 duration-500">
                                                 <div className="w-24 h-24 rounded-full bg-muted/30 flex items-center justify-center">
@@ -236,13 +272,15 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                                         {t('menu.empty_category_desc')}
                                                     </p>
                                                 </div>
-                                                <Button
-                                                    variant="outline"
-                                                    onClick={() => setActiveCategoryId(categories.find(c => c.products.length > 0)?.id || "all")}
-                                                    className="mt-4 border-primary/20 hover:border-primary/50 text-primary hover:bg-primary/5"
-                                                >
-                                                    {t('menu.explore_others')}
-                                                </Button>
+                                                {mode !== 'group' && (
+                                                    <Button
+                                                        variant="outline"
+                                                        onClick={() => setActiveCategoryId(categories.find(c => c.products.length > 0)?.id || "all")}
+                                                        className="mt-4 border-primary/20 hover:border-primary/50 text-primary hover:bg-primary/5"
+                                                    >
+                                                        {t('menu.explore_others')}
+                                                    </Button>
+                                                )}
                                             </div>
                                         )}
                                     </motion.section>
@@ -269,11 +307,22 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                                             {section.config?.subtitle || t('menu.upsell_subtitle')}
                                         </p>
 
-                                        {section.config?.buttonText && (
-                                            <Button className="w-fit bg-primary hover:bg-primary/90 text-white border-0 font-bold rounded-full px-8">
-                                                {section.config.buttonText}
-                                            </Button>
-                                        )}
+                                        {(() => {
+                                            const cfg = section.config as ExtendedSectionConfig;
+                                            return cfg?.buttonText && (
+                                                cfg?.buttonLink ? (
+                                                    <Link href={cfg.buttonLink}>
+                                                        <Button className="w-fit bg-primary hover:bg-primary/90 text-white border-0 font-bold rounded-full px-8">
+                                                            {cfg.buttonText}
+                                                        </Button>
+                                                    </Link>
+                                                ) : (
+                                                    <Button className="w-fit bg-primary hover:bg-primary/90 text-white border-0 font-bold rounded-full px-8">
+                                                        {cfg.buttonText}
+                                                    </Button>
+                                                )
+                                            );
+                                        })()}
                                     </div>
                                 </div>
                             </div>

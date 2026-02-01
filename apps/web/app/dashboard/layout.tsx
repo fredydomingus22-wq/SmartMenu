@@ -28,6 +28,7 @@ const navGroups: NavGroup[] = [
         items: [
             { label: "Fidelidade", icon: "Gift", href: "/dashboard/loyalty" },
             { label: "Mesas & QR", icon: "ClipboardList", href: "/dashboard/settings/tables" },
+            { label: "Marketing", icon: "Store", href: "/dashboard/marketing" },
         ]
     },
     {

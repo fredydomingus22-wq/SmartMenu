@@ -3,6 +3,18 @@ import { getMenuConfig } from "@/app/actions/settings";
 import { MenuDesignForm } from "../_components/menu-design-form";
 import { redirect } from "next/navigation";
 import { MenuSection } from "../../../menu/[id]/_types";
+import { apiClient } from "@/utils/api-client-server";
+import { Banner } from "../../../menu/[id]/_types/marketing";
+
+async function getBanners(tenantId: string): Promise<Banner[]> {
+    try {
+        const banners = await apiClient.get(`/marketing/public/banners/${tenantId}`, { cache: 'no-store' });
+        return banners as Banner[];
+    } catch (e) {
+        console.error("Failed to fetch banners", e);
+        return [];
+    }
+}
 
 export default async function MenuDesignPage() {
     const supabase = await createClient();
@@ -27,7 +39,11 @@ export default async function MenuDesignPage() {
         return redirect("/dashboard");
     }
 
-    const config = await getMenuConfig(tenantId) as { sections: MenuSection[] } | null;
+    const [config, banners] = await Promise.all([
+        getMenuConfig(tenantId) as Promise<{ sections: MenuSection[] } | null>,
+        getBanners(tenantId)
+    ]);
+
     const sections = config?.sections || null;
 
     return (
@@ -38,8 +54,7 @@ export default async function MenuDesignPage() {
                     Gerencie a estrutura e as seções do seu menu digital nas telas dos clientes.
                 </p>
             </div>
-            <MenuDesignForm initialSections={sections} />
+            <MenuDesignForm initialSections={sections} banners={banners} />
         </div>
     );
 }
-

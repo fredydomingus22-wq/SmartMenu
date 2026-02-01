@@ -1,0 +1,7 @@
+- [ ] Define `global-metrics` spec
+- [ ] Backend: Ensure `AnalyticsService` supports `getSalesMetrics` and `getTurnoverMetrics`
+- [ ] Backend: Add/Verify endpoints in `AnalyticsController` including `tenant_id` filtering
+- [ ] Frontend: Create `SalesChart` component
+- [ ] Frontend: Create `TurnoverCard` component
+- [ ] Frontend: Integrate components into `AnalyticsPage`
+- [ ] Frontend: Add Date Range Picker and link to data fetching
