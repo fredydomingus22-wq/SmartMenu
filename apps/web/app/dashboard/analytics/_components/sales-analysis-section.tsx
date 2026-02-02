@@ -66,8 +66,9 @@ export function SalesAnalysisSection({
 
     // Refetch data when filters change
     useEffect(() => {
-        // Skip first render if using initialData matching default filters (empty)
-        if (!selectedCategory && !selectedProduct && data === initialData) return;
+        // If we have initial data and no filters are applied, we don't need to fetch
+        // (This handles the initial mount case if we want to rely on server data)
+        // But if filters change, we definitely want to fetch.
 
         const fetchData = async () => {
             setIsLoading(true);
@@ -80,7 +81,7 @@ export function SalesAnalysisSection({
 
         const debounce = setTimeout(fetchData, 300);
         return () => clearTimeout(debounce);
-    }, [selectedCategory, selectedProduct, startDate, endDate, data, initialData]);
+    }, [selectedCategory, selectedProduct, startDate, endDate]);
 
     const clearFilters = () => {
         setSelectedCategory("");
