@@ -22,6 +22,7 @@ import { WorkflowsModule } from './workflows/workflows.module';
 import { ServiceRequestsModule } from './service-requests/service-requests.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { MarketingModule } from './marketing/marketing.module';
+import { SupabaseModule } from './common/supabase.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { MarketingModule } from './marketing/marketing.module';
     ServiceRequestsModule,
     AnalyticsModule,
     MarketingModule,
+    SupabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, SupabaseStrategy],

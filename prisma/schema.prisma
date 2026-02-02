@@ -29,6 +29,7 @@ model Organization {
   tenants    Tenant[]
   users      UserProfile[]
   serviceRequests ServiceRequest[]
+  marketingCampaigns MarketingCampaign[]
 
   @@map("organizations")
   @@schema("public")
@@ -77,6 +78,8 @@ model Tenant {
   productGroups   ProductGroup[]
   promotionalSchedules PromotionalSchedule[]
   events          Event[]
+  marketingCampaigns MarketingCampaign[]
+  notifications   Notification[]
 
   @@map("tenants")
   @@schema("public")
@@ -110,8 +113,11 @@ model CustomerProfile {
   user           users               @relation(fields: [userId], references: [id])
   transactions   PointsTransaction[]
   orders         Order[]
+  notifications  Notification[]
 
   @@unique([userId, tenantId])
+  @@index([tenantId])
+  @@index([userId])
   @@map("customer_profiles")
   @@schema("public")
 }
@@ -160,6 +166,8 @@ model PointsTransaction {
   customerProfile   CustomerProfile   @relation(fields: [customerProfileId], references: [id], onDelete: Cascade)
   order             Order?            @relation(fields: [orderId], references: [id])
 
+  @@index([tenantId])
+  @@index([customerProfileId])
   @@map("points_transactions")
   @@schema("public")
 }
@@ -387,6 +395,8 @@ model Order {
   loyaltyReward  LoyaltyReward? @relation(fields: [loyaltyRewardId], references: [id])
   pointsTransactions PointsTransaction[]
 
+  @@index([tenantId])
+  @@index([customerProfileId])
   @@map("orders")
   @@schema("public")
 }
@@ -1102,4 +1112,43 @@ enum user_role {
   KITCHEN
 
   @@schema("public")
+}
+
+model MarketingCampaign {
+  id             String   @id @default(uuid())
+  tenantId       String   @map("tenant_id")
+  organizationId String   @map("organization_id")
+  title          String
+  message        String
+  targetCount    Int      @map("target_count")
+  status         String   @default("SENT") // SENT, FAILED
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  tenant       Tenant       @relation(fields: [tenantId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@map("marketing_campaigns")
+  @@schema("public")
+  @@index([tenantId])
+}
+
+model Notification {
+  id                String   @id @default(uuid())
+  tenantId          String   @map("tenant_id")
+  organizationId    String   @map("organization_id")
+  customerProfileId String   @map("customer_profile_id")
+  title             String
+  message           String
+  type              String   @default("INFO") // INFO, MARKETING, ALERT
+  read              Boolean  @default(false)
+  metadata          Json?
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  tenant          Tenant          @relation(fields: [tenantId], references: [id])
+  customerProfile CustomerProfile @relation(fields: [customerProfileId], references: [id])
+
+  @@map("notifications")
+  @@schema("public")
+  @@index([customerProfileId])
+  @@index([tenantId])
 }

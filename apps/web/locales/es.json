@@ -79,7 +79,7 @@
             "form": {
                 "name_label": "Nombre del Producto",
                 "name_placeholder": "Ej: Súper Hamburguesa Artesanal",
-                "name_help": "Este nombre se mostrará a sus clientes en el menú.",
+                "name_help": "Este nome se mostrará a sus clientes en el menú.",
                 "category_label": "Categoría",
                 "category_placeholder": "Seleccione una categoría",
                 "price_label": "Precio de Venta",
@@ -107,6 +107,30 @@
                 "error_update": "Error al actualizar el producto",
                 "save_changes": "Guardar Cambios",
                 "create_product": "Crear Producto"
+            }
+        },
+        "analytics": {
+            "title": "Business Intelligence",
+            "subtitle": "Inteligencia de datos para decisiones estratégicas.",
+            "tabs": {
+                "overview": "General",
+                "products": "Productos",
+                "customers": "Clientes",
+                "insights": "Insights",
+                "profile": "Perfil"
+            },
+            "kpis": {
+                "sales": "Ventas Totales",
+                "orders": "Volumen de Pedidos",
+                "avg_ticket": "Ticket Medio",
+                "turnover": "Tiempo Medio de Atendimento",
+                "orders_suffix": "pedidos"
+            },
+            "reports": {
+                "export_csv": "Exportar CSV",
+                "print_pdf": "Imprimir PDF",
+                "success_csv": "¡Informe CSV exportado con éxito!",
+                "error_csv": "Error al exportar CSV."
             }
         }
     }

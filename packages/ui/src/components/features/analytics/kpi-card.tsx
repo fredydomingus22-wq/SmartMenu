@@ -33,7 +33,10 @@ export function KPICard({
             <CardContent>
                 <div className="flex items-baseline gap-1">
                     {prefix && <span className="text-sm font-bold text-zinc-400">{prefix}</span>}
-                    <div className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+                    <div
+                        className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50"
+                        suppressHydrationWarning
+                    >
                         {typeof value === 'number' ? value.toLocaleString() : value}
                     </div>
                     {suffix && <span className="text-sm font-bold text-zinc-400">{suffix}</span>}

@@ -1,16 +1,20 @@
 "use client";
 
-import { Utensils } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@smart-menu/ui";
+import Image from "next/image";
 
 export function LandingHeader() {
     return (
         <header id="navigation" className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b">
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center" aria-label="SmartMenu Logo">
-                        <Utensils className="h-5 w-5 text-primary-foreground" />
+                    <div className="h-10 w-10 relative" aria-label="SmartMenu Logo">
+                        <Image
+                            src="/logo.png"
+                            alt="SmartMenu Logo"
+                            fill
+                            className="object-contain"
+                        />
                     </div>
                     <span className="font-bold text-xl tracking-tight">SmartMenu</span>
                 </div>

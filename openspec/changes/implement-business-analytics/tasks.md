@@ -1,7 +1,14 @@
 - [ ] Define `global-metrics` spec
-- [ ] Backend: Ensure `AnalyticsService` supports `getSalesMetrics` and `getTurnoverMetrics`
-- [ ] Backend: Add/Verify endpoints in `AnalyticsController` including `tenant_id` filtering
+- [ ] Define `product-performance` spec (Top/Least Sellers)
+- [ ] Define `customer-insights` spec (Avg Ticket, Peak Hours)
+- [ ] Define `customer-profile` spec (Favorite Product, Visit Times, Spending History)
+- [x] Backend: Ensure `AnalyticsService` supports `getTopProducts`, `getAverageTicket`, and `getPeakHours`
+- [x] Backend: Implement `getCustomerProfile` endpoint (Favorite Item, Visit Heatmap, Spending)
+- [x] Backend: Add/Verify endpoints in `AnalyticsController` including `tenant_id` filtering
 - [ ] Frontend: Create `SalesChart` component
 - [ ] Frontend: Create `TurnoverCard` component
-- [ ] Frontend: Integrate components into `AnalyticsPage`
+- [ ] Frontend: Create `TopProductsList` component
+- [ ] Frontend: Create `PeakHoursChart` component
+- [ ] Frontend: Create `CustomerSearch` and `CustomerProfileCard` components
+- [ ] Frontend: Integrate components into dedicated Business Analytics Dashboard
 - [ ] Frontend: Add Date Range Picker and link to data fetching

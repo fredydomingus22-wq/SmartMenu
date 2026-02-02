@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { DashboardNav, NavItem, NavGroup, ScrollArea, useSidebar } from "@smart-menu/ui";
+import Image from "next/image";
 
 interface DashboardSidebarProps {
     navItems?: NavItem[];
@@ -16,14 +17,31 @@ export function DashboardSidebar({ navItems, navGroups }: DashboardSidebarProps)
     const { collapsed } = useSidebar();
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-screen overflow-hidden border-r bg-white dark:bg-zinc-950">
             {/* Branding */}
             <div className="p-4 border-b flex items-center justify-center">
                 <Link href="/dashboard" className="flex items-center gap-2">
                     {collapsed ? (
-                        <span className="text-xl font-bold text-primary">SM</span>
+                        <div className="h-8 w-8 relative">
+                            <Image
+                                src="/favicon.png"
+                                alt="SmartMenu Logo"
+                                fill
+                                className="object-contain"
+                            />
+                        </div>
                     ) : (
-                        <span className="text-xl font-bold tracking-tight text-primary">SmartMenu</span>
+                        <div className="flex items-center gap-2">
+                            <div className="h-8 w-8 relative">
+                                <Image
+                                    src="/logo.png"
+                                    alt="SmartMenu Logo"
+                                    fill
+                                    className="object-contain"
+                                />
+                            </div>
+                            <span className="text-xl font-bold tracking-tight text-primary">SmartMenu</span>
+                        </div>
                     )}
                 </Link>
             </div>

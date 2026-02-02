@@ -1,57 +1,57 @@
 import {
-    IsString,
-    IsOptional,
-    IsBoolean,
-    IsNumber,
-    IsDateString,
+  IsString,
+  IsOptional,
+  IsBoolean,
+  IsNumber,
+  IsDateString,
 } from 'class-validator';
 
 export class CreatePromotionalScheduleDto {
-    @IsString()
-    productId!: string;
+  @IsString()
+  productId!: string;
 
-    @IsDateString()
-    startDate!: string;
+  @IsDateString()
+  startDate!: string;
 
-    @IsOptional()
-    @IsDateString()
-    endDate?: string;
+  @IsOptional()
+  @IsDateString()
+  endDate?: string;
 
-    @IsOptional()
-    @IsBoolean()
-    isSpecial?: boolean;
+  @IsOptional()
+  @IsBoolean()
+  isSpecial?: boolean;
 
-    @IsOptional()
-    @IsString()
-    label?: string;
+  @IsOptional()
+  @IsString()
+  label?: string;
 
-    @IsOptional()
-    @IsNumber()
-    discount?: number;
+  @IsOptional()
+  @IsNumber()
+  discount?: number;
 }
 
 export class UpdatePromotionalScheduleDto {
-    @IsOptional()
-    @IsString()
-    productId?: string;
+  @IsOptional()
+  @IsString()
+  productId?: string;
 
-    @IsOptional()
-    @IsDateString()
-    startDate?: string;
+  @IsOptional()
+  @IsDateString()
+  startDate?: string;
 
-    @IsOptional()
-    @IsDateString()
-    endDate?: string;
+  @IsOptional()
+  @IsDateString()
+  endDate?: string;
 
-    @IsOptional()
-    @IsBoolean()
-    isSpecial?: boolean;
+  @IsOptional()
+  @IsBoolean()
+  isSpecial?: boolean;
 
-    @IsOptional()
-    @IsString()
-    label?: string;
+  @IsOptional()
+  @IsString()
+  label?: string;
 
-    @IsOptional()
-    @IsNumber()
-    discount?: number;
+  @IsOptional()
+  @IsNumber()
+  discount?: number;
 }

@@ -10,7 +10,8 @@ import { LanguageSelector } from "./language-selector";
 import { SessionActions } from "./session-actions";
 import { useTranslation } from "@/hooks/use-translation";
 import { useHasMounted } from "@/hooks/use-has-mounted";
-import { Gift, LogIn } from "lucide-react";
+import { useMarketingNotifications } from "@/hooks/use-marketing-notifications";
+import { Gift, LogIn, Zap } from "lucide-react";
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
@@ -44,6 +45,7 @@ export function PublicMenuHeader({ branding, tableId, enabledLanguages }: Public
     const router = useRouter();
     const [user, setUser] = useState<unknown>(null);
     const supabase = createClient();
+    const { unreadCount, markAsRead } = useMarketingNotifications(tenantId);
 
     useEffect(() => {
         const checkUser = async () => {
@@ -125,16 +127,36 @@ export function PublicMenuHeader({ branding, tableId, enabledLanguages }: Public
                         </Dialog>
                     )}
                     {hasMounted && tableId && (
-                        <DropdownMenu>
+                        <DropdownMenu onOpenChange={(open) => {
+                            if (open) markAsRead();
+                        }}>
                             <DropdownMenuTrigger asChild>
                                 <button
-                                    className="inline-flex items-center justify-center rounded-full h-10 w-10 sm:h-12 sm:w-12 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                    className="inline-flex items-center justify-center rounded-full h-10 w-10 sm:h-12 sm:w-12 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 relative"
                                     aria-label={t('menu.service_options')}
                                 >
                                     <Bell className="h-5 w-5 sm:h-6 sm:w-6" />
+                                    {unreadCount > 0 && (
+                                        <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span>
+                                        </span>
+                                    )}
                                 </button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-56">
+                            <DropdownMenuContent align="end" className="w-64">
+                                {unreadCount > 0 && (
+                                    <>
+                                        <DropdownMenuLabel className="flex items-center gap-2 text-blue-600">
+                                            <Zap className="h-3.5 w-3.5" />
+                                            {t('menu.new_campaigns') || 'Novas Ofertas'}
+                                        </DropdownMenuLabel>
+                                        <DropdownMenuItem onClick={() => router.push(`/menu/${tenantId}/loyalty`)}>
+                                            <span className="text-xs font-medium">Ver promoções ativas</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuSeparator />
+                                    </>
+                                )}
                                 <DropdownMenuLabel>{t('menu.service_requests')}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => handleServiceRequest('CALL_WAITER')}>

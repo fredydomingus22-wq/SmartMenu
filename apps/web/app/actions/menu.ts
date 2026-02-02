@@ -207,3 +207,24 @@ export async function updateProduct(id: string, formData: FormData) {
         throw error
     }
 }
+
+export async function getCategories() {
+    try {
+        const response = await apiClient.get('/categories');
+        return { success: true, data: response };
+    } catch (error) {
+         console.error('Action Exception (getCategories):', error)
+         return { success: false, error: 'Failed to fetch categories' };
+    }
+}
+
+export async function getProducts() {
+    try {
+        const response = await apiClient.get('/products');
+        return { success: true, data: response };
+    } catch (error) {
+         console.error('Action Exception (getProducts):', error)
+         return { success: false, error: 'Failed to fetch products' };
+    }
+}
+

@@ -25,6 +25,8 @@ export const viewport = {
     maximumScale: 1,
 };
 
+import { MarketingNotificationBanner } from "@/components/automation/marketing-notification-banner";
+
 export default function RootLayout({
     children,
 }: Readonly<{
@@ -35,10 +37,13 @@ export default function RootLayout({
             <head>
                 <meta name="apple-mobile-web-app-capable" content="yes" />
                 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+                <link rel="icon" type="image/png" href="/favicon.png" />
+                <link rel="apple-touch-icon" href="/favicon.png" />
             </head>
             <body className={inter.className}>
                 <I18nProvider>
                     <CartProvider>
+                        <MarketingNotificationBanner />
                         {children}
                         <Toaster position="top-center" richColors />
                     </CartProvider>

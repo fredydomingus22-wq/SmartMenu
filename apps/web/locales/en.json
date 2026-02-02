@@ -108,6 +108,30 @@
                 "save_changes": "Save Changes",
                 "create_product": "Create Product"
             }
+        },
+        "analytics": {
+            "title": "Business Intelligence",
+            "subtitle": "Data intelligence for strategic decisions.",
+            "tabs": {
+                "overview": "General",
+                "products": "Products",
+                "customers": "Customers",
+                "insights": "Insights",
+                "profile": "Profile"
+            },
+            "kpis": {
+                "sales": "Total Sales",
+                "orders": "Order Volume",
+                "avg_ticket": "Average Ticket",
+                "turnover": "Average Service Time",
+                "orders_suffix": "orders"
+            },
+            "reports": {
+                "export_csv": "Export CSV",
+                "print_pdf": "Print PDF",
+                "success_csv": "CSV Report exported successfully!",
+                "error_csv": "Error exporting CSV."
+            }
         }
     }
 }

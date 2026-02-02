@@ -64,7 +64,10 @@
         "checkout": "Finalizar Pedido",
         "sending": "Enviando...",
         "success": "Pedido enviado com sucesso!",
-        "success_desc": "Acompanhe o status em tempo real."
+        "success_desc": "Acompanhe o status em tempo real.",
+        "error_sending": "Falha ao enviar pedido",
+        "error": "Erro ao enviar pedido",
+        "error_desc": "Ocorreu um problema técnico. Por favor, tente novamente."
     },
     "onboarding": {
         "title": "Bem-vindo ao SmartMenu!",
@@ -180,6 +183,30 @@
             "waiter_label": "🔔 Garçom",
             "bill_label": "💳 Conta",
             "table_prefix": "Mesa"
+        },
+        "analytics": {
+            "title": "Business Intelligence",
+            "subtitle": "Inteligência de dados para decisões estratégicas.",
+            "tabs": {
+                "overview": "Geral",
+                "products": "Produtos",
+                "customers": "Clientes & Fidelidade",
+                "insights": "BI & Estratégia",
+                "profile": "Perfil Detalhado"
+            },
+            "kpis": {
+                "sales": "Volume de Faturamento",
+                "orders": "Conversão de Pedidos",
+                "avg_ticket": "Ticket Médio Operacional",
+                "turnover": "Eficiência de Atendimento",
+                "orders_suffix": "transações"
+            },
+            "reports": {
+                "export_csv": "Exportar CSV",
+                "print_pdf": "Imprimir PDF",
+                "success_csv": "Relatório CSV exportado com sucesso!",
+                "error_csv": "Erro ao exportar CSV."
+            }
         }
     },
     "kds": {

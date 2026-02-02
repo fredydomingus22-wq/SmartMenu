@@ -8,6 +8,9 @@ SmartMenu captures rich transactional data (Orders, Products, Customers). Curren
 
 ## Requirements
 - **Global Metrics**: Display Total Sales (Revenue) and Table Turnover Rate.
+- **Product Performance**: Identify Top Selling Products (Volume & Revenue) and Least Selling Items.
+- **Customer Insights**: metrics like Average Ticket Size and Peak Operation Hours.
+- **Individual Customer Profile**: View specific customer details including favorite products, visit frequency/times, and spending history details.
 - **Filtering**: Allow filtering by date range (Today, Week, Month, Custom).
 - **Visualization**: Use charts/graphs to show trends over time.
 
@@ -16,6 +19,7 @@ SmartMenu captures rich transactional data (Orders, Products, Customers). Curren
 - **Privacy**: Ensure customer data is anonymized in aggregate views if individual customer tracking is added later.
 
 ## Plan
-1.  Define specs for Global Metrics.
-2.  Implement `AnalyticsService` extensions (if not already covered in Phase 2).
-3.  Create/Update `AnalyticsPage` in the Dashboard.
+1.  Define specs for Global Metrics, Product Performance, and Customer Insights.
+2.  Implement `AnalyticsService` extensions.
+3.  **Dedicated Page**: Revamp `apps/web/app/dashboard/analytics/page.tsx` to serve as the central Business Intelligence hub, distinct from the main dashboard.
+4.  Integrate all new components into this dedicated page.

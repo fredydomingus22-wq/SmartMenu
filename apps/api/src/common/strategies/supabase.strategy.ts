@@ -5,17 +5,19 @@ import { ConfigService } from '@nestjs/config';
 import { passportJwtSecret } from 'jwks-rsa';
 import { AuthenticatedUser } from '../interfaces/request.interface';
 
-interface SupabaseJwtPayload {
+export interface SupabaseJwtPayload {
   sub: string;
   email: string;
   role?: string;
   app_metadata: {
     tenant_id?: string;
-    [key: string]: any;
+    organization_id?: string;
+    [key: string]: unknown;
   };
   user_metadata: {
     tenant_id?: string;
-    [key: string]: any;
+    organization_id?: string;
+    [key: string]: unknown;
   };
 }
 
@@ -56,8 +58,7 @@ export class SupabaseStrategy extends PassportStrategy(Strategy, 'supabase') {
     const tenantId: string | undefined =
       payload.app_metadata?.tenant_id || payload.user_metadata?.tenant_id;
     const organizationId: string | undefined =
-      (payload.app_metadata?.organization_id as string) ||
-      (payload.user_metadata?.organization_id as string);
+      payload.app_metadata?.organization_id || payload.user_metadata?.organization_id;
 
     // We allow missing tenantId here so the /users/sync endpoint can handle it.
     // However, other controllers will still check for it if they need it.

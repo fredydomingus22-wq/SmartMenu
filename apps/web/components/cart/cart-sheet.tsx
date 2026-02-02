@@ -18,10 +18,12 @@ import { CartItem } from "./cart-item";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useTranslation } from "@/hooks/use-translation";
 import { useHasMounted } from "@/hooks/use-has-mounted";
 import { formatCurrency } from "@/lib/utils";
 
 export function CartSheet() {
+    const { t } = useTranslation();
     const { items, totalAmount, totalItems, tenantId, organizationId, clearCart, isCartOpen, openCart, closeCart } = useCart();
     const { registerCartIcon, animatingItem } = useCartAnimation();
     const router = useRouter();
@@ -71,7 +73,7 @@ export function CartSheet() {
             });
 
             if (!response.ok) {
-                throw new Error('Falha ao enviar pedido');
+                throw new Error(t("cart.error_sending") || 'Falha ao enviar pedido');
             }
 
             const createdOrder = await response.json();
@@ -82,8 +84,8 @@ export function CartSheet() {
             existingOrders.unshift({ id: createdOrder.id, createdAt: createdOrder.createdAt });
             localStorage.setItem(ordersKey, JSON.stringify(existingOrders.slice(0, 10))); // Keep last 10
 
-            toast.success("Pedido enviado com sucesso!", {
-                description: "Acompanhe o status em tempo real.",
+            toast.success(t("cart.success"), {
+                description: t("cart.success_desc"),
             });
 
             clearCart();
@@ -93,8 +95,8 @@ export function CartSheet() {
             router.push(`/menu/${tenantId}/orders/${createdOrder.id}`);
         } catch (error) {
             console.error("Order error:", error);
-            toast.error("Erro ao enviar pedido", {
-                description: "Ocorreu um problema técnico. Por favor, tente novamente.",
+            toast.error(t("cart.error") || "Erro ao enviar pedido", {
+                description: t("cart.error_desc") || "Ocorreu um problema técnico. Por favor, tente novamente.",
             });
         } finally {
             setIsSubmitting(false);
@@ -119,9 +121,9 @@ export function CartSheet() {
             </SheetTrigger>
             <SheetContent className="flex flex-col w-full sm:max-w-md">
                 <SheetHeader>
-                    <SheetTitle>Seu Pedido</SheetTitle>
+                    <SheetTitle>{t("cart.title")}</SheetTitle>
                     <SheetDescription>
-                        Revise seus itens antes de confirmar.
+                        {t("cart.description")}
                     </SheetDescription>
                 </SheetHeader>
 
@@ -129,7 +131,7 @@ export function CartSheet() {
                     {items.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-48 text-muted-foreground">
                             <AnimatedCartIcon state="idle" itemCount={0} className="mb-2 opacity-50 scale-150" />
-                            <p>Seu carrinho está vazio</p>
+                            <p>{t("cart.empty")}</p>
                         </div>
                     ) : (
                         <div className="space-y-1">
@@ -143,7 +145,7 @@ export function CartSheet() {
                 <SheetFooter className="mt-auto border-t pt-4">
                     <div className="w-full space-y-4">
                         <div className="flex justify-between items-center text-lg font-bold">
-                            <span>Total</span>
+                            <span>{t("cart.total")}</span>
                             <span className="text-primary">
                                 {formatCurrency(totalAmount)}
                             </span>
@@ -156,10 +158,10 @@ export function CartSheet() {
                             {isSubmitting ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Enviando...
+                                    {t("cart.sending")}
                                 </>
                             ) : (
-                                "Finalizar Pedido"
+                                t("cart.checkout")
                             )}
                         </Button>
                     </div>

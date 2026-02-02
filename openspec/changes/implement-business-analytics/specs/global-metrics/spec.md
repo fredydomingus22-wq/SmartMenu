@@ -1,21 +1,23 @@
 # Global Metrics Spec
 
-## ADDED Requirements
+## Goal
+Provide a high-level overview of the restaurant's financial and operational health.
 
-#### Scenario: View Total Sales
-- **Given** I am a logged-in Manager
-- **When** I visit the Analytics Dashboard
-- **And** I select a Date Range (e.g., "Last 7 Days")
-- **Then** I should see the "Total Sales" card displaying the sum of all `CONFIRMED` and `DELIVERED` orders for that period.
-- **And** I should see a trend percentage (e.g., "+5% vs previous period").
+## Requirements
 
-#### Scenario: View Table Turnover
-- **Given** I am a logged-in Manager
-- **When** I visit the Analytics Dashboard
-- **Then** I should see the "Average Table Turnover" metric.
-- **And** It should calculate the average time a table is occupied (from first order to payment/close) divided by total tables.
+### Requirement: Total Revenue
+The system MUST display the total revenue (sum of all `COMPLETED` order totals) for the selected time period.
 
-#### Scenario: Filter Metrics by Date
-- **Given** I am viewing the Analytics Dashboard
-- **When** I change the date filter from "Today" to "This Month"
-- **Then** all displayed metrics (Sales, Turnover) should update to reflect data from the new range.
+#### Scenario: View Revenue
+- **Given** I am on the Business Analytics dashboard
+- **When** I select a date range
+- **Then** I SHOULD see a "Total Sales" card with the aggregated value.
+- **And** I SHOULD see a percentage trend confirming growth or decline compared to the previous period.
+
+### Requirement: Table Turnover Rate
+The system MUST display the average time a table is occupied or the cycle of order-to-delivery flow.
+
+#### Scenario: View Turnover
+- **Given** I am on the Business Analytics dashboard
+- **Then** I SHOULD see a "Avg Service Time" KPI card.
+- **And** This value represents the average duration between Order Creation and Order Delivery/Readiness.
