@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { DashboardNav, NavItem, NavGroup, ScrollArea, useSidebar } from "@smart-menu/ui";
+import { DashboardNav, NavItem, NavGroup, useSidebar } from "@smart-menu/ui";
 import Image from "next/image";
 
 interface DashboardSidebarProps {
@@ -47,13 +47,13 @@ export function DashboardSidebar({ navItems, navGroups }: DashboardSidebarProps)
             </div>
 
             {/* Navigation */}
-            <ScrollArea className="flex-1 p-2">
+            <div className="flex-1 overflow-y-auto px-2">
                 <DashboardNav
                     items={navItems}
                     groups={navGroups}
                     collapsed={collapsed}
                 />
-            </ScrollArea>
+            </div>
 
             {/* Footer */}
             {!collapsed && (
