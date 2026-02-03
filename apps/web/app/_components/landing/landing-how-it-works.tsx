@@ -1,58 +1,80 @@
 "use client";
 
-import Image from "next/image";
+import { motion } from "framer-motion";
+
+const container = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.2
+        }
+    }
+};
+
+const item = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] } }
+};
 
 export function LandingHowItWorks() {
     return (
-        <section id="how-it-works" className="py-24 px-6">
+        <section id="how-it-works" className="py-16 md:py-24 px-6 bg-zinc-50/50 dark:bg-zinc-900/20">
             <div className="max-w-7xl mx-auto space-y-16">
-                <div className="text-center space-y-4">
-                    <h2 className="text-3xl md:text-5xl font-extrabold tracking-tighter">Simples. Rápido. Eficiente.</h2>
-                    <p className="text-muted-foreground max-w-2xl mx-auto font-medium">
-                        Implementação em minutos, resultados no primeiro dia.
+                <div className="text-center space-y-6">
+                    <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-foreground">
+                        Simplicidade em cada <span className="text-primary">etapa</span>.
+                    </h2>
+                    <p className="text-muted-foreground max-w-2xl mx-auto text-lg font-normal leading-relaxed">
+                        Desenhamos o fluxo perfeito para que a tecnologia nunca seja o centro das atenções, mas sim a base de uma operação sem falhas.
                     </p>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-12 relative items-center">
-                    {/* Connector Line (Desktop) */}
-                    <div className="hidden md:block absolute top-[20%] left-[16%] w-[68%] h-0.5 bg-gradient-to-r from-primary/10 via-primary/40 to-primary/10 -z-10" />
+                <motion.div 
+                    variants={container}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true }}
+                    className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 relative"
+                >
+                    {/* Visual Connector Line (Lg only) */}
+                    <div className="hidden lg:block absolute top-12 left-1/2 -translate-x-1/2 w-[70%] h-px bg-zinc-200 dark:bg-zinc-800 -z-0" />
 
-                    <div className="text-center space-y-6 bg-background p-4 relative group">
-                        <div className="h-24 w-24 mx-auto bg-primary text-primary-foreground rounded-full flex items-center justify-center text-3xl font-black border-8 border-background shadow-xl group-hover:scale-110 transition-transform cursor-default">
-                            1
-                        </div>
-                        <h3 className="text-xl font-bold">Scan QR</h3>
-                        <p className="text-muted-foreground text-sm font-medium leading-relaxed">
-                            O cliente senta e escaneia o código na mesa. <span className="text-primary font-bold">Sem apps, sem downloads.</span>
-                        </p>
-                    </div>
-
-                    <div className="text-center space-y-6 bg-background p-4 relative group">
-                        <div className="h-24 w-24 mx-auto bg-primary text-primary-foreground rounded-full flex items-center justify-center text-3xl font-black border-8 border-background shadow-xl group-hover:scale-110 transition-transform cursor-default">
-                            2
-                        </div>
-                        <h3 className="text-xl font-bold">Pedido & Upsell</h3>
-                        <p className="text-muted-foreground text-sm font-medium leading-relaxed">
-                            O menu interativo sugere os melhores pratos e bebidas extra <span className="text-orange-700 dark:text-orange-400 font-bold">automaticamente.</span>
-                        </p>
-                    </div>
-
-                    <div className="text-center space-y-6 bg-background p-4 relative group">
-                        <div className="relative h-24 w-40 mx-auto rounded-xl overflow-hidden border-4 border-white/10 shadow-xl group-hover:scale-110 transition-transform">
-                            <Image
-                                src="/assets/marketing/kds-mockup.png"
-                                alt="KDS Dashboard"
-                                fill
-                                className="object-cover"
-                                loading="lazy"
-                            />
-                        </div>
-                        <h3 className="text-xl font-bold">Cozinha & Entrega</h3>
-                        <p className="text-muted-foreground text-sm font-medium leading-relaxed">
-                            O pedido vai direto para o KDS da cozinha. <span className="text-blue-600 dark:text-blue-400 font-bold">Sem gritos, sem erros.</span>
-                        </p>
-                    </div>
-                </div>
+                    {[
+                        { 
+                            step: "01", 
+                            title: "Smart Scan", 
+                            desc: "O cliente escaneia o QR Code na mesa. Sem aplicativos, carregamento instantâneo."
+                        },
+                        { 
+                            step: "02", 
+                            title: "AI Upsell", 
+                            desc: "O menu sugere acompanhamentos e bebidas de forma inteligente, elevando o ticket."
+                        },
+                        { 
+                            step: "03", 
+                            title: "KDS Sync", 
+                            desc: "O pedido entra na cozinha em tempo real. Ordem e velocidade sem falhas de comunicação."
+                        },
+                        { 
+                            step: "04", 
+                            title: "BI Growth", 
+                            desc: "Visualize cada métrica de venda no Power BI e cresça com decisões precisas."
+                        }
+                    ].map((s, i) => (
+                        <motion.div key={i} variants={item} className="text-center space-y-8 relative z-10">
+                            <div className="h-24 w-24 mx-auto rounded-full bg-white dark:bg-zinc-900 border-4 border-zinc-100 dark:border-zinc-800 flex items-center justify-center text-3xl font-bold shadow-xl shadow-zinc-200/50 dark:shadow-black/50 transition-transform hover:scale-105 duration-300">
+                                <span className={i === 3 ? "text-emerald-500" : "text-primary"}>{s.step}</span>
+                            </div>
+                            <div className="space-y-2 px-4">
+                                <h3 className="text-xl font-bold">{s.title}</h3>
+                                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-normal leading-relaxed">
+                                    {s.desc}
+                                </p>
+                            </div>
+                        </motion.div>
+                    ))}
+                </motion.div>
             </div>
         </section>
     );

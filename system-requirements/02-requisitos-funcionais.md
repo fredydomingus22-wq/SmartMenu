@@ -115,6 +115,14 @@
   - Configuração de Upsells (Venda Casada) por produto.
   - Configuração de Recomendações ("Quem comprou também levou").
   - Gestão de Banners Promocionais intercalados no menu.
+- **Gestão de Presença Digital & Rodapé:** ⭐ NOVO
+  - Configuração de links de redes sociais (WhatsApp, Instagram, Facebook).
+  - Gestão de Website oficial.
+  - Customização de informações de contacto e endereço público.
+- **Páginas Institucionais Automáticas (Public Menu):** ⭐ NOVO
+  - Geração automática de página "Sobre Nós" baseada no perfil.
+  - Página de Alergénicos padronizada.
+  - Páginas de conformidade legal (Termos de Uso e Privacidade).
 - **Gestão de Idiomas:**
   - Ativação de idiomas suportados (PT, EN, ES).
   - Tradução customizada de nomes e descrições de produtos.
@@ -176,11 +184,12 @@
 - **Onboarding Visual:** Carrossel ou animações explicando como o sistema funciona (Scan -> Order -> Pay).
 
 ### 3.10 Onboarding Operacional (Restaurante) ⭐ NOVO
+
 - **Fluxo de Cadastro Assistido:**
-    - Registro de informações básicas da Organização e primeiro Tenant.
+  - Registro de informações básicas da Organização e primeiro Tenant.
 - **Precisão de Localização (Geocoding):**
-    - Seleção de Província e Município a partir de listas oficiais (Angola).
-    - **Mapa Interativo:** Pin no mapa para capturar latitude/longitude exatas, garantindo precisão para a funcionalidade de "Discovery".
+  - Seleção de Província e Município a partir de listas oficiais (Angola).
+  - **Mapa Interativo:** Pin no mapa para capturar latitude/longitude exatas, garantindo precisão para a funcionalidade de "Discovery".
 - **Setup de Branding:** Upload imediato de logo e definição de cores.
 
 ---
@@ -206,6 +215,7 @@
 ### 11.3 Create – Criar Item de Menu (Página Dedicada)
 
 **Fluxo UX (Gerente):**
+
 1. Menu > Produtos > "+ Novo Produto"
 2. **Interface:** Página dedicada com formulário segmentado e transições fluidas (Framer Motion).
 3. **Padrão:** Todos os formulários complexos devem utilizar `ScrollArea` (Radix UI) para garantir acessibilidade e usabilidade em qualquer resolução.
@@ -244,11 +254,13 @@
 ## 14. Gestão de Marketing e Conversão
 
 ### 14.1 Upsell & Cross-sell
+
 - **Regra:** O gerente vincula "Produtos Sugeridos" a um "Produto Principal".
 - **Trigger:** Exibição na página de detalhes do produto ou no checkout.
 - **Objetivo:** Aumentar o ticket médio através de complementos relevantes.
 
 ### 14.2 Recomendações Dinâmicas
+
 - O sistema sugere produtos baseados na categoria ou histórico de vendas (mais vendidos na mesma sessão).
 
 ---
@@ -256,11 +268,13 @@
 ## 15. Gestão de Idiomas (Internationalization)
 
 ### 15.1 Suporte Multi-idioma
+
 - O sistema deve permitir que o restaurante ofereça o cardápio em múltiplos idiomas.
 - **Default:** Português (PT).
 - **Opções:** Inglês (EN), Espanhol (ES).
 
 ### 15.2 Tradução de Conteúdo
+
 - Campos traduzíveis: Nome do Produto, Descrição, Nomes de Categorias, Nomes de Opções.
 - Se a tradução não existir, o sistema exibe o idioma padrão.
 
@@ -271,17 +285,22 @@
 ## 12. CRUD de Gestão de Mesas e QR Code
 
 ### 12.1 Objetivo
+
 Permitir que o restaurante configure seu plano de sala digital e forneça acesso fácil aos clientes via QR Codes físicos.
 
 ### 12.2 Create – Adicionar Mesa
+
 **Fluxo UX (Gerente):**
+
 1. Configurações > Mesas > Adicionar Mesa
 2. Campos: Número da Mesa (Único por Tenant)
 3. Backend: `POST /tables`
 4. Resultado: Mesa criada e QR Code gerado instantaneamente na UI.
 
 ### 12.3 Read – Listagem e QR
+
 **Fluxo UX (Gerente):**
+
 1. Visualização em Grid de todas as mesas cadastradas.
 2. Cada card exibe:
    - Número da Mesa
@@ -290,11 +309,13 @@ Permitir que o restaurante configure seu plano de sala digital e forneça acesso
    - Contagem de pedidos ativos
 
 ### 12.4 QR Code & Acesso
+
 - **Formato:** SVG vetorial para alta qualidade de impressão.
 - **Ação:** Botão "Baixar" em cada card para impressão individual.
 - **Link:** Redireciona o cliente diretamente para o Menu Digital daquele Tenant, com a Mesa pré-selecionada na sessão.
 
 ### 12.5 Delete – Remover Mesa
+
 - Ação crítica com confirmação.
 - Backend: `DELETE /tables/{id}`
 
@@ -303,6 +324,7 @@ Permitir que o restaurante configure seu plano de sala digital e forneça acesso
 ## 13. Programa de Fidelidade (Club de Pontos)
 
 ### 13.1 Configuração do Restaurante (Gerente)
+
 - Toggle para Ativar/Desativar o programa de fidelidade por Tenant.
 - Definição da **Regra de Conversão**: (Ex: R$ 1,00 = 1 Ponto).
 - Gestão de **Recompensas**:
@@ -313,38 +335,42 @@ Permitir que o restaurante configure seu plano de sala digital e forneça acesso
 - **Branding Personalizado:**
   - Upload de Logo e Banner da loja.
   - Seleção de Cor Primária e Secundária.
-  - O cliente vê *apenas* a marca do restaurante, nunca "SmartMenu".
+  - O cliente vê _apenas_ a marca do restaurante, nunca "SmartMenu".
 
 ### 13.2 Identificação e Registro do Cliente (Local)
+
 - **Registro Isolado:** O cadastro cria um vínculo único `(User, Tenant)`.
-- **Visão Única:** O cliente acessa `/menu/{tenantId}` e vê apenas seu histórico e pontos *daquele* restaurante.
+- **Visão Única:** O cliente acessa `/menu/{tenantId}` e vê apenas seu histórico e pontos _daquele_ restaurante.
 - **Login:** O sistema detecta o contexto do restaurante e filtra os dados automaticamente.
 - **Persistence:** O sistema deve garantir a existência de um `CustomerProfile` (tabela `customer_profiles`) no primeiro acesso autenticado do usuário a um Tenant específico (`ensureProfile`).
 
-
 ### 13.3 Acúmulo de Pontos
+
 - Atribuição automática de pontos após a finalização/pagamento do pedido.
 - Regra baseada no valor total do pedido (subtotal).
 
 ### 13.4 Resgate de Pontos
+
 - Aplicação de recompensa no carrinho se o cliente tiver saldo suficiente.
 - Validação no checkout para garantir que os pontos ainda são válidos.
 - Fluxo de aprovação: O item resgatado aparece para o restaurante com sinalização de "Resgate Fidelidade".
-
 
 ---
 
 ## 16. Padrões de Qualidade e Manutenção (Code Health)
 
 ### 16.1 Integridade de Tipos
+
 - **Strict Typing:** Uso obrigatório de TypeScript em modo estrito. O uso de `any` é proibido e deve ser substituído por interfaces específicas ou `unknown` (com narrowed checks).
 - **Zod Validation:** Todas as entradas de dados (API) e retornos críticos devem ser validados via schemas Zod.
 
 ### 16.2 Consistência de Dependências
+
 - **Single Source of Truth:** Versões de React, Next.js e Tailwind devem ser sincronizadas entre apps e packages para evitar erros de hidratação.
 - **Linting:** O comando `npm run lint` deve passar em todos os pacotes antes de qualquer merge.
 
 ### 16.3 Tratamento de Erros
+
 - Implementação de Error Boundaries no frontend.
 - Fallbacks visuais para falhas de serviços externos (Supabase, OpenAI) para garantir que o menu continue funcional mesmo em degradação parcial.
 

@@ -31,12 +31,14 @@ export function LandingFAQ() {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
 
     return (
-        <section className="py-24 px-6 bg-zinc-50 dark:bg-zinc-950/40">
+        <section className="py-16 md:py-20 px-6 bg-zinc-50 dark:bg-zinc-950/40">
             <div className="max-w-4xl mx-auto space-y-12">
-                <div className="text-center space-y-4">
-                    <h2 className="text-3xl md:text-5xl font-extrabold tracking-tighter">Perguntas Frequentes</h2>
-                    <p className="text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed">
-                        Tudo o que você precisa saber sobre menu digital para restaurantes em Angola.
+                <div className="text-center space-y-6">
+                    <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-foreground">
+                        Respostas para a sua <span className="text-primary">operação</span>.
+                    </h2>
+                    <p className="text-muted-foreground max-w-2xl mx-auto text-lg font-normal leading-relaxed">
+                        Tudo o que precisa de saber sobre a implementação do ecossistema SmartMenu no seu restaurante.
                     </p>
                 </div>
 
@@ -44,7 +46,7 @@ export function LandingFAQ() {
                     {faqs.map((faq, i) => (
                         <motion.div
                             key={i}
-                            className="bg-white dark:bg-zinc-900 rounded-[2rem] border border-zinc-100 dark:border-white/5 overflow-hidden shadow-sm"
+                            className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-white/5 overflow-hidden shadow-sm"
                         >
                             <button
                                 onClick={() => setOpenIndex(openIndex === i ? null : i)}

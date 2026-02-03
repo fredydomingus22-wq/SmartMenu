@@ -1,6 +1,7 @@
 import { LandingHeader } from "./_components/landing/landing-header";
 import { LandingHero } from "./_components/landing/landing-hero";
 import { LandingFeatures } from "./_components/landing/landing-features";
+import { LandingAnalytics } from "./_components/landing/landing-analytics";
 import { LandingPricing } from "./_components/landing/landing-pricing";
 import { LandingHowItWorks } from "./_components/landing/landing-how-it-works";
 import { LandingSocialProof } from "./_components/landing/landing-social-proof";
@@ -20,6 +21,7 @@ export default function LandingPage() {
       <main id="main-content" className="flex-1 pt-16">
         <LandingHero />
         <LandingFeatures />
+        <LandingAnalytics />
         <LandingSocialProof />
         <LandingPricing />
         <LandingHowItWorks />

@@ -72,7 +72,7 @@ export class MenuService {
   }
 
   async getMenuConfig(tenantId: string) {
-    const [branding, sections, footer, settings] = await Promise.all([
+    const [branding, sections, footer, settings, tenant] = await Promise.all([
       this.prisma.tenantBranding.findUnique({ where: { tenantId } }),
       this.prisma.menuSection.findMany({
         where: { tenantId },
@@ -80,7 +80,39 @@ export class MenuService {
       }),
       this.prisma.footerConfig.findUnique({ where: { tenantId } }),
       this.prisma.tenantSettings.findUnique({ where: { tenantId } }),
+      this.prisma.tenant.findUnique({
+        where: { id: tenantId },
+        select: {
+          whatsapp: true,
+          instagram: true,
+          facebook: true,
+          website: true,
+          phone: true,
+          email: true,
+          address: true,
+        },
+      }),
     ]);
+
+    // Merge socials from Tenant if footerConfig doesn't have them
+    const socials = {
+      ...(footer?.socials as any),
+      instagram:
+        (footer?.socials as any)?.instagram ||
+        (tenant?.instagram?.startsWith('@')
+          ? `https://instagram.com/${tenant.instagram.substring(1)}`
+          : tenant?.instagram),
+      facebook: (footer?.socials as any)?.facebook || tenant?.facebook,
+      website: (footer?.socials as any)?.website || tenant?.website,
+      whatsapp: (footer?.socials as any)?.whatsapp || tenant?.whatsapp,
+    };
+
+    const contactInfo = {
+      ...(footer?.contactInfo as any),
+      phone: (footer?.contactInfo as any)?.phone || tenant?.phone,
+      email: (footer?.contactInfo as any)?.email || tenant?.email,
+      address: (footer?.contactInfo as any)?.address || tenant?.address,
+    };
 
     return {
       branding: branding || { primaryColor: '#2563EB', logoUrl: null },
@@ -96,7 +128,12 @@ export class MenuService {
               },
               { type: 'category_grid', isActive: true, name: 'Categorias' },
             ],
-      footer: footer || { socials: {}, links: [], contactInfo: {} },
+      footer: {
+        ...(footer || {}),
+        socials,
+        contactInfo,
+        links: footer?.links || [],
+      },
       settings: settings || {
         enableRecommendations: true,
         enableUpsells: true,

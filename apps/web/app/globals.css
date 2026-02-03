@@ -83,18 +83,20 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
   html,
   body {
     height: 100%;
     margin: 0;
     padding: 0;
-    /* Prevent rubber-banding on iOS without locking the viewport completely */
     overscroll-behavior-y: none;
-    /* NC-05: Contenção global para prevenir scroll horizontal */
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    @apply font-sans;
   }
 
   * {

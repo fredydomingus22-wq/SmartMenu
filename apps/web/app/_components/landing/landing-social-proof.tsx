@@ -2,15 +2,15 @@
 
 export function LandingSocialProof() {
     const partners = [
-        { name: "Oon.dah", font: "font-serif" },
-        { name: "Cais de Quatro", font: "font-mono" },
-        { name: "Lookal", font: "font-sans" },
-        { name: "K. Luanda", font: "font-serif" },
-        { name: "Nikki Beach", font: "font-mono" }
+        { name: "Oon.dah" },
+        { name: "Cais de Quatro" },
+        { name: "Lookal" },
+        { name: "K. Luanda" },
+        { name: "Nikki Beach" }
     ];
 
     return (
-        <section className="py-16 bg-zinc-50 dark:bg-zinc-950/40 border-y">
+        <section className="py-12 bg-zinc-50 dark:bg-zinc-950/40 border-y">
             <div className="max-w-7xl mx-auto px-6 text-center space-y-10">
                 <p className="text-xs font-black text-muted-foreground/60 uppercase tracking-[0.3em]">
                     A escolha dos melhores restaurantes de Luanda
@@ -19,7 +19,7 @@ export function LandingSocialProof() {
                     {partners.map((partner, i) => (
                         <span
                             key={i}
-                            className={`${partner.font} text-xl md:text-2xl font-black tracking-tight hover:text-primary transition-colors cursor-default`}
+                            className="font-sans text-xl md:text-2xl font-bold tracking-tight hover:text-primary transition-colors cursor-default"
                         >
                             {partner.name}
                         </span>
