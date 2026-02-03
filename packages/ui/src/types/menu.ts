@@ -79,6 +79,7 @@ export interface FooterConfig {
         facebook?: string;
         twitter?: string;
         whatsapp?: string;
+        website?: string;
     };
     contactInfo?: {
         phone?: string;
