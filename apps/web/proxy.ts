@@ -12,7 +12,7 @@ export async function proxy(request: NextRequest) {
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
         "font-src 'self' https://fonts.gstatic.com",
         "img-src 'self' data: https: blob:",
-        "connect-src 'self' https://*.supabase.co https://*.stripe.com wss://*.supabase.co",
+        "connect-src 'self' https://*.supabase.co https://*.stripe.com wss://*.supabase.co https://smart-menu-api.vercel.app",
         "frame-src 'self' https://*.stripe.com",
         "object-src 'none'",
         "base-uri 'self'",
