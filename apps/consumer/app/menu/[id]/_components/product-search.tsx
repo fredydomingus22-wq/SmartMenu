@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Search, X, Loader2 } from "lucide-react";
-import { Input } from "@smart-menu/ui";
+import { Input, Product } from "@smart-menu/ui";
 import { Button } from "@smart-menu/ui";
 import { apiClient } from "@smart-menu/api";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,9 +14,10 @@ interface ProductSearchProps {
     onClose?: () => void;
 }
 
-export function ProductSearch({ tenantId, onClose }: ProductSearchProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function ProductSearch({ tenantId, onClose: _onClose }: ProductSearchProps) {
     const [query, setQuery] = useState("");
-    const [results, setResults] = useState<any[]>([]);
+    const [results, setResults] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
 
@@ -30,7 +31,7 @@ export function ProductSearch({ tenantId, onClose }: ProductSearchProps) {
         setIsLoading(true);
         try {
             const data = await apiClient.get(`/public/menu/${tenantId}/search?q=${encodeURIComponent(searchQuery)}`);
-            setResults(data as any[]);
+            setResults(data as Product[]);
             setHasSearched(true);
         } catch (error) {
             console.error("Search failed:", error);
@@ -109,7 +110,7 @@ export function ProductSearch({ tenantId, onClose }: ProductSearchProps) {
                             <Search className="h-8 w-8 text-muted-foreground" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold">Nenhum resultado para "{query}"</h3>
+                            <h3 className="text-xl font-bold">Nenhum resultado para &quot;{query}&quot;</h3>
                             <p className="text-muted-foreground">Tente buscar por outro termo ou categoria.</p>
                         </div>
                     </motion.div>

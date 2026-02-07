@@ -11,7 +11,7 @@ import { useCart } from "@/components/cart/cart-context";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/use-translation";
 import { ProductCard } from "../../../_components/product-card";
-import { Product, ProductOption, ProductOptionValue, ProductRecommendation, ProductUpsell } from "@smart-menu/ui";
+import { Product, ProductOptionValue, ProductRecommendation, ProductUpsell } from "@smart-menu/ui";
 
 interface ProductPageClientProps {
     product: Product;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Bell, Zap } from "lucide-react";
+import { X, Zap } from "lucide-react";
 import { Button } from "@smart-menu/ui";
 import { useMarketingNotifications } from "@/hooks/use-marketing-notifications";
 import { useParams } from "next/navigation";
@@ -44,7 +44,10 @@ export function MarketingNotificationBanner() {
                 </div>
 
                 <button
-                    onClick={() => setIsVisible(false)}
+                    onClick={() => {
+                        setIsVisible(false);
+                        clearCampaign();
+                    }}
                     className="p-1 hover:bg-zinc-800 dark:hover:bg-zinc-200 rounded-lg transition-colors"
                 >
                     <X className="h-4 w-4 opacity-50" />

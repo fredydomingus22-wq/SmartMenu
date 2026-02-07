@@ -29,7 +29,7 @@ import { CartItem } from "./cart-item";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { formatCurrency } from "@smart-menu/ui";
+import { formatCurrency, LoyaltyConfig } from "@smart-menu/ui";
 import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { useHasMounted } from "@/hooks/use-has-mounted";
@@ -56,7 +56,7 @@ export function CartSheet() {
     const { appliedReward, applyReward, removeReward } = useCart();
     const [userPoints, setUserPoints] = useState(0);
     const [availableRewards, setAvailableRewards] = useState<LoyaltyReward[]>([]);
-    const [loyaltyConfig, setLoyaltyConfig] = useState<any>(null);
+    const [loyaltyConfig, setLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
 
     // Table Selection Data
     const [availableTables, setAvailableTables] = useState<{ id: string, number: number }[]>([]);

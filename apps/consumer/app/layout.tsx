@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { I18nProvider } from "@/hooks/use-translation";
 import { CartProvider } from "@/components/cart/cart-context";
 import { Toaster } from "@smart-menu/ui";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
     title: "SmartMenu - O Seu Menu Digital",
@@ -40,7 +37,7 @@ export default function RootLayout({
                 <link rel="icon" type="image/png" href="/favicon.png" />
                 <link rel="apple-touch-icon" href="/favicon.png" />
             </head>
-            <body className={inter.className}>
+            <body className="font-sans antialiased">
                 <I18nProvider>
                     <CartProvider>
                         <MarketingNotificationBanner />

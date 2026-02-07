@@ -17,7 +17,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             <div className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
                 <div className="flex h-16 items-center px-4 sm:px-8">
                     <Link 
-                        href={`/menu/${params.id}`}
+                        href={`/menu/${id}`}
                         className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                     >
                         <ChevronLeft className="h-4 w-4" />
