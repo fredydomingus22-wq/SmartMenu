@@ -1,4 +1,16 @@
 import { apiClient } from "@smart-menu/api";
+import {
+    Category,
+    MenuConfig,
+    LoyaltyConfig,
+    ProductGroup,
+    MarketingEvent,
+    PromotionalSchedule,
+    AppShell,
+    PageContainer,
+    ErrorBoundary,
+    formatCurrency
+} from "@smart-menu/ui";
 import { UtensilsCrossed, Gift } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,8 +19,6 @@ import { MenuGrid } from "./_components/menu-grid";
 import { PublicMenuClient } from "./_components/public-menu-client";
 import { PublicMenuHeader } from "./_components/public-menu-header";
 import { RestaurantFooter } from "./_components/restaurant-footer";
-import { Category, MenuConfig, LoyaltyConfig, AppShell, PageContainer, ErrorBoundary } from "@smart-menu/ui";
-import { formatCurrency } from "@smart-menu/ui";
 import { getTranslation } from "@/utils/i18n-server";
 import { Metadata } from "next";
 
@@ -44,9 +54,12 @@ export default async function PublicMenuPage({
     let categories: Category[] = [];
     let config: MenuConfig | null = null;
     let loyaltyConfig: LoyaltyConfig | null = null;
+    let groups: ProductGroup[] = [];
+    let events: MarketingEvent[] = [];
+    let promotions: PromotionalSchedule[] = [];
 
     try {
-        const [categoriesData, configData, loyaltyConfigData] = await Promise.all([
+        const [categoriesData, configData, loyaltyConfigData, groupsData, eventsData, promotionsData] = await Promise.all([
             apiClient.get(`/public/menu/${id}`, { cache: 'no-store' }),
             apiClient.get(`/public/menu/${id}/config`, { cache: 'no-store' }).catch(err => {
                 console.warn('[PublicMenuPage] Config fetch failed, using defaults:', err.message);
@@ -58,12 +71,27 @@ export default async function PublicMenuPage({
             }).catch(err => {
                 console.warn('[PublicMenuPage] Loyalty config fetch failed:', err.message);
                 return null;
+            }),
+            apiClient.get(`/marketing/public/groups/${id}`, { cache: 'no-store' }).catch(err => {
+                console.warn('[PublicMenuPage] Groups fetch failed:', err.message);
+                return [];
+            }),
+            apiClient.get(`/marketing/public/events/${id}`, { cache: 'no-store' }).catch(err => {
+                console.warn('[PublicMenuPage] Events fetch failed:', err.message);
+                return [];
+            }),
+            apiClient.get(`/marketing/public/promotions/${id}`, { cache: 'no-store' }).catch(err => {
+                console.warn('[PublicMenuPage] Promotions fetch failed:', err.message);
+                return [];
             })
-        ]) as [Category[], MenuConfig | null, LoyaltyConfig | null];
+        ]) as [Category[], MenuConfig | null, LoyaltyConfig | null, ProductGroup[], MarketingEvent[], PromotionalSchedule[]];
 
         categories = categoriesData;
         config = configData;
         loyaltyConfig = loyaltyConfigData;
+        groups = groupsData;
+        events = eventsData;
+        promotions = promotionsData;
 
         // Background Profile Ensure for Logged In Users
         if (token && id) {
@@ -127,7 +155,13 @@ export default async function PublicMenuPage({
                 {/* The dynamic MenuGrid handles Hero, Sections, and Footer based on config */}
                 <PageContainer>
                     <ErrorBoundary>
-                        <MenuGrid categories={categories} config={config} />
+                        <MenuGrid 
+                            categories={categories} 
+                            config={config} 
+                            groups={groups} 
+                            promotions={promotions}
+                            events={events}
+                        />
                     </ErrorBoundary>
                 </PageContainer>
 

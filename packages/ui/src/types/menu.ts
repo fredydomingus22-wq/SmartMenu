@@ -91,7 +91,7 @@ export interface FooterConfig {
 export interface MenuSection {
     id?: string;
     name?: string;
-    type: "hero" | "featured" | "category_grid" | "promotions" | "loyalty" | "global_upsell" | "best_sellers" | "new_arrivals";
+    type: "hero" | "featured" | "category_grid" | "promotions" | "loyalty" | "global_upsell" | "best_sellers" | "new_arrivals" | "marketing_group" | "events";
     title?: string;
     subtitle?: string;
     isActive: boolean;
@@ -101,6 +101,7 @@ export interface MenuSection {
         subtitle?: string;
         label?: string;
         categoryId?: string;
+        groupId?: string;
         limit?: number;
         buttonText?: string;
     };

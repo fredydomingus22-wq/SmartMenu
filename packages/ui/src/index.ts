@@ -56,6 +56,7 @@ export * from "./components/features/analytics/dashboard-chart";
 
 // Types
 export * from "./types/menu";
+export * from "./types/marketing";
 
 // Domain Specific (Shared Layouts)
 export * from "./components/domain/menu/public-menu-header";

@@ -8,28 +8,39 @@ import { Label } from "@smart-menu/ui";
 import { Switch } from "@smart-menu/ui";
 import { toast } from "sonner";
 import { updateMenuConfig } from "@/app/actions/settings";
-import { Layout, GripVertical, Sparkles, Image as ImageIcon, Megaphone } from "lucide-react";
+import { Layout, GripVertical, Sparkles, Image as ImageIcon, Megaphone, ShoppingBag, Calendar, Tag } from "lucide-react";
 import { Reorder } from "framer-motion";
 import { MenuSection } from "../../../menu/[id]/_types";
 import { ImageUpload } from "@smart-menu/ui";
-
-import { Banner } from "../../../menu/[id]/_types/marketing";
+import { Banner, ProductGroup, MarketingEvent, PromotionalSchedule, LocalizedString } from "@smart-menu/ui";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@smart-menu/ui";
 
 interface MenuDesignFormProps {
     initialSections: MenuSection[] | null;
     banners?: Banner[];
+    productGroups?: ProductGroup[];
+    promotions?: PromotionalSchedule[];
+    events?: MarketingEvent[];
 }
 
-export function MenuDesignForm({ initialSections, banners = [] }: MenuDesignFormProps) {
+export function MenuDesignForm({ 
+    initialSections, 
+    banners = [], 
+    productGroups = [],
+    promotions = [],
+    events = []
+}: MenuDesignFormProps) {
     const [sections, setSections] = useState<MenuSection[]>(initialSections || [
         { type: "hero", name: "Banner Principal", isActive: true, config: { title: "Bem-vindo", subtitle: "As melhores opções", imageUrl: "" } },
         { type: "featured", name: "Destaques", isActive: true, config: { label: "MAIS PEDIDOS", title: "Os Favoritos" } },
+        { type: "marketing_group", name: "Grupo do Marketing", isActive: false, config: { title: "Promoção Especial", groupId: "" } },
+        { type: "promotions", name: "Promoções Ativas", isActive: false, config: { title: "Ofertas do Dia" } },
+        { type: "events", name: "Eventos Próximos", isActive: false, config: { title: "Nossa Agenda" } },
         { type: "category_grid", name: "Categorias", isActive: true, config: {} },
         { type: "global_upsell", name: "Banner Promocional (Fim)", isActive: true, config: { title: "Espaço para Sobremesa?", subtitle: "Confira nossas opções artesanais", buttonText: "Ver Ofertas", imageUrl: "" } }
     ]);
 
-    // Ensure global_upsell exists if it's missing from initialSections (migration)
+    // Migration helpers
     if (initialSections && !sections.find(s => s.type === 'global_upsell')) {
         setSections(prev => [...prev, {
             type: "global_upsell",
@@ -39,18 +50,58 @@ export function MenuDesignForm({ initialSections, banners = [] }: MenuDesignForm
         }]);
     }
 
+    if (initialSections && !sections.find(s => s.type === 'marketing_group')) {
+        setSections(prev => {
+            const newSections = [...prev];
+            newSections.splice(2, 0, {
+                type: "marketing_group",
+                name: "Grupo do Marketing",
+                isActive: false,
+                config: { title: "Promoção Especial", groupId: "" }
+            });
+            return newSections;
+        });
+    }
+
+    if (initialSections && !sections.find(s => s.type === 'promotions')) {
+        setSections(prev => {
+            const newSections = [...prev];
+            newSections.splice(3, 0, {
+                type: "promotions",
+                name: "Promoções Ativas",
+                isActive: false,
+                config: { title: "Ofertas do Dia" }
+            });
+            return newSections;
+        });
+    }
+
+    if (initialSections && !sections.find(s => s.type === 'events')) {
+        setSections(prev => {
+            const newSections = [...prev];
+            newSections.splice(4, 0, {
+                type: "events",
+                name: "Eventos Próximos",
+                isActive: false,
+                config: { title: "Nossa Agenda" }
+            });
+            return newSections;
+        });
+    }
+
+    // Handle potentially localized content
+    const getLocalized = (field: string | LocalizedString | null | undefined): string => {
+        if (!field) return "";
+        if (typeof field === 'string') return field;
+        if (typeof field === 'object') return field.pt || field.en || Object.values(field)[0] || "";
+        return "";
+    };
+
     // Helper to load banner data
     const loadBannerData = (index: number, bannerId: string) => {
         const banner = banners.find(b => b.id === bannerId);
         if (banner) {
             const newSections = [...sections];
-            // Handle potentially localized content
-            const getLocalized = (field: any) => {
-                if (typeof field === 'string') return field;
-                if (typeof field === 'object' && field !== null) return field.pt || field.en || Object.values(field)[0] || "";
-                return "";
-            };
-
             newSections[index].config = {
                 ...newSections[index].config,
                 title: getLocalized(banner.title),
@@ -109,6 +160,9 @@ export function MenuDesignForm({ initialSections, banners = [] }: MenuDesignForm
                                                 {section.type === 'hero' && <ImageIcon className="h-4 w-4 text-primary" />}
                                                 {section.type === 'featured' && <Sparkles className="h-4 w-4 text-amber-500" />}
                                                 {section.type === 'category_grid' && <Layout className="h-4 w-4 text-blue-500" />}
+                                                {section.type === 'marketing_group' && <ShoppingBag className="h-5 w-5 text-emerald-500" />}
+                                                {section.type === 'promotions' && <Tag className="h-5 w-5 text-red-500" />}
+                                                {section.type === 'events' && <Calendar className="h-5 w-5 text-blue-500" />}
                                                 {section.type === 'global_upsell' && <Megaphone className="h-4 w-4 text-rose-500" />}
                                                 {section.name || section.type}
                                             </CardTitle>
@@ -162,7 +216,7 @@ export function MenuDesignForm({ initialSections, banners = [] }: MenuDesignForm
                                                         <Label>Imagem de Fundo</Label>
                                                         <ImageUpload
                                                             value={section.config?.imageUrl || ""}
-                                                            onChange={(url) => updateConfig(index, 'imageUrl', url)}
+                                                            onChange={(url: string) => updateConfig(index, 'imageUrl', url)}
                                                             onRemove={() => updateConfig(index, 'imageUrl', "")}
                                                             supabaseUrl={process.env.NEXT_PUBLIC_SUPABASE_URL!}
                                                             supabaseKey={process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}
@@ -207,7 +261,7 @@ export function MenuDesignForm({ initialSections, banners = [] }: MenuDesignForm
                                                         <Label>Imagem Promocional</Label>
                                                         <ImageUpload
                                                             value={section.config?.imageUrl || ""}
-                                                            onChange={(url) => updateConfig(index, 'imageUrl', url)}
+                                                            onChange={(url: string) => updateConfig(index, 'imageUrl', url)}
                                                             onRemove={() => updateConfig(index, 'imageUrl', "")}
                                                             supabaseUrl={process.env.NEXT_PUBLIC_SUPABASE_URL!}
                                                             supabaseKey={process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}
@@ -242,6 +296,72 @@ export function MenuDesignForm({ initialSections, banners = [] }: MenuDesignForm
                                                         />
                                                     </div>
                                                 </>
+                                            )}
+                                            {section.type === 'marketing_group' && (
+                                                <>
+                                                    <div className="grid gap-2">
+                                                        <Label>Selecionar Grupo de Produtos</Label>
+                                                        <Select 
+                                                            value={section.config?.groupId || ""} 
+                                                            onValueChange={(val) => updateConfig(index, 'groupId', val)}
+                                                        >
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Selecione um grupo..." />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {productGroups.map((group) => (
+                                                                    <SelectItem key={group.id} value={group.id}>
+                                                                        {getLocalized(group.name)}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                    <div className="grid gap-2">
+                                                        <Label>Título da Seção (Opcional)</Label>
+                                                        <Input
+                                                            value={section.config?.title || ""}
+                                                            onChange={(e) => updateConfig(index, 'title', e.target.value)}
+                                                            placeholder="Ex: Ofertas Imperdíveis"
+                                                        />
+                                                    </div>
+                                                    <div className="grid gap-2">
+                                                        <Label>Subtítulo (Opcional)</Label>
+                                                        <Input
+                                                            value={section.config?.subtitle || ""}
+                                                            onChange={(e) => updateConfig(index, 'subtitle', e.target.value)}
+                                                            placeholder="Ex: Válido até durar o stock"
+                                                        />
+                                                    </div>
+                                                </>
+                                            )}
+
+                                            {section.type === 'promotions' && (
+                                                <div className="grid gap-2">
+                                                    <Label>Título da Seção</Label>
+                                                    <Input
+                                                        value={section.config?.title || ""}
+                                                        onChange={(e) => updateConfig(index, 'title', e.target.value)}
+                                                        placeholder="Ex: Nossas Promoções"
+                                                    />
+                                                    <p className="text-xs text-zinc-500 italic">
+                                                        Esta seção exibirá automaticamente todas as promoções ativas no momento ({promotions.length} encontradas).
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {section.type === 'events' && (
+                                                <div className="grid gap-2">
+                                                    <Label>Título da Seção</Label>
+                                                    <Input
+                                                        value={section.config?.title || ""}
+                                                        onChange={(e) => updateConfig(index, 'title', e.target.value)}
+                                                        placeholder="Ex: Nossos Eventos"
+                                                    />
+                                                    <p className="text-xs text-zinc-500 italic">
+                                                        Esta seção exibirá automaticamente os próximos eventos agendados ({events.length} encontrados).
+                                                    </p>
+                                                </div>
                                             )}
                                             {section.type === 'category_grid' && (
                                                 <p className="text-xs text-zinc-500 italic">Esta seção exibe suas categorias e produtos automaticamente.</p>

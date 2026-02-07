@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams, useParams } from "next/navigation";
-import { Eye, UtensilsCrossed } from "lucide-react";
+import { Eye, UtensilsCrossed, Tag, Calendar, ShoppingBag } from "lucide-react";
 import { useTranslation } from "@/hooks/use-translation";
 import Image from "next/image";
 import { useState, useMemo } from "react";
@@ -11,12 +11,23 @@ import { ProductGrid } from "./product-grid";
 import { Category, MenuConfig, MenuSection } from "../_types";
 import { cn, getTranslatedValue } from "@smart-menu/ui";
 
+import { ProductGroup, MarketingEvent, PromotionalSchedule } from "@smart-menu/ui";
+
 interface MenuGridProps {
     categories: Category[];
     config?: MenuConfig | null;
+    groups?: ProductGroup[];
+    promotions?: PromotionalSchedule[];
+    events?: MarketingEvent[];
 }
 
-export function MenuGrid({ categories, config }: MenuGridProps) {
+export function MenuGrid({ 
+    categories, 
+    config, 
+    groups = [], 
+    promotions = [], 
+    events = [] 
+}: MenuGridProps) {
     const params = useParams();
     const searchParams = useSearchParams();
     const { t, locale } = useTranslation();
@@ -278,8 +289,140 @@ export function MenuGrid({ categories, config }: MenuGridProps) {
                             </div>
                         );
 
-                    default:
-                        return null;
+                    case "marketing_group": {
+                        const group = groups.find(g => g.id === section.config?.groupId);
+                        if (!group || !group.isActive) return null;
+
+                        return (
+                            <div key={`section-${idx}`} className="space-y-8 mt-12">
+                                <div className="flex items-center gap-4 px-4 sm:px-0">
+                                    <div className="space-y-1">
+                                        <h2 className="text-2xl sm:text-4xl font-black tracking-tighter uppercase italic flex items-center gap-2">
+                                            <ShoppingBag className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                                            {section.config?.title || getTranslatedValue(group.name, locale)}
+                                        </h2>
+                                        {section.config?.subtitle && (
+                                            <p className="text-muted-foreground text-sm font-medium uppercase tracking-wider">
+                                                {section.config.subtitle}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className="h-px bg-border flex-1" />
+                                </div>
+
+                                <div className="relative -mx-4 sm:mx-0">
+                                    <div className="flex overflow-x-auto pb-8 px-4 sm:px-0 gap-4 snap-x no-scrollbar">
+                                        {group.items?.map((item) => (
+                                            <div key={item.id} className="min-w-[280px] sm:min-w-[320px] snap-start">
+                                                {item.product && (
+                                                    <ProductCard 
+                                                        product={item.product} 
+                                                        tenantId={tenantId} 
+                                                        locale={locale} 
+                                                        t={t} 
+                                                    />
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    }
+
+                    case "promotions": {
+                        if (promotions.length === 0) return null;
+
+                        return (
+                            <div key={`section-${idx}`} className="space-y-8 mt-12 bg-red-50/50 dark:bg-red-950/20 -mx-4 sm:mx-0 px-4 sm:px-8 py-12 rounded-3xl border border-red-100 dark:border-red-900/50">
+                                <div className="flex items-center gap-4">
+                                    <div className="space-y-1">
+                                        <h2 className="text-2xl sm:text-4xl font-black tracking-tighter uppercase italic text-red-600 dark:text-red-400">
+                                            {section.config?.title || t('menu.active_promotions')}
+                                        </h2>
+                                        <p className="text-red-600/60 dark:text-red-400/60 text-sm font-bold uppercase tracking-widest flex items-center gap-2">
+                                            <Tag className="h-4 w-4" />
+                                            {t('menu.limited_time_offers')}
+                                        </p>
+                                    </div>
+                                    <div className="h-px bg-red-200 dark:bg-red-800 flex-1" />
+                                </div>
+
+                                <ProductGrid columns={4}>
+                                    {promotions.map((promo) => (
+                                        <div key={promo.id} className="relative group">
+                                            {promo.product && (
+                                                <>
+                                                    <ProductCard product={promo.product} tenantId={tenantId} locale={locale} t={t} />
+                                                    <div className="absolute top-3 right-3 z-10">
+                                                        <div className="bg-red-600 text-white text-[10px] sm:text-xs font-black px-3 py-1.5 rounded-full shadow-lg transform -rotate-3 group-hover:rotate-0 transition-transform">
+                                                            {promo.label || `-${promo.discount}%`}
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    ))}
+                                </ProductGrid>
+                            </div>
+                        );
+                    }
+
+                    case "events": {
+                        if (events.length === 0) return null;
+
+                        return (
+                            <div key={`section-${idx}`} className="space-y-8 mt-12 bg-zinc-900 dark:bg-black -mx-4 sm:mx-0 px-4 sm:px-8 py-12 rounded-3xl border border-zinc-800 text-white overflow-hidden relative">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[120px] -mr-32 -mt-32" />
+                                
+                                <div className="relative z-10 flex items-center gap-4">
+                                    <div className="space-y-1">
+                                        <h2 className="text-2xl sm:text-4xl font-black tracking-tighter uppercase italic">
+                                            {section.config?.title || t('menu.upcoming_events')}
+                                        </h2>
+                                        <p className="text-primary text-sm font-bold uppercase tracking-widest flex items-center gap-2">
+                                            <Calendar className="h-4 w-4" />
+                                            {t('menu.dont_miss_out')}
+                                        </p>
+                                    </div>
+                                    <div className="h-px bg-zinc-800 flex-1" />
+                                </div>
+
+                                <div className="relative z-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                                    {events.map((event) => (
+                                        <div key={event.id} className="group relative bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700/50 hover:border-primary/50 rounded-2xl p-5 transition-all duration-300">
+                                            <div className="space-y-4">
+                                                <div className="aspect-video relative rounded-xl overflow-hidden">
+                                                    <Image 
+                                                        src={event.imageUrl || "https://images.unsplash.com/photo-1514525253361-bee8a187499b?auto=format&fit=crop&q=80"} 
+                                                        alt={getTranslatedValue(event.name, locale)}
+                                                        fill
+                                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    />
+                                                    <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10 text-[10px] font-bold">
+                                                        {new Date(event.date).toLocaleDateString(locale, { day: '2-digit', month: 'short' })}
+                                                    </div>
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <h3 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">
+                                                        {getTranslatedValue(event.name, locale)}
+                                                    </h3>
+                                                    <p className="text-zinc-400 text-sm line-clamp-2 italic">
+                                                        {getTranslatedValue(event.description, locale)}
+                                                    </p>
+                                                </div>
+                                                {event.ticketLink && (
+                                                    <Button className="w-full bg-white hover:bg-zinc-200 text-black font-black text-xs uppercase rounded-xl">
+                                                        {t('menu.get_tickets')}
+                                                    </Button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        );
+                    }
                 }
             })}
         </div>
