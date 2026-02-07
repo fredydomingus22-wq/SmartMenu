@@ -41,6 +41,19 @@ export async function apiClient<T = unknown>(path: string, options: RequestOptio
     if (typeof window === 'undefined') {
         const method = options.method || 'GET';
         console.log(`[apiClient:core] 🚀 ${method} ${path} (Auth: ${headers.has('Authorization') ? 'YES' : 'NO'})`);
+    } else {
+        // Client-side: Inject Auth Token from Supabase Session
+        try {
+            // Dynamic import to avoid server-side bundle issues
+            const { createClient } = await import("@/utils/supabase/client");
+            const supabase = createClient();
+            const { data } = await supabase.auth.getSession();
+            if (data.session?.access_token && !headers.has("Authorization")) {
+                headers.set("Authorization", `Bearer ${data.session.access_token}`);
+            }
+        } catch (error) {
+            console.warn("[apiClient:auth] Failed to inject auth token:", error);
+        }
     }
 
     let lastError: unknown;
