@@ -37,6 +37,7 @@ async function bootstrap() {
           ? [
               'https://smart-menu-consumer.vercel.app',
               'https://smart-menu-admin.vercel.app',
+              'https://admin.s-menu.zimbotechia.site',
               /\.vercel\.app$/,
             ]
           : [
