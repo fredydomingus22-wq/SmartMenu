@@ -24,6 +24,13 @@ export const viewport = {
 
 import { MarketingNotificationBanner } from "@/components/automation/marketing-notification-banner";
 
+import { Inter } from "next/font/google";
+
+const inter = Inter({
+    subsets: ["latin"],
+    variable: "--font-sans",
+});
+
 export default function RootLayout({
     children,
 }: Readonly<{
@@ -37,7 +44,7 @@ export default function RootLayout({
                 <link rel="icon" type="image/png" href="/favicon.png" />
                 <link rel="apple-touch-icon" href="/favicon.png" />
             </head>
-            <body className="font-sans antialiased">
+            <body className={`font-sans antialiased ${inter.variable}`}>
                 <I18nProvider>
                     <CartProvider>
                         <MarketingNotificationBanner />
