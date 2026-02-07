@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Input, Label, Card, CardContent, CardDescription, CardHeader, CardTitle, Switch, Badge, Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, ScrollArea, Checkbox } from "@smart-menu/ui";
+import { Button, Input, Label, Card, CardContent, CardDescription, CardHeader, CardTitle, Switch, Badge, Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Checkbox } from "@smart-menu/ui";
 import { toast } from "sonner";
-import { Package, Plus, Trash2, Save, Edit, Link as LinkIcon, GripVertical } from "lucide-react";
-import { motion, AnimatePresence, Reorder } from "framer-motion";
+import { Package, Plus, Trash2, Save, Edit, Link as LinkIcon } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { apiClient } from "@/utils/api-client";
+import Image from "next/image";
+
+
 
 interface ProductGroup {
     id?: string;
@@ -144,7 +147,7 @@ export function ProductGroupsClient({ initialGroups, products }: ProductGroupsCl
             await apiClient(`/marketing/groups/${id}`, { method: 'DELETE' });
             setGroups(groups.filter(g => g.id !== id));
             toast.success("Grupo removido");
-        } catch (error) {
+        } catch {
             toast.error("Erro ao remover grupo");
         }
     };
@@ -237,8 +240,11 @@ export function ProductGroupsClient({ initialGroups, products }: ProductGroupsCl
                         <DialogTitle>
                             {editingGroup?.id ? 'Editar Grupo' : 'Novo Grupo de Produtos'}
                         </DialogTitle>
+                        <DialogDescription>
+                            Configure os detalhes do grupo de produtos, incluindo nome, produtos e opções de exibição.
+                        </DialogDescription>
                     </DialogHeader>
-                    <ScrollArea className="flex-1 pr-4">
+                    <div className="flex-1 overflow-y-auto pr-4">
                         <div className="space-y-6 py-4">
                             {/* Nome */}
                             <div className="grid grid-cols-2 gap-4">
@@ -318,10 +324,12 @@ export function ProductGroupsClient({ initialGroups, products }: ProductGroupsCl
                                                 onCheckedChange={() => toggleProduct(product.id)}
                                             />
                                             {product.imageUrl && (
-                                                <img
+                                                <Image
                                                     src={product.imageUrl}
-                                                    alt=""
-                                                    className="w-8 h-8 rounded object-cover"
+                                                    alt={getLocalizedName(product.name)}
+                                                    width={32}
+                                                    height={32}
+                                                    className="rounded object-cover"
                                                 />
                                             )}
                                             <span className="text-sm">
@@ -332,7 +340,7 @@ export function ProductGroupsClient({ initialGroups, products }: ProductGroupsCl
                                 </div>
                             </div>
                         </div>
-                    </ScrollArea>
+                    </div>
                     <div className="flex justify-end gap-3 pt-4 border-t">
                         <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                             Cancelar

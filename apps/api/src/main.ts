@@ -32,20 +32,16 @@ async function bootstrap() {
 
     // Enable CORS with security restrictions
     app.enableCors({
-      origin:
-        process.env.NODE_ENV === 'production'
-          ? [
-              'https://smart-menu-consumer.vercel.app',
-              'https://smart-menu-admin.vercel.app',
-              'https://admin.s-menu.zimbotechia.site',
-              /\.vercel\.app$/,
-            ]
-          : [
-              'http://localhost:3000',
-              'http://localhost:3001',
-              'http://localhost:3002',
-              'exp://localhost:8081',
-            ],
+      origin: [
+        'https://smart-menu-consumer.vercel.app',
+        'https://smart-menu-admin.vercel.app',
+        'https://admin.s-menu.zimbotechia.site',
+        /\.vercel\.app$/,
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://localhost:3002',
+        'exp://localhost:8081',
+      ],
       credentials: true,
     });
 
