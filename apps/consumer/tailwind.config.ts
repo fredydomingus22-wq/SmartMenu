@@ -59,7 +59,7 @@ const config: Config = {
                 sm: "calc(var(--radius) - 4px)",
             },
             fontFamily: {
-                sans: ["var(--font-sans)", "Inter", "ui-sans-serif", "system-ui"],
+                sans: ["var(--font-sans)", "ui-sans-serif", "system-ui"],
             },
             zIndex: {
                 header: "var(--z-header)",

@@ -84,8 +84,7 @@ const config: Config = {
                 "accordion-up": "accordion-up 0.2s ease-out",
             },
             fontFamily: {
-                sans: ["var(--font-geist-sans)", "ui-sans-serif", "system-ui"],
-                mono: ["var(--font-geist-mono)", "ui-monospace", "SFMono-Regular"],
+                sans: ["var(--font-sans)", "ui-sans-serif", "system-ui"],
             },
             zIndex: {
                 header: "var(--z-header)",

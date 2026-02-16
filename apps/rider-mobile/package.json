@@ -33,7 +33,7 @@
   "devDependencies": {
     "@react-native-community/cli": "latest",
     "@react-native/metro-config": "^0.84.0",
-    "@types/react": "~19.1.0",
+    "@types/react": "^19.0.0",
     "typescript": "~5.9.2"
   },
   "private": true

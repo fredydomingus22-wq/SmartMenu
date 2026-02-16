@@ -119,10 +119,10 @@ export function MenuGrid({
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.2 }}
                                     >
-                                        <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[10px] uppercase font-black tracking-widest mb-4 inline-block">
+                                        <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[10px] uppercase font-bold tracking-widest mb-4 inline-block">
                                             {t('menu.hero_badge')}
                                         </span>
-                                        <h1 className="text-4xl sm:text-6xl font-black tracking-tighter mb-4 leading-none">
+                                        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight mb-4 leading-none">
                                             {section.config?.title || t('menu.hero_title')}
                                         </h1>
                                         <p className="text-base sm:text-lg opacity-80 max-w-lg font-medium leading-relaxed">
@@ -138,8 +138,8 @@ export function MenuGrid({
                             <section key={`section-${idx}`} className="space-y-4">
                                 <div className="flex justify-between items-end px-1">
                                     <div>
-                                        <span className="text-orange-600 font-black uppercase tracking-[0.2em] text-[10px]">{section.config?.label || "Especial"}</span>
-                                        <h2 className="text-3xl font-black tracking-tighter text-zinc-900">{section.config?.title || "Destaques"}</h2>
+                                        <span className="text-orange-600 font-bold uppercase tracking-[0.2em] text-[10px]">{section.config?.label || "Especial"}</span>
+                                        <h2 className="text-3xl font-bold tracking-tight text-zinc-900">{section.config?.title || "Destaques"}</h2>
                                     </div>
                                 </div>
                                 <div className="flex gap-4 overflow-x-auto pb-8 pt-2 scrollbar-hide max-w-full">
@@ -157,7 +157,7 @@ export function MenuGrid({
                             <section key={`section-${idx}`} className="space-y-4 bg-orange-50/50 rounded-2xl sm:rounded-3xl px-4 py-8">
                                 <div className="flex items-center gap-2 mb-6">
                                     <div className="h-8 w-1 bg-orange-500 rounded-full" />
-                                    <h2 className="text-2xl font-black tracking-tight text-orange-900">{section.config?.title || "Mais Vendidos"}</h2>
+                                    <h2 className="text-2xl font-bold tracking-tight text-orange-900">{section.config?.title || "Mais Vendidos"}</h2>
                                 </div>
                                 <ProductGrid columns={2}>
                                     {bestSellerProducts.map((product) => (
@@ -171,7 +171,7 @@ export function MenuGrid({
                         return (
                             <section key={`section-${idx}`} className="space-y-4 pt-4">
                                 <div className="flex justify-between items-end mb-4">
-                                    <h2 className="text-2xl font-black tracking-tight italic">{section.config?.title || "Novidades"}</h2>
+                                    <h2 className="text-2xl font-bold tracking-tight italic">{section.config?.title || "Novidades"}</h2>
                                 </div>
                                 <ProductGrid columns={2}>
                                     {newProducts.map((product) => (
@@ -215,7 +215,7 @@ export function MenuGrid({
                                         className="space-y-8"
                                     >
                                         <div className="flex items-center gap-4">
-                                            <h2 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic px-4 py-1">
+                                            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight uppercase italic px-4 py-1">
                                                 {getTranslatedValue(activeCategory?.name, locale)}
                                             </h2>
                                             <div className="h-px bg-border flex-1" />
@@ -271,8 +271,8 @@ export function MenuGrid({
                                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center p-8 sm:p-12 text-white">
-                                        <span className="text-primary font-black uppercase tracking-widest text-[10px] sm:text-xs mb-2">{t('menu.upsell_badge')}</span>
-                                        <h2 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter mb-2">
+                                        <span className="text-primary font-bold uppercase tracking-widest text-[10px] sm:text-xs mb-2">{t('menu.upsell_badge')}</span>
+                                        <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-2">
                                             {section.config?.title || t('menu.upsell_title')}
                                         </h2>
                                         <p className="text-sm sm:text-base md:text-lg opacity-80 max-w-xs sm:max-w-md font-medium mb-6">
@@ -297,7 +297,7 @@ export function MenuGrid({
                             <div key={`section-${idx}`} className="space-y-8 mt-12">
                                 <div className="flex items-center gap-4 px-4 sm:px-0">
                                     <div className="space-y-1">
-                                        <h2 className="text-2xl sm:text-4xl font-black tracking-tighter uppercase italic flex items-center gap-2">
+                                        <h2 className="text-2xl sm:text-4xl font-bold tracking-tight uppercase italic flex items-center gap-2">
                                             <ShoppingBag className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
                                             {section.config?.title || getTranslatedValue(group.name, locale)}
                                         </h2>
@@ -337,7 +337,7 @@ export function MenuGrid({
                             <div key={`section-${idx}`} className="space-y-8 mt-12 bg-red-50/50 dark:bg-red-950/20 -mx-4 sm:mx-0 px-4 sm:px-8 py-12 rounded-3xl border border-red-100 dark:border-red-900/50">
                                 <div className="flex items-center gap-4">
                                     <div className="space-y-1">
-                                        <h2 className="text-2xl sm:text-4xl font-black tracking-tighter uppercase italic text-red-600 dark:text-red-400">
+                                        <h2 className="text-2xl sm:text-4xl font-bold tracking-tight uppercase italic text-red-600 dark:text-red-400">
                                             {section.config?.title || t('menu.active_promotions')}
                                         </h2>
                                         <p className="text-red-600/60 dark:text-red-400/60 text-sm font-bold uppercase tracking-widest flex items-center gap-2">
@@ -355,7 +355,7 @@ export function MenuGrid({
                                                 <>
                                                     <ProductCard product={promo.product} tenantId={tenantId} locale={locale} t={t} />
                                                     <div className="absolute top-3 right-3 z-10">
-                                                        <div className="bg-red-600 text-white text-[10px] sm:text-xs font-black px-3 py-1.5 rounded-full shadow-lg transform -rotate-3 group-hover:rotate-0 transition-transform">
+                                                        <div className="bg-red-600 text-white text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transform -rotate-3 group-hover:rotate-0 transition-transform">
                                                             {promo.label || `-${promo.discount}%`}
                                                         </div>
                                                     </div>
@@ -377,7 +377,7 @@ export function MenuGrid({
                                 
                                 <div className="relative z-10 flex items-center gap-4">
                                     <div className="space-y-1">
-                                        <h2 className="text-2xl sm:text-4xl font-black tracking-tighter uppercase italic">
+                                        <h2 className="text-2xl sm:text-4xl font-bold tracking-tight uppercase italic">
                                             {section.config?.title || t('menu.upcoming_events')}
                                         </h2>
                                         <p className="text-primary text-sm font-bold uppercase tracking-widest flex items-center gap-2">
@@ -412,7 +412,7 @@ export function MenuGrid({
                                                     </p>
                                                 </div>
                                                 {event.ticketLink && (
-                                                    <Button className="w-full bg-white hover:bg-zinc-200 text-black font-black text-xs uppercase rounded-xl">
+                                                    <Button className="w-full bg-white hover:bg-zinc-200 text-black font-bold text-xs uppercase rounded-xl">
                                                         {t('menu.get_tickets')}
                                                     </Button>
                                                 )}
