@@ -2,16 +2,14 @@
 
 import { useState, useTransition } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@smart-menu/ui";
-import { Button } from "@smart-menu/ui";
-import { Checkbox } from "@smart-menu/ui";
+import { Button, Checkbox, getOptimizedImageUrl } from "@smart-menu/ui";
 import { Plus, ImageIcon, Trash2, Copy, Eye, EyeOff, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
-import { apiClient } from '@/utils/api-client';
 import { toast } from 'sonner';
 import { useTranslation } from '@/hooks/use-translation';
 import { getTranslatedValue } from "@/lib/utils";
+import { deleteProductsBulk, updateProductsAvailabilityBulk, duplicateProductAction } from '../../../../actions/menu';
 
 interface Product {
     id: string;
@@ -30,7 +28,6 @@ interface ProductListClientProps {
 export function ProductListClient({ initialProducts }: ProductListClientProps) {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [isPending, startTransition] = useTransition();
-    const router = useRouter();
     const { t, locale } = useTranslation();
 
     console.log(`[ProductListClient] Hydrating with ${initialProducts?.length} products. Locale: ${locale}`);
@@ -54,11 +51,12 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
 
         startTransition(async () => {
             try {
-                await apiClient.post('/products/bulk/delete', { ids: selectedIds });
-                toast.success(t('dashboard.products.delete_success'));
-                setSelectedIds([]);
-                router.refresh();
-            } catch (error) {
+                const result = await deleteProductsBulk(selectedIds);
+                if (result.success) {
+                    toast.success(t('dashboard.products.delete_success'));
+                    setSelectedIds([]);
+                }
+            } catch {
                 toast.error(t('dashboard.products.delete_error'));
             }
         });
@@ -67,11 +65,12 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
     const handleBulkAvailability = async (isAvailable: boolean) => {
         startTransition(async () => {
             try {
-                await apiClient.patch('/products/bulk/availability', { ids: selectedIds, isAvailable });
-                toast.success(t('dashboard.products.update_success'));
-                setSelectedIds([]);
-                router.refresh();
-            } catch (error) {
+                const result = await updateProductsAvailabilityBulk(selectedIds, isAvailable);
+                if (result.success) {
+                    toast.success(t('dashboard.products.update_success'));
+                    setSelectedIds([]);
+                }
+            } catch {
                 toast.error(t('dashboard.products.update_error'));
             }
         });
@@ -80,10 +79,11 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
     const handleDuplicate = async (id: string) => {
         startTransition(async () => {
             try {
-                await apiClient.post(`/products/${id}/duplicate`);
-                toast.success(t('dashboard.products.duplicate_success'));
-                router.refresh();
-            } catch (error) {
+                const result = await duplicateProductAction(id);
+                if (result.success) {
+                    toast.success(t('dashboard.products.duplicate_success'));
+                }
+            } catch {
                 toast.error(t('dashboard.products.duplicate_error'));
             }
         });
@@ -179,7 +179,7 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
                             <div className="relative aspect-video w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
                                 {product.imageUrl ? (
                                     <Image
-                                        src={product.imageUrl}
+                                        src={getOptimizedImageUrl(product.imageUrl)}
                                         alt={getTranslatedValue(product.name, locale)}
                                         fill
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -207,8 +207,9 @@ export function ProductListClient({ initialProducts }: ProductListClientProps) {
                                     <p className="font-black text-zinc-900 dark:text-zinc-50">
                                         {(() => {
                                             try {
+                                                if (!product.price) return "0,00 Kz";
                                                 return new Intl.NumberFormat('pt-AO', { style: 'currency', currency: 'AOA' }).format(Number(product.price));
-                                            } catch (e) {
+                                            } catch {
                                                 console.warn("Intl format failed for product:", product.id);
                                                 return `${product.price} Kz`;
                                             }

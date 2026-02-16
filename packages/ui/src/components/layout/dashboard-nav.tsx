@@ -18,7 +18,8 @@ import {
     Store,
     CreditCard,
     Bell,
-    HelpCircle
+    HelpCircle,
+    MessageSquare
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 
@@ -36,7 +37,8 @@ const IconMap = {
     Store,
     CreditCard,
     Bell,
-    HelpCircle
+    HelpCircle,
+    MessageSquare
 } as const;
 
 export type IconName = keyof typeof IconMap;

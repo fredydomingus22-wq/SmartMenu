@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { PrismaService } from '../prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -8,55 +7,27 @@ import { LoyaltyService } from '../loyalty/loyalty.service';
 import { OrderStatus, Product } from '@prisma/client';
 import { OrderStatusUpdatedEvent } from '../workflows/events/order-status-updated.event';
 import { OrderCreatedEvent } from '../workflows/events/order-created.event';
+import { SupabaseService } from '../common/supabase.service';
 
 @Injectable()
 export class OrdersService {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private supabase!: SupabaseClient<any, any, any>;
-
   constructor(
     private prisma: PrismaService,
     private configService: ConfigService,
     private loyaltyService: LoyaltyService,
     private eventEmitter: EventEmitter2,
-  ) {
-    const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
-    const supabaseAnonKey = this.configService.get<string>('SUPABASE_ANON_KEY');
-
-    if (supabaseUrl && supabaseAnonKey) {
-      this.supabase = createClient(supabaseUrl, supabaseAnonKey);
-      console.log('[OrdersService] Supabase client initialized');
-    } else {
-      console.error('[OrdersService] Missing Supabase credentials');
-    }
-  }
+    private supabaseService: SupabaseService,
+  ) {}
 
   private async broadcastOrderEvent(
     tenantId: string,
     event: 'ORDER_CREATED' | 'STATUS_UPDATED',
     payload: unknown,
   ) {
-    if (!this.supabase) {
-      console.warn(
-        '[OrdersService] Supabase client not ready, skipping broadcast',
-      );
-      return;
-    }
-
     console.log(
-      `[OrdersService] Broadcasting event ${event} to channel orders:${tenantId}`,
+      `[OrdersService] Requesting broadcast for event ${event} to channel orders:${tenantId}`,
     );
-    const status = await this.supabase.channel(`orders:${tenantId}`).send({
-      type: 'broadcast',
-      event,
-      payload,
-    });
-
-    if (status !== 'ok') {
-      console.error(`[OrdersService] Broadcast failed with status: ${status}`);
-    } else {
-      console.log('[OrdersService] Broadcast success');
-    }
+    await this.supabaseService.broadcast(`orders:${tenantId}`, event, payload);
   }
 
   async create(
@@ -367,6 +338,7 @@ export class OrdersService {
           },
         },
         table: true,
+        deliveryAssignment: true,
       },
     });
 

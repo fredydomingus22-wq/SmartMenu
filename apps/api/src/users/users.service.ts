@@ -1,26 +1,14 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseService } from '../common/supabase.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private supabaseAdmin!: SupabaseClient<any, any, any>;
-
   constructor(
     private prisma: PrismaService,
-    private configService: ConfigService,
-  ) {
-    const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
-    const supabaseServiceKey = this.configService.get<string>(
-      'SUPABASE_SERVICE_ROLE_KEY',
-    );
-
-    if (supabaseUrl && supabaseServiceKey) {
-      this.supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
-    }
-  }
+    private supabaseService: SupabaseService,
+  ) {}
 
   async syncUser(userData: {
     id: string;
@@ -126,19 +114,17 @@ export class UsersService {
     tenantId: string,
     organizationId: string,
   ) {
-    if (!this.supabaseAdmin) return;
+    const adminClient = this.supabaseService.getAdminClient();
+    if (!adminClient) return;
 
     try {
       console.log(`Updating Supabase metadata for user ${userId}...`);
-      const { error } = await this.supabaseAdmin.auth.admin.updateUserById(
-        userId,
-        {
-          app_metadata: {
-            tenant_id: tenantId,
-            organization_id: organizationId,
-          },
+      const { error } = await adminClient.auth.admin.updateUserById(userId, {
+        app_metadata: {
+          tenant_id: tenantId,
+          organization_id: organizationId,
         },
-      );
+      });
 
       if (error) {
         console.error('Error updating Supabase auth metadata:', error);

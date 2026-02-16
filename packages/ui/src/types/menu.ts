@@ -49,7 +49,7 @@ export interface ProductUpsell {
 export interface Category {
     id: string;
     organizationId?: string;
-    name: string;
+    name: string | Record<string, string>;
     preparationSector?: 'KITCHEN' | 'BAR';
     products: Product[];
 }

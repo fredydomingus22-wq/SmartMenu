@@ -1,0 +1,6 @@
+name,description,price,category,image_url,is_available
+Pizza Margherita,Molho de tomate e mozzarella,12.50,Pizzas,,true
+Burguer Classic,Hambúrguer de 150g,8.50,Burguers,,true
+Sumo de Laranja,Natural e fresco,2.00,Bebidas,,true
+Tiramisu,Sobremesa clássica italiana,6.00,Sobremesas,,true
+Vinho da Casa,Tinto ou Branco,15.00,Bebidas,,false

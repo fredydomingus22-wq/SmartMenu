@@ -47,9 +47,13 @@ export async function apiClient<T = unknown>(path: string, options: RequestOptio
             // Dynamic import to avoid server-side bundle issues
             const { createClient } = await import("@/utils/supabase/client");
             const supabase = createClient();
-            const { data } = await supabase.auth.getSession();
-            if (data.session?.access_token && !headers.has("Authorization")) {
-                headers.set("Authorization", `Bearer ${data.session.access_token}`);
+            // Securely validate user first (even on client, to avoid sending stale tokens)
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                const { data } = await supabase.auth.getSession();
+                if (data.session?.access_token && !headers.has("Authorization")) {
+                    headers.set("Authorization", `Bearer ${data.session.access_token}`);
+                }
             }
         } catch (error) {
             console.warn("[apiClient:auth] Failed to inject auth token:", error);
@@ -133,13 +137,25 @@ apiClient.get = <T = unknown>(path: string, options: Omit<RequestOptions, "metho
     apiClient<T>(path, { ...options, method: "GET" });
 
 apiClient.post = <T = unknown>(path: string, body?: unknown, options: Omit<RequestOptions, "method" | "body"> = {}) =>
-    apiClient<T>(path, { ...options, method: "POST", body: body ? JSON.stringify(body) : undefined });
+    apiClient<T>(path, { 
+        ...options, 
+        method: "POST", 
+        body: body instanceof FormData ? body : (body ? JSON.stringify(body) : undefined) 
+    });
 
 apiClient.patch = <T = unknown>(path: string, body?: unknown, options: Omit<RequestOptions, "method" | "body"> = {}) =>
-    apiClient<T>(path, { ...options, method: "PATCH", body: body ? JSON.stringify(body) : undefined });
+    apiClient<T>(path, { 
+        ...options, 
+        method: "PATCH", 
+        body: body instanceof FormData ? body : (body ? JSON.stringify(body) : undefined) 
+    });
 
 apiClient.put = <T = unknown>(path: string, body?: unknown, options: Omit<RequestOptions, "method" | "body"> = {}) =>
-    apiClient<T>(path, { ...options, method: "PUT", body: body ? JSON.stringify(body) : undefined });
+    apiClient<T>(path, { 
+        ...options, 
+        method: "PUT", 
+        body: body instanceof FormData ? body : (body ? JSON.stringify(body) : undefined) 
+    });
 
 apiClient.delete = <T = unknown>(path: string, options: Omit<RequestOptions, "method"> = {}) =>
     apiClient<T>(path, { ...options, method: "DELETE" });

@@ -11,7 +11,10 @@ import {
   Query,
   BadRequestException,
   NotFoundException,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -55,6 +58,34 @@ export class ProductsController {
             'Categoria ou dado relacionado não encontrado',
           );
         }
+      }
+      throw err;
+    }
+  }
+
+  @Post('import')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+    }),
+  )
+  async importProducts(
+    @UploadedFile() file: Express.Multer.File,
+    @Request() req: AuthenticatedRequest,
+  ) {
+    if (!file) {
+      throw new BadRequestException('Ficheiro CSV não encontrado');
+    }
+    try {
+      return await this.productsService.importCSV(
+        file.buffer,
+        req.user.tenantId,
+        req.user.organizationId,
+      );
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('[ProductsController] Error in importProducts:', err.message);
+        throw new BadRequestException(err.message);
       }
       throw err;
     }

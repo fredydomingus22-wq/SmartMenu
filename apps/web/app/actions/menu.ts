@@ -228,3 +228,85 @@ export async function getProducts() {
     }
 }
 
+
+export async function importProductsCSV(formData: FormData): Promise<
+    { success: true; importedCount: number; errors: string[] } |
+    { success: false; error: string }
+> {
+    try {
+        console.log('Action: importProductsCSV');
+        
+        const response = await apiClient.post("/products/import", formData);
+
+        console.log('Action: importProductsCSV success', response);
+        revalidatePath('/dashboard/menu/products');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('products', 'max' as any);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('menu', 'max' as any);
+        
+        const data = response as Record<string, unknown>;
+        return { 
+            success: true, 
+            importedCount: (data.importedCount as number) || 0, 
+            errors: (data.errors as string[]) || [] 
+        };
+    } catch (error: unknown) {
+        console.error('Action Exception (importProductsCSV):', error);
+        return { 
+            success: false, 
+            error: error instanceof Error ? error.message : 'Erro inesperado durante a importação' 
+        };
+    }
+}
+
+export async function duplicateProductAction(id: string) {
+    try {
+        console.log('Action: duplicateProductAction', { id })
+        await apiClient.post(`/products/${id}/duplicate`);
+
+        console.log('Action: duplicateProductAction success')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('products', 'max' as any)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('menu', 'max' as any)
+        return { success: true };
+    } catch (error) {
+        console.error('Action Exception (duplicateProductAction):', error)
+        throw error
+    }
+}
+
+export async function deleteProductsBulk(ids: string[]) {
+    try {
+        console.log('Action: deleteProductsBulk', { count: ids.length })
+        await apiClient.post('/products/bulk/delete', { ids });
+
+        console.log('Action: deleteProductsBulk success')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('products', 'max' as any)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('menu', 'max' as any)
+        return { success: true };
+    } catch (error) {
+        console.error('Action Exception (deleteProductsBulk):', error)
+        throw error
+    }
+}
+
+export async function updateProductsAvailabilityBulk(ids: string[], isAvailable: boolean) {
+    try {
+        console.log('Action: updateProductsAvailabilityBulk', { count: ids.length, isAvailable })
+        await apiClient.patch('/products/bulk/availability', { ids, isAvailable });
+
+        console.log('Action: updateProductsAvailabilityBulk success')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('products', 'max' as any)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        revalidateTag('menu', 'max' as any)
+        return { success: true };
+    } catch (error) {
+        console.error('Action Exception (updateProductsAvailabilityBulk):', error)
+        throw error
+    }
+}

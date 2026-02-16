@@ -16,11 +16,20 @@ export class CategoriesService {
     return value;
   }
 
-  create(
+  async create(
     createCategoryDto: CreateCategoryDto,
     tenantId: string,
     organizationId: string,
   ) {
+    // Verify organization exists to prevent foreign key errors
+    const organization = await this.prisma.organization.findUnique({
+      where: { id: organizationId },
+    });
+
+    if (!organization) {
+      throw new Error(`Organization with ID ${organizationId} not found`);
+    }
+
     return this.prisma.category.create({
       data: {
         ...createCategoryDto,

@@ -1,0 +1,11 @@
+name,description,price,image_url,category,is_available
+"Hambúrguer Artesanal Clássico","Hambúrguer de carne bovina 180g, queijo cheddar, alface, tomate e molho especial no pão brioche.",6500.00,"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1000&auto=format&fit=crop","Hambúrgueres",true
+"Pizza Margherita Premium","Molho de tomate italiano, mozzarella de búfala, manjericão fresco e azeite extra virgem.",9500.00,"https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?q=80&w=1000&auto=format&fit=crop","Pizzas",true
+"Sushi Combo 12 Peças","Mix de salmão, atum e camarão. Acompanha gari e wasabi.",18500.00,"https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=1000&auto=format&fit=crop","Japonesa",true
+"Salada Caesar com Frango","Alface romana, tiras de frango grelhado, croutons, parmesão e molho Caesar.",7200.00,"https://images.unsplash.com/photo-1550317138-10000687ad32?q=80&w=1000&auto=format&fit=crop","Saladas",true
+"Pasta Alla Carbonara","Massa fresca, ovos, guanciale, queijo pecorino e pimenta preta.",8900.00,"https://images.unsplash.com/photo-1612874742237-6526221588e3?q=80&w=1000&auto=format&fit=crop","Massas",true
+"Petit Gâteau de Chocolate","Bolo quente com recheio cremoso, servido com sorvete de baunilha.",3500.00,"https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=1000&auto=format&fit=crop","Sobremesas",true
+"Smoothie de Frutas Vermelhas","Mix de morango, amora e mirtilo batido com iogurte desnatado.",3200.00,"https://images.unsplash.com/photo-1553530666-bc11a7d40a1e?q=80&w=1000&auto=format&fit=crop","Bebidas",true
+"Tacos Mexicanos de Carne","3 tacos de milho com carne moída temperada, pico de gallo e sour cream.",5500.00,"https://images.unsplash.com/photo-1565299585323-38d6b0865efd?q=80&w=1000&auto=format&fit=crop","Mexicana",true
+"Costelinha BBQ com Fritas","Costela suína assada lentamente com molho barbecue artesanal.",12500.00,"https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1000&auto=format&fit=crop","Carnes",true
+"Bowl de Açaí Especial","Açaí puro com banana, granola e mel orgânico.",4800.00,"https://images.unsplash.com/photo-1590301157890-4810ed352733?q=80&w=1000&auto=format&fit=crop","Lanches",true

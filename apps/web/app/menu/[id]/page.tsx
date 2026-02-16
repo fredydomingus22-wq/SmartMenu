@@ -1,4 +1,16 @@
-import { apiClient } from "@/utils/api-client-server";
+import { apiClient } from "@smart-menu/api";
+import {
+    Category,
+    MenuConfig,
+    LoyaltyConfig,
+    ProductGroup,
+    MarketingEvent,
+    PromotionalSchedule,
+    AppShell,
+    PageContainer,
+    ErrorBoundary,
+    formatCurrency
+} from "@smart-menu/ui";
 import { UtensilsCrossed, Gift } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,11 +19,24 @@ import { MenuGrid } from "./_components/menu-grid";
 import { PublicMenuClient } from "./_components/public-menu-client";
 import { PublicMenuHeader } from "./_components/public-menu-header";
 import { RestaurantFooter } from "./_components/restaurant-footer";
-import { formatCurrency } from "@/lib/utils";
-
-import { Category, MenuConfig, LoyaltyConfig, AppShell, PageContainer } from "@smart-menu/ui";
-import { ErrorBoundary } from "@/components/error-boundary";
 import { getTranslation } from "@/utils/i18n-server";
+import { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+    const { id } = await params;
+    try {
+        const config = await apiClient.get<MenuConfig>(`/public/menu/${id}/config`);
+        const restaurantName = config?.branding?.tenantName || "Restaurante";
+        return {
+            title: `${restaurantName} | SmartMenu`,
+            description: `Peça online no ${restaurantName} via SmartMenu.`,
+        };
+    } catch {
+        return {
+            title: "Menu Digital | SmartMenu",
+        };
+    }
+}
 
 export default async function PublicMenuPage({
     params,
@@ -29,9 +54,12 @@ export default async function PublicMenuPage({
     let categories: Category[] = [];
     let config: MenuConfig | null = null;
     let loyaltyConfig: LoyaltyConfig | null = null;
+    let groups: ProductGroup[] = [];
+    let events: MarketingEvent[] = [];
+    let promotions: PromotionalSchedule[] = [];
 
     try {
-        const [categoriesData, configData, loyaltyConfigData] = await Promise.all([
+        const [categoriesData, configData, loyaltyConfigData, groupsData, eventsData, promotionsData] = await Promise.all([
             apiClient.get(`/public/menu/${id}`, { cache: 'no-store' }),
             apiClient.get(`/public/menu/${id}/config`, { cache: 'no-store' }).catch(err => {
                 console.warn('[PublicMenuPage] Config fetch failed, using defaults:', err.message);
@@ -43,12 +71,33 @@ export default async function PublicMenuPage({
             }).catch(err => {
                 console.warn('[PublicMenuPage] Loyalty config fetch failed:', err.message);
                 return null;
+            }),
+            apiClient.get(`/marketing/public/groups/${id}`, { cache: 'no-store' }).catch(err => {
+                console.warn('[PublicMenuPage] Groups fetch failed:', err.message);
+                return [];
+            }),
+            apiClient.get(`/marketing/public/events/${id}`, { cache: 'no-store' }).catch(err => {
+                console.warn('[PublicMenuPage] Events fetch failed:', err.message);
+                return [];
+            }),
+            apiClient.get(`/marketing/public/promotions/${id}`, { cache: 'no-store' }).catch(err => {
+                console.warn('[PublicMenuPage] Promotions fetch failed:', err.message);
+                return [];
             })
-        ]) as [Category[], MenuConfig | null, LoyaltyConfig | null];
+        ]) as [Category[], MenuConfig | null, LoyaltyConfig | null, ProductGroup[], MarketingEvent[], PromotionalSchedule[]];
 
         categories = categoriesData;
         config = configData;
         loyaltyConfig = loyaltyConfigData;
+        groups = groupsData;
+        events = eventsData;
+        promotions = promotionsData;
+
+        // Background Profile Ensure for Logged In Users
+        if (token && id) {
+            apiClient.post('/loyalty/ensure-profile', { tenantId: id }, { headers: authHeader })
+                .catch(err => console.warn('[PublicMenuPage] Profile ensure failed:', err.message));
+        }
 
         if (!categories) {
             console.error('[PublicMenuPage] Categories is null/undefined');
@@ -76,8 +125,10 @@ export default async function PublicMenuPage({
             tenantId={id}
             organizationId={organizationId}
             branding={branding}
+            tableId={table || undefined}
         >
             <AppShell
+                className="bg-white dark:bg-zinc-950 bg-background"
                 header={<PublicMenuHeader
                     branding={branding}
                     tableId={table || undefined}
@@ -104,11 +155,16 @@ export default async function PublicMenuPage({
                 {/* The dynamic MenuGrid handles Hero, Sections, and Footer based on config */}
                 <PageContainer>
                     <ErrorBoundary>
-                        <MenuGrid categories={categories} config={config} />
+                        <MenuGrid 
+                            categories={categories} 
+                            config={config} 
+                            groups={groups} 
+                            promotions={promotions}
+                            events={events}
+                        />
                     </ErrorBoundary>
                 </PageContainer>
 
-                {/* Footer scrolls with content now */}
                 <RestaurantFooter branding={branding} footerConfig={config?.footer} />
             </AppShell>
         </PublicMenuClient>

@@ -1,56 +1,57 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-import { Request, Response, NextFunction } from 'express';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import helmet from 'helmet';
+import { Response, Request, NextFunction } from 'express';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   try {
     const app = await NestFactory.create(AppModule);
 
-    // Security headers middleware
+    const config = new DocumentBuilder()
+      .setTitle('SmartMenu API')
+      .setDescription('The SmartMenu SaaS ordering platform API documentation')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app as any, config);
+    SwaggerModule.setup('api/docs', app as any, document);
+
+    // Apply helmet for security headers
+    app.use(helmet());
+
+    // Security headers middleware (some might be redundant with helmet, but kept as per original)
     app.use((req: Request, res: Response, next: NextFunction) => {
       res.setHeader('X-Content-Type-Options', 'nosniff');
       res.setHeader('X-Frame-Options', 'DENY');
       res.setHeader('X-XSS-Protection', '1; mode=block');
-      res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
       res.setHeader(
-        'Permissions-Policy',
-        'camera=(), microphone=(), geolocation=()',
+        'Strict-Transport-Security',
+        'max-age=31536000; includeSubDomains',
       );
-
-      // HSTS in production
-      if (process.env.NODE_ENV === 'production') {
-        res.setHeader(
-          'Strict-Transport-Security',
-          'max-age=31536000; includeSubDomains',
-        );
-      }
-
       next();
     });
 
-    // Enable CORS with security restrictions
     app.enableCors({
       origin: [
-        'https://smart-menu-consumer.vercel.app',
-        'https://smart-menu-admin.vercel.app',
-        'https://admin.s-menu.zimbotechia.site',
-        /\.vercel\.app$/,
         'http://localhost:3000',
         'http://localhost:3001',
         'http://localhost:3002',
-        'exp://localhost:8081',
+        'https://smart-menu-web.vercel.app',
+        'https://smart-menu-consumer.vercel.app',
       ],
       credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'x-tenant-id'],
     });
 
-    // Global validation pipe
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
-        forbidNonWhitelisted: true,
         transform: true,
+        forbidNonWhitelisted: true,
       }),
     );
 

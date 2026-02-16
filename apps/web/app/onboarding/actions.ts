@@ -20,6 +20,7 @@ interface OnboardingData {
 export async function createOnboardingData(data: OnboardingData) {
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
+    console.log('[OnboardingAction] createOnboardingData called', { user: user?.email, data });
 
     if (authError || !user) {
         return { error: 'Unauthorized' };
@@ -111,7 +112,7 @@ export async function createOnboardingData(data: OnboardingData) {
         return { success: true };
 
     } catch (error) {
-        console.error('Onboarding Transaction Error:', error);
+        console.error('[OnboardingAction] Onboarding Transaction Error:', error);
         return { error: 'Failed to create account setup. Please try again.' };
     }
 }

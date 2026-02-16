@@ -8,12 +8,12 @@ import prisma from "@/utils/prisma";
 
 export default async function MenuDashboardPage() {
     const supabase = await createClient();
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    if (!session) return redirect("/login");
+    if (!user) return redirect("/login");
 
     const userProfile = await prisma.userProfile.findUnique({
-        where: { id: session.user.id }
+        where: { id: user.id }
     });
 
     const tenantId = userProfile?.tenantId;

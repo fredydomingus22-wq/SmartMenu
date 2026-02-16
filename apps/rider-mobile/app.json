@@ -1,0 +1,68 @@
+{
+  "expo": {
+    "name": "SmartMenu Rider",
+    "slug": "rider-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.smartmenu.rider",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Allows the app to track your location for delivery assignments.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Allows the app to track your location for delivery assignments even when the app is in the background.",
+        "NSLocationAlwaysUsageDescription": "Allows the app to track your location for delivery assignments even when the app is in the background.",
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.smartmenu.rider",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "FOREGROUND_SERVICE",
+        "FOREGROUND_SERVICE_LOCATION"
+      ],
+      "plugins": [
+        [
+          "expo-location",
+          {
+            "locationAlwaysPermission": "Allow SmartMenu Rider to use your location even in the background."
+          }
+        ],
+        [
+          "@maplibre/maplibre-react-native",
+          {
+            "locationLayer": true
+          }
+        ]
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+        [
+          "expo-location",
+          {
+            "locationAlwaysPermission": "Allow SmartMenu Rider to use your location even in the background."
+          }
+        ]
+    ]
+  }
+}

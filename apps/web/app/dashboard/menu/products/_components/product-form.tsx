@@ -6,7 +6,7 @@ import { Input } from "@smart-menu/ui";
 import { Label } from "@smart-menu/ui";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@smart-menu/ui";
 import { Textarea } from "@smart-menu/ui";
-import { ScrollArea } from "@smart-menu/ui";
+import { ScrollArea, getOptimizedImageUrl } from "@smart-menu/ui";
 import { ImageIcon, Save, X, Plus, Trash2 } from "lucide-react";
 import { createProduct, updateProduct } from "../../../../actions/menu";
 import { toast } from "sonner";
@@ -165,9 +165,9 @@ export function ProductForm({ categories, initialData, products = [] }: {
     const router = useRouter();
     const { t, locale } = useTranslation();
     const [loading, setLoading] = useState(false);
-    const [preview, setPreview] = useState<string | null>(initialData?.imageUrl || null);
+    const [preview, setPreview] = useState<string | null>(getOptimizedImageUrl(initialData?.imageUrl) || null);
     const [gallery, setGallery] = useState<{ url: string; file?: File }[]>(
-        initialData?.images?.map((img) => ({ url: img.url })) || []
+        initialData?.images?.map((img) => ({ url: getOptimizedImageUrl(img.url) })) || []
     );
     const [productOptions, setProductOptions] = useState<FormProductOption[]>(
         initialData?.options?.map(opt => ({
@@ -345,7 +345,7 @@ export function ProductForm({ categories, initialData, products = [] }: {
                                     <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center border-2 border-dashed border-zinc-200 dark:border-zinc-800 transition-all hover:border-orange-500/50 group">
                                         {preview ? (
                                             <Image
-                                                src={preview}
+                                                src={preview.startsWith('data:') ? preview : getOptimizedImageUrl(preview)}
                                                 alt={t('common.preview')}
                                                 fill
                                                 className="object-cover transition-transform group-hover:scale-105"

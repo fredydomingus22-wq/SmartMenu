@@ -10,4 +10,4 @@ import { SupabaseModule } from '../common/supabase.module';
   controllers: [AnalyticsController],
   providers: [AnalyticsService],
 })
-export class AnalyticsModule { }
+export class AnalyticsModule {}

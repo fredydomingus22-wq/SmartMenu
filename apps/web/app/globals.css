@@ -41,7 +41,7 @@
   /* Z-Index Hierarchy (NC-03) */
   --z-flying-item: 9999;
   --z-toast: 200;
-  --z-portal: 100;
+  --z-portal: 500;
   --z-sticky-cta: 60;
   --z-header: 50;
   --z-category-nav: 40;

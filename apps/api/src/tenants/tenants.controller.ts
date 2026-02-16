@@ -25,6 +25,7 @@ export class TenantsController {
 
   @Get('me')
   getTenant(@Request() req: AuthenticatedRequest) {
+    console.log('[TenantsController] getTenant user:', req.user);
     return this.tenantsService.findTenant(
       req.user.tenantId,
       req.user.organizationId,
@@ -39,6 +40,12 @@ export class TenantsController {
       Number(query.lng),
       Number(query.radius || 5000),
     );
+  }
+
+  @Public()
+  @Get('all')
+  findAll() {
+    return this.tenantsService.findAll();
   }
 
   @Patch('me')

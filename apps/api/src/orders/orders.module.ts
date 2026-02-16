@@ -5,9 +5,10 @@ import { OrdersPublicController } from './orders-public.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoyaltyModule } from '../loyalty/loyalty.module';
+import { SupabaseModule } from '../common/supabase.module';
 
 @Module({
-  imports: [PrismaModule, ConfigModule, LoyaltyModule],
+  imports: [PrismaModule, ConfigModule, LoyaltyModule, SupabaseModule],
   controllers: [OrdersController, OrdersPublicController],
   providers: [OrdersService],
   exports: [OrdersService],

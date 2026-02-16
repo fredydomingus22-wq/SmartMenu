@@ -4,12 +4,21 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
-import { Package, Clock, ChefHat, CheckCircle2, XCircle, Loader2, ArrowLeft } from "lucide-react";
+import { Package, Clock, ChefHat, CheckCircle2, XCircle, Loader2, ArrowLeft, MessageCircle } from "lucide-react";
 import { Button } from "@smart-menu/ui";
 import { Card, CardContent, CardHeader, CardTitle } from "@smart-menu/ui";
 import { formatCurrency, cn, getTranslatedValue } from "@smart-menu/ui";
 import { useTranslation } from "@/hooks/use-translation";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+import { ChatWindow } from "../../../../_components/chat-window";
+
+import type { TrackingMapProps } from "../../../../_components/TrackingMap";
+
+const TrackingMap = dynamic<TrackingMapProps>(() => import("../../../../_components/TrackingMap"), {
+    ssr: false,
+    loading: () => <div className="h-[300px] w-full bg-muted animate-pulse rounded-xl flex items-center justify-center">Loading Map...</div>
+});
 
 interface OrderItem {
     id: string;
@@ -36,6 +45,7 @@ interface Order {
     createdAt: string;
     items: OrderItem[];
     table?: { number: number } | null;
+    deliveryAssignment?: { riderId: string } | null;
 }
 
 const STATUS_CONFIG = {
@@ -51,6 +61,7 @@ export default function OrderStatusPage() {
     const params = useParams<{ id: string; orderId: string }>();
     const router = useRouter();
     const [order, setOrder] = useState<Order | null>(null);
+    const [chatOpen, setChatOpen] = useState(false);
     const { locale } = useTranslation();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -153,6 +164,32 @@ export default function OrderStatusPage() {
                         )}
                     </CardContent>
                 </Card>
+
+                {/* Real-time Tracking Map */}
+                {(order.status === 'PREPARING' || order.status === 'READY' || order.status === 'DELIVERED') && order.deliveryAssignment?.riderId && (
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between px-1">
+                            <h3 className="font-bold text-sm">Acompanhe seu pedido</h3>
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="rounded-full gap-2 border-primary text-primary hover:bg-primary/5"
+                                onClick={() => setChatOpen(true)}
+                            >
+                                <MessageCircle className="h-4 w-4" />
+                                Mensagem ao Rider
+                            </Button>
+                        </div>
+                        <TrackingMap riderId={order.deliveryAssignment.riderId} />
+                        
+                        <ChatWindow 
+                            tenantId={params.id} 
+                            orderId={params.orderId} 
+                            riderId={order.deliveryAssignment.riderId}
+                            openByDefault={chatOpen}
+                        />
+                    </div>
+                )}
 
                 {/* Items List */}
                 <Card>

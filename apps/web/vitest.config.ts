@@ -15,6 +15,16 @@ export default defineConfig({
   test: {
     projects: [
       {
+        test: {
+          name: 'unit',
+          environment: 'jsdom',
+          globals: true,
+          include: ['**/*.{test,spec}.{ts,tsx}'],
+          exclude: ['**/node_modules/**', '**/dist/**', '**/*.stories.{ts,tsx}'],
+          setupFiles: ['./test/setup.ts'],
+        },
+      },
+      {
         extends: true,
         plugins: [
           // The plugin will run tests for the stories defined in your Storybook config
@@ -33,5 +43,10 @@ export default defineConfig({
         },
       },
     ],
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './'),
+    },
   },
 });

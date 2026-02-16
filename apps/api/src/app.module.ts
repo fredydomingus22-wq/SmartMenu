@@ -6,7 +6,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PaymentModule } from './payment/payment.module';
-import { PrismaService } from './prisma/prisma.service';
 import { SupabaseStrategy } from './common/strategies/supabase.strategy';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
@@ -23,6 +22,9 @@ import { ServiceRequestsModule } from './service-requests/service-requests.modul
 import { AnalyticsModule } from './analytics/analytics.module';
 import { MarketingModule } from './marketing/marketing.module';
 import { SupabaseModule } from './common/supabase.module';
+import { RiderModule } from './enatega-delivery-integration/rider/rider.module';
+import { DeliveryModule } from './enatega-delivery-integration/delivery/delivery.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -53,8 +55,11 @@ import { SupabaseModule } from './common/supabase.module';
     AnalyticsModule,
     MarketingModule,
     SupabaseModule,
+    RiderModule,
+    DeliveryModule,
+    ChatModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, SupabaseStrategy],
+  providers: [AppService, SupabaseStrategy],
 })
-export class AppModule { }
+export class AppModule {}

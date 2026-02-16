@@ -18,7 +18,9 @@
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
     "typecheck": "turbo typecheck",
-    "test": "turbo test",
+    "test": "turbo run test",
+    "test:e2e": "playwright test",
+    "test:e2e:report": "playwright show-report",
     "clean": "turbo clean",
     "governance-check": "node scripts/layout-governance-check.js",
     "postinstall": "npx prisma generate",
@@ -27,6 +29,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.0.0",
+    "@playwright/test": "^1.58.0",
     "@storybook/addon-a11y": "^10.2.0",
     "@storybook/addon-docs": "^10.2.0",
     "@storybook/addon-onboarding": "^10.2.0",
@@ -36,7 +39,6 @@
     "@vitest/browser-playwright": "^4.0.18",
     "@vitest/coverage-v8": "^4.0.18",
     "autoprefixer": "^10.4.23",
-    "playwright": "^1.58.0",
     "postcss": "^8.5.6",
     "prisma": "^6.1.0",
     "storybook": "^10.2.0",
@@ -49,9 +51,18 @@
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",
-    "@supabase/supabase-js": "^2.93.3",
+    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-navigation/native": "^7.1.28",
+    "@react-navigation/native-stack": "^7.12.0",
+    "@supabase/supabase-js": "^2.95.3",
     "dotenv": "^17.2.3",
+    "expo-location": "^19.0.8",
+    "expo-status-bar": "^3.0.9",
     "jsonwebtoken": "^9.0.3",
+    "react-native-maps": "^1.27.1",
+    "react-native-safe-area-context": "^5.6.2",
+    "react-native-screens": "^4.23.0",
+    "socket.io-client": "^4.8.3",
     "ts-node": "^10.9.2"
   }
 }

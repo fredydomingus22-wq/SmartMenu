@@ -114,25 +114,68 @@ export class TenantsService {
   }
 
   async findNearby(lat: number, lng: number, radiusMeters: number) {
-    // We use queryRaw because Prisma doesn't have native support for PostGIS geography types
-    // 4326 is the standard WGS84 SRID
+    /**
+     * Finds tenants within a given radius using PostGIS.
+     * Uses ST_DWithin for efficient indexing and ST_Distance for sorting.
+     * SRID 4326 is standard for GPS coordinates (WGS84).
+     */
     try {
-      return await this.prisma.$queryRaw`
-        SELECT
-          id,
-          name,
-          slug,
-          image_url as "logoUrl",
+      const safeLat = Number(lat);
+      const safeLng = Number(lng);
+      const safeRadius = Math.max(0, Number(radiusMeters));
+
+      if (isNaN(safeLat) || isNaN(safeLng)) {
+        throw new Error('Invalid coordinates provided');
+      }
+
+      // We use queryRaw because Prisma doesn't have native support for PostGIS geography types
+      return await this.prisma.$queryRaw<
+        Array<{
+          id: string;
+          name: string;
+          slug: string;
+          logoUrl: string | null;
+          description: string | null;
+          distance: number;
+        }>
+      >`
+        SELECT 
+          id, 
+          name, 
+          slug, 
+          image_url as "logoUrl", 
           description,
-          ST_Distance(location, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography) as distance
+          ST_Distance(location, ST_SetSRID(ST_MakePoint(${safeLng}, ${safeLat}), 4326)::geography) as distance
         FROM tenants
-        WHERE ST_DWithin(location, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography, ${radiusMeters})
+        WHERE ST_DWithin(location, ST_SetSRID(ST_MakePoint(${safeLng}, ${safeLat}), 4326)::geography, ${safeRadius})
         ORDER BY distance ASC
         LIMIT 10
       `;
-    } catch (error) {
-      console.error('Error finding nearby tenants (PostGIS missing?):', error);
-      return []; // Return empty array to avoid frontend crash "Discovery API did not return an array"
+    } catch (error: any) {
+      if (error.code === 'P2010' && error.message.includes('ST_DWithin')) {
+        console.error(
+          'CRITICAL: PostGIS extension might be missing or "location" column is invalid.',
+        );
+      }
+      console.error('[TenantsService] Error in findNearby:', error.message);
+      return [];
     }
+  }
+
+  async findAll() {
+    return this.prisma.tenant.findMany({
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        description: true,
+        images: true,
+        branding: {
+          select: {
+            logoUrl: true,
+          },
+        },
+      },
+    });
   }
 }

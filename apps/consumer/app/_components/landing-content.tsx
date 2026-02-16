@@ -9,7 +9,10 @@ import {
     RecentVisitCard,
     GlobalLoyaltySummary,
     useRecentVisits,
-    Button
+    Button,
+    Avatar,
+    AvatarImage,
+    AvatarFallback
 } from "@smart-menu/ui";
 import { DiscoverySection } from "./discovery-section";
 import { QrCode, User, Star } from "lucide-react";
@@ -157,6 +160,9 @@ export function LandingContent() {
 
                 {/* Discovery / Nearby Section */}
                 <DiscoverySection />
+
+                {/* All Restaurants Section (Temporary) */}
+                <AllRestaurantsSection />
             </PageContainer>
 
             {/* Modal Scanner */}
@@ -194,5 +200,80 @@ export function LandingContent() {
                 </button>
             </div>
         </AppShell>
+    );
+}
+
+interface Restaurant {
+    id: string;
+    name: string;
+    slug: string;
+    description?: string;
+    images?: string[];
+    branding?: {
+        logoUrl?: string;
+    };
+}
+
+function AllRestaurantsSection() {
+    const router = useRouter();
+    const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchRestaurants = async () => {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            try {
+                const res = await fetch(`${apiUrl}/tenants/all`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setRestaurants(Array.isArray(data) ? data : []);
+                }
+            } catch (error) {
+                console.error("Failed to fetch restaurants", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRestaurants();
+    }, []);
+
+    if (loading) return null;
+
+    return (
+        <div className="space-y-6">
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-orange-500" />
+                    <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-400">Todos os Restaurantes</h3>
+                </div>
+            </div>
+
+            <div className="grid gap-4">
+                {restaurants.map((rest, idx) => (
+                    <motion.button
+                        key={rest.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                        onClick={() => router.push(`/menu/${rest.id}`)}
+                        className="w-full flex items-center justify-between p-5 rounded-[2rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all group active:scale-[0.98]"
+                    >
+                        <div className="flex items-center gap-4 text-left">
+                            <Avatar className="w-14 h-14 border-2 border-orange-500/10">
+                                <AvatarImage src={rest.branding?.logoUrl || rest.images?.[0]} alt={rest.name} />
+                                <AvatarFallback className="bg-orange-50 dark:bg-orange-950/30 text-orange-700 dark:text-orange-400 font-bold">{rest.name[0]}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <h4 className="font-bold text-zinc-900 dark:text-zinc-50">{rest.name}</h4>
+                                <p className="text-[11px] text-zinc-400 font-medium line-clamp-1">
+                                    {rest.description || "Sem descrição"}
+                                </p>
+                            </div>
+                        </div>
+                    </motion.button>
+                ))}
+            </div>
+        </div>
     );
 }

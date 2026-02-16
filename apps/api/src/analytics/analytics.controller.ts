@@ -20,7 +20,7 @@ export class AnalyticsController {
   constructor(
     private readonly analyticsService: AnalyticsService,
     private readonly marketingService: MarketingService,
-  ) { }
+  ) {}
 
   @Get('kpis')
   async getKPIs(
@@ -164,7 +164,8 @@ export class AnalyticsController {
   @Post('marketing/send')
   async sendCampaign(
     @Request() req: AuthenticatedRequest,
-    @Body() payload: {
+    @Body()
+    payload: {
       customerIds: string[];
       title: string;
       message: string;

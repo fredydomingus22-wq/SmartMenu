@@ -15,10 +15,20 @@ import AnalyticsScreen from '../screens/AnalyticsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import MoreScreen from '../screens/MoreScreen';
+import OrderDetailScreen from '../screens/OrderDetailScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 const MoreStack = createNativeStackNavigator();
+
+function OrderStackNavigator() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="OrdersList" component={OrdersScreen} />
+      <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
+    </Stack.Navigator>
+  );
+}
 
 function MoreStackNavigator() {
   return (
@@ -49,7 +59,7 @@ function TabNavigator() {
     >
       <Tab.Screen
         name="Orders"
-        component={OrdersScreen}
+        component={OrderStackNavigator}
         options={{
           title: 'Pedidos',
           tabBarIcon: ({ color, size }) => (

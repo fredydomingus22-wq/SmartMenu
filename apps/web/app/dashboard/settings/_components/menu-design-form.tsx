@@ -186,7 +186,7 @@ export function MenuDesignForm({
                                                             <SelectTrigger>
                                                                 <SelectValue placeholder="Selecione um banner..." />
                                                             </SelectTrigger>
-                                                            <SelectContent>
+                                                            <SelectContent position="popper" sideOffset={4}>
                                                                 {banners.filter(b => b.type === 'hero').map((banner) => (
                                                                     <SelectItem key={banner.id} value={banner.id}>
                                                                         {/* Handle potentially localized title */}
@@ -232,7 +232,7 @@ export function MenuDesignForm({
                                                             <SelectTrigger>
                                                                 <SelectValue placeholder="Selecione um banner..." />
                                                             </SelectTrigger>
-                                                            <SelectContent>
+                                                            <SelectContent position="popper" sideOffset={4}>
                                                                 {banners.filter(b => b.type === 'footer').map((banner) => (
                                                                     <SelectItem key={banner.id} value={banner.id}>
                                                                         {(typeof banner.title === 'string' ? banner.title : banner.title?.pt || "Sem título")}
@@ -308,7 +308,7 @@ export function MenuDesignForm({
                                                             <SelectTrigger>
                                                                 <SelectValue placeholder="Selecione um grupo..." />
                                                             </SelectTrigger>
-                                                            <SelectContent>
+                                                            <SelectContent position="popper" sideOffset={4}>
                                                                 {productGroups.map((group) => (
                                                                     <SelectItem key={group.id} value={group.id}>
                                                                         {getLocalized(group.name)}

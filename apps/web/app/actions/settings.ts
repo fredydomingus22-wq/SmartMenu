@@ -5,12 +5,24 @@ import { revalidatePath } from "next/cache";
 import { BrandingData } from "../dashboard/settings/_components/branding-form";
 import { MenuSection } from "../menu/[id]/_types";
 
-export async function getTenantProfile() {
+export async function getTenantProfile(retry = true) {
     try {
-        return await apiClient.get("/tenants/me", {
+        return await apiClient.get<any>("/tenants/me", {
             next: { revalidate: 0 }
         });
-    } catch (error) {
+    } catch (error: any) {
+        // Auto-heal: If tenant not found (likely missing metadata in JWT), try to sync
+        if (retry && (error.status === 404 || error.message?.includes('Tenant not found'))) {
+            console.warn("[getTenantProfile] Tenant not found, attempting to sync user metadata...");
+            try {
+                await apiClient.post("/users/sync", {});
+                console.log("[getTenantProfile] Sync successful, retrying fetch...");
+                return getTenantProfile(false);
+            } catch (syncError) {
+                console.error("[getTenantProfile] Sync failed:", syncError);
+            }
+        }
+        
         console.error("getTenantProfile error:", error);
         return null;
     }

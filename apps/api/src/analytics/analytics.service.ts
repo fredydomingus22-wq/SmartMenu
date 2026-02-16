@@ -4,7 +4,7 @@ import { subDays, startOfDay, format } from 'date-fns';
 
 @Injectable()
 export class AnalyticsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async getKPIMetrics(
     tenantId: string,
@@ -64,10 +64,10 @@ export class AnalyticsService {
     const avgTurnoverMinutes =
       turnoverOrders.length > 0
         ? turnoverOrders.reduce((sum, o) => {
-          const diff =
-            (o.updatedAt.getTime() - o.createdAt.getTime()) / (1000 * 60);
-          return sum + diff;
-        }, 0) / turnoverOrders.length
+            const diff =
+              (o.updatedAt.getTime() - o.createdAt.getTime()) / (1000 * 60);
+            return sum + diff;
+          }, 0) / turnoverOrders.length
         : 0;
 
     return {
@@ -175,7 +175,6 @@ export class AnalyticsService {
         fullMap.set(date, { date, sales: data.sales, orders: data.count });
       }
       salesData = Array.from(fullMap.values());
-
     } else {
       // Original logic for total sales (no filters)
       const orders = await this.prisma.order.findMany({
@@ -445,7 +444,12 @@ export class AnalyticsService {
       range?: { start: Date; end: Date };
     } = {},
   ) {
-    const { limit = 10, sortBy = 'totalSpent', order = 'desc', range } = options;
+    const {
+      limit = 10,
+      sortBy = 'totalSpent',
+      order = 'desc',
+      range,
+    } = options;
     const limitNum = Math.floor(Number(limit) || 10);
 
     const ranking = await this.prisma.order.groupBy({
@@ -628,8 +632,12 @@ export class AnalyticsService {
       },
     });
 
-    const returningIds = new Set(returningCustomers.map((c) => c.customerProfileId));
-    const retainedCount = totalCustomersInPeriod.filter((c) => returningIds.has(c.customerProfileId)).length;
+    const returningIds = new Set(
+      returningCustomers.map((c) => c.customerProfileId),
+    );
+    const retainedCount = totalCustomersInPeriod.filter((c) =>
+      returningIds.has(c.customerProfileId),
+    ).length;
 
     // 3. Loyalty Impact
     const loyaltyRevenue = await this.prisma.order.aggregate({
@@ -659,12 +667,15 @@ export class AnalyticsService {
       retention: {
         total: totalCustomersInPeriod.length,
         returning: retainedCount,
-        rate: totalCustomersInPeriod.length > 0 ? (retainedCount / totalCustomersInPeriod.length) * 100 : 0,
+        rate:
+          totalCustomersInPeriod.length > 0
+            ? (retainedCount / totalCustomersInPeriod.length) * 100
+            : 0,
       },
       loyaltyROI: {
         memberRevenue: Number(loyaltyRevenue._sum.total || 0),
         nonMemberRevenue: Number(nonLoyaltyRevenue._sum.total || 0),
-      }
+      },
     };
   }
 }

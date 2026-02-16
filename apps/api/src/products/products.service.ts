@@ -1,8 +1,30 @@
 import { Injectable } from '@nestjs/common';
+import { parse } from 'csv-parse';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+
+interface CsvRow {
+  name?: string;
+  Nombre?: string;
+  Nome?: string;
+  price?: string;
+  Preco?: string;
+  Price?: string;
+  category?: string;
+  Categoria?: string;
+  Category?: string;
+  description?: string;
+  Descricao?: string;
+  Description?: string;
+  image_url?: string;
+  ImageUrl?: string;
+  Imagem?: string;
+  is_available?: string;
+  IsAvailable?: string;
+  Disponivel?: string;
+}
 
 @Injectable()
 export class ProductsService {
@@ -39,25 +61,26 @@ export class ProductsService {
         tenantId,
         organizationId,
         images: {
-          create: (images || []).map((url, index) => ({
+          create: (images || []).map((url: string, index: number) => ({
             url,
             order: index,
           })),
         },
         upsells: {
-          create: (upsells || []).map((upsellId) => ({
+          create: (upsells || []).map((upsellId: string) => ({
             upsellId,
             tenantId,
           })),
         },
         recommendations: {
-          create: (recommendations || []).map((recommendedId) => ({
+          create: (recommendations || []).map((recommendedId: string) => ({
             recommendedId,
             tenantId,
           })),
         },
         options: {
-          create: (options || []).map((opt) => ({
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          create: (options || []).map((opt: any) => ({
             name: this.normalizeJson(opt.name),
             description: this.normalizeJson(opt.description),
             minChoices: opt.minChoices || 0,
@@ -66,7 +89,8 @@ export class ProductsService {
             tenantId,
             organizationId,
             values: {
-              create: (opt.values || []).map((v) => ({
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              create: (opt.values || []).map((v: any) => ({
                 name: this.normalizeJson(v.name),
                 price: v.price || 0,
                 isAvailable: v.isAvailable ?? true,
@@ -167,7 +191,7 @@ export class ProductsService {
               ...(images
                 ? {
                     images: {
-                      create: images.map((url, index) => ({
+                      create: images.map((url: string, index: number) => ({
                         url,
                         order: index,
                       })),
@@ -177,7 +201,7 @@ export class ProductsService {
               ...(upsells
                 ? {
                     upsells: {
-                      create: upsells.map((upsellId) => ({
+                      create: upsells.map((upsellId: string) => ({
                         upsellId,
                         tenantId,
                       })),
@@ -187,7 +211,7 @@ export class ProductsService {
               ...(recommendations
                 ? {
                     recommendations: {
-                      create: recommendations.map((recommendedId) => ({
+                      create: recommendations.map((recommendedId: string) => ({
                         recommendedId,
                         tenantId,
                       })),
@@ -197,7 +221,8 @@ export class ProductsService {
               ...(options
                 ? {
                     options: {
-                      create: options.map((opt) => ({
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      create: options.map((opt: any) => ({
                         name: this.normalizeJson(opt.name),
                         description: this.normalizeJson(opt.description),
                         minChoices: opt.minChoices,
@@ -206,7 +231,8 @@ export class ProductsService {
                         tenantId,
                         organizationId,
                         values: {
-                          create: opt.values.map((v) => ({
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          create: opt.values.map((v: any) => ({
                             name: this.normalizeJson(v.name),
                             price: v.price,
                             isAvailable: v.isAvailable ?? true,
@@ -265,13 +291,7 @@ export class ProductsService {
       throw new Error('Product not found');
     }
 
-    const {
-      id: _id,
-      createdAt: _createdAt,
-      options: _options,
-      description,
-      ...rest
-    } = originalProduct;
+    const { description, ...rest } = originalProduct;
 
     return this.prisma.product.create({
       data: {
@@ -283,13 +303,13 @@ export class ProductsService {
           pt: `${(rest.name as Record<string, string>)['pt']} (Cópia)`,
         } as Prisma.InputJsonValue,
         images: {
-          create: originalProduct.images.map((img) => ({
+          create: originalProduct.images.map((img: any) => ({
             url: img.url,
             order: img.order,
           })),
         },
         options: {
-          create: originalProduct.options.map((opt) => ({
+          create: originalProduct.options.map((opt: any) => ({
             name: opt.name as Prisma.InputJsonValue,
             description: opt.description as Prisma.InputJsonValue,
             minChoices: opt.minChoices,
@@ -298,7 +318,7 @@ export class ProductsService {
             tenantId,
             organizationId,
             values: {
-              create: opt.values.map((v) => ({
+              create: opt.values.map((v: any) => ({
                 name: v.name as Prisma.InputJsonValue,
                 price: v.price,
                 isAvailable: v.isAvailable,
@@ -397,6 +417,146 @@ export class ProductsService {
   ) {
     return this.prisma.productOption.delete({
       where: { id: optionId, tenantId, organizationId },
+    });
+  }
+
+  async importCSV(
+    buffer: Buffer,
+    tenantId: string,
+    organizationId: string,
+  ): Promise<{ success: true; importedCount: number; errors: string[] }> {
+    return new Promise((resolve, reject) => {
+      const records: CsvRow[] = [];
+      const errors: string[] = [];
+
+      const parser = parse(buffer, {
+        columns: true,
+        skip_empty_lines: true,
+        trim: true,
+        delimiter: ',',
+      });
+
+      parser.on('readable', () => {
+        let record;
+        while ((record = parser.read()) !== null) {
+          records.push(record as CsvRow);
+        }
+      });
+
+      parser.on('error', (err) => {
+        reject(new Error(`Erro ao processar CSV: ${err.message}`));
+      });
+
+      parser.on('end', async () => {
+        try {
+          // 0. Verify organization exists to prevent FK errors
+          const organization = await this.prisma.organization.findUnique({
+            where: { id: organizationId },
+          });
+
+          if (!organization) {
+            return reject(
+              new Error(`Organização inválida (ID: ${organizationId}). Contacte o suporte.`),
+            );
+          }
+
+          const result = await this.prisma.$transaction(
+            async (tx) => {
+              let importedCount = 0;
+              // 1. Fetch all existing categories for this tenant at once
+              const existingCategories = await tx.category.findMany({
+                where: { tenantId },
+              });
+
+              // 2. Local map to track categories (existing + newly created in this batch)
+              const categoryMap = new Map<string, string>();
+              existingCategories.forEach((c) => {
+                const name = c.name as Prisma.JsonValue;
+                if (typeof name === 'string') {
+                  categoryMap.set(name.toLowerCase(), c.id);
+                } else if (typeof name === 'object' && name !== null && 'pt' in name && typeof name.pt === 'string') {
+                  categoryMap.set(name.pt.toLowerCase(), c.id);
+                }
+              });
+
+              const productsToCreate: Prisma.ProductCreateManyInput[] = [];
+
+              for (const row of records) {
+                // Normalize keys (handle BOM or case sensitivity if needed)
+                const name = row.name || row.Nombre || row.Nome;
+                const priceStr = row.price || row.Preco || row.Price;
+                const category = row.category || row.Categoria || row.Category;
+                const description = row.description || row.Descricao || row.Description;
+                const imageUrl = row.image_url || row.ImageUrl || row.Imagem;
+                const isAvailableStr = row.is_available || row.IsAvailable || row.Disponivel;
+
+                if (!name || !priceStr || !category) {
+                  // Skip invalid rows silently or push to errors
+                  continue;
+                }
+
+                const catNameLower = category.trim().toLowerCase();
+                let categoryId = categoryMap.get(catNameLower);
+
+                // 3. If category doesn't exist, create it immediately
+                if (!categoryId) {
+                  const newCat = await tx.category.create({
+                    data: {
+                      name: { pt: category.trim() },
+                      tenantId,
+                      organizationId,
+                      preparationSector: 'KITCHEN',
+                    },
+                  });
+                  categoryId = newCat.id;
+                  categoryMap.set(catNameLower, categoryId);
+                }
+
+                // 4. Prepare product data
+                const price = new Prisma.Decimal(
+                    priceStr.replace('AOA', '').replace(/\s/g, '').replace(',', '.')
+                );
+
+                productsToCreate.push({
+                  name: { pt: name.trim() },
+                  description: description
+                    ? { pt: description.trim() }
+                    : Prisma.JsonNull,
+                  price: isNaN(Number(price)) ? new Prisma.Decimal(0) : price,
+                  imageUrl: imageUrl || null,
+                  isAvailable:
+                    isAvailableStr?.toLowerCase() === 'false'
+                      ? false
+                      : true,
+                  categoryId,
+                  tenantId,
+                  organizationId,
+                });
+                importedCount++;
+              }
+
+              // 5. Batch create all products
+              if (productsToCreate.length > 0) {
+                await tx.product.createMany({
+                  data: productsToCreate,
+                });
+              }
+
+              return { importedCount, errors: [] };
+            },
+            {
+              timeout: 30000,
+            },
+          );
+
+          resolve({ success: true, ...result });
+        } catch (err: unknown) {
+          console.error('CSV Import Transaction Error:', err);
+          const message =
+            err instanceof Error ? err.message : 'Erro desconhecido';
+          reject(new Error(`Falha na importação: ${message}`));
+        }
+      });
     });
   }
 }

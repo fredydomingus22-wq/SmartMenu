@@ -15,11 +15,16 @@ export async function apiClient<T = unknown>(path: string, options: RequestOptio
     if (!headers.has("Authorization")) {
         try {
             const supabase = await createClient();
-            const { data: { session } } = await supabase.auth.getSession();
-            const token = session?.access_token;
+            // Securely validate user first
+            const { data: { user } } = await supabase.auth.getUser();
+            
+            if (user) {
+                const { data: { session } } = await supabase.auth.getSession();
+                const token = session?.access_token;
 
-            if (token) {
-                headers.set("Authorization", `Bearer ${token}`);
+                if (token) {
+                    headers.set("Authorization", `Bearer ${token}`);
+                }
             }
         } catch (e) {
             console.debug("[apiClientServer] Could not access Supabase session", e);

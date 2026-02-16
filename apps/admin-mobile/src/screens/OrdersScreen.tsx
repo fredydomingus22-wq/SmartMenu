@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import { RootState } from '../store';
 import { setOrders, updateOrderStatus, setLoading } from '../store/slices/ordersSlice';
 import { OrdersService } from '../services/ordersService';
@@ -30,6 +31,7 @@ const statusLabels = {
 
 export default function OrdersScreen() {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const { orders, isLoading } = useSelector((state: RootState) => state.orders);
 
   useEffect(() => {
@@ -70,7 +72,10 @@ export default function OrdersScreen() {
   };
 
   const renderOrder = ({ item }: { item: Order }) => (
-    <View style={styles.orderCard}>
+    <TouchableOpacity 
+      style={styles.orderCard}
+      onPress={() => (navigation as any).navigate('OrderDetail', { order: item })}
+    >
       <View style={styles.orderHeader}>
         <Text style={styles.customerName}>{item.customerName}</Text>
         <View style={[styles.statusBadge, { backgroundColor: statusColors[item.status] }]}>
@@ -103,7 +108,7 @@ export default function OrdersScreen() {
           </Text>
         </TouchableOpacity>
       )}
-    </View>
+    </TouchableOpacity>
   );
 
   return (

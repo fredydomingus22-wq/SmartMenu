@@ -10,4 +10,4 @@ import { SupabaseModule } from '../common/supabase.module';
   providers: [MarketingService],
   exports: [MarketingService],
 })
-export class MarketingModule { }
+export class MarketingModule {}

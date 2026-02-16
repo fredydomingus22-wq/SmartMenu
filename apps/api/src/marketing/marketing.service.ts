@@ -24,8 +24,8 @@ export class MarketingService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly supabase: SupabaseService
-  ) { }
+    private readonly supabase: SupabaseService,
+  ) {}
 
   async sendCampaign(
     tenantId: string,
@@ -37,7 +37,9 @@ export class MarketingService {
       dealId?: string;
     },
   ) {
-    this.logger.log(`Sending campaign to ${payload.customerIds.length} customers for tenant ${tenantId}`);
+    this.logger.log(
+      `Sending campaign to ${payload.customerIds.length} customers for tenant ${tenantId}`,
+    );
 
     // 1. Create a Campaign record (Audit trail)
     const campaign = await this.prisma.marketingCampaign.create({
@@ -52,7 +54,7 @@ export class MarketingService {
     });
 
     // 2. Dispatch notifications
-    const notifications = payload.customerIds.map(customerId => {
+    const notifications = payload.customerIds.map((customerId) => {
       return this.prisma.notification.create({
         data: {
           tenantId,
@@ -61,8 +63,8 @@ export class MarketingService {
           title: payload.title,
           message: payload.message,
           type: 'MARKETING',
-          metadata: { campaignId: campaign.id, dealId: payload.dealId } as any
-        }
+          metadata: { campaignId: campaign.id, dealId: payload.dealId } as any,
+        },
       });
     });
 
@@ -76,14 +78,14 @@ export class MarketingService {
         title: payload.title,
         message: payload.message,
         campaignId: campaign.id,
-        dealId: payload.dealId
-      }
+        dealId: payload.dealId,
+      },
     );
 
     return {
       success: true,
       campaignId: campaign.id,
-      dispatched: payload.customerIds.length
+      dispatched: payload.customerIds.length,
     };
   }
 
@@ -167,11 +169,11 @@ export class MarketingService {
         tenantId,
         items: productIds?.length
           ? {
-            create: productIds.map((productId, index) => ({
-              productId,
-              order: index,
-            })),
-          }
+              create: productIds.map((productId, index) => ({
+                productId,
+                order: index,
+              })),
+            }
           : undefined,
       },
       include: { items: { include: { product: true } } },

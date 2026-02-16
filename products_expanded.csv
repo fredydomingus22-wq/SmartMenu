@@ -1,0 +1,17 @@
+name,description,price,image_url,category,is_available
+"Cheeseburger Duplo","Dois hambúrgueres de 120g, queijo cheddar duplo, picles e cebola caramelizada.",7800.00,"https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=1000&auto=format&fit=crop","Hambúrgueres",true
+"Hambúrguer de Frango Crocante","Peito de frango panado crocante, maionese de ervas e alface fresca.",5900.00,"https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?q=80&w=1000&auto=format&fit=crop","Hambúrgueres",true
+"Burger Vegetariano de Lentilha","Hambúrguer de lentilha temperado, guacamole, tomate e rebentos de alfafa.",6200.00,"https://images.unsplash.com/photo-1520072959219-c5956f1ce66c?q=80&w=1000&auto=format&fit=crop","Hambúrgueres",true
+"Burger Especial da Casa","Carne bovina 200g, ovo estrelado, bacon crocante e molho barbecue.",8500.00,"https://images.unsplash.com/photo-1553979459-d2229ba7433b?q=80&w=1000&auto=format&fit=crop","Hambúrgueres",true
+"Pizza Pepperoni Especial","Molho de tomate, mozzarella, fatias generosas de pepperoni e orégano.",10500.00,"https://images.unsplash.com/photo-1628840042765-356cda07504e?q=80&w=1000&auto=format&fit=crop","Pizzas",true
+"Pizza Quatro Queijos","Mozzarella, gorgonzola, parmesão e queijo creme de alta qualidade.",11200.00,"https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1000&auto=format&fit=crop","Pizzas",true
+"Pizza Portuguesa Tradicional","Presunto, ovos, cebola, azeitonas pretas e pimentão verde.",9800.00,"https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?q=80&w=1000&auto=format&fit=crop","Pizzas",true
+"Pizza Vegetariana Deluxe","Mix de legumes grelhados, cogumelos frescos e azeitonas.",9200.00,"https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?q=80&w=1000&auto=format&fit=crop","Pizzas",true
+"Coca-Cola 330ml","Refrigerante em lata bem gelado.",1200.00,"https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=1000&auto=format&fit=crop","Bebidas",true
+"Água Mineral 500ml","Água mineral natural sem gás.",800.00,"https://images.unsplash.com/photo-1560023907-5f339617ea30?q=80&w=1000&auto=format&fit=crop","Bebidas",true
+"Sumo de Laranja Natural","Sumo de laranja espremido na hora, rico em vitamina C.",2500.00,"https://images.unsplash.com/photo-1613478223719-2ab802602423?q=80&w=1000&auto=format&fit=crop","Bebidas",true
+"Cerveja Nacional 330ml","Cerveja pilsen nacional, servida estalando.",1500.00,"https://images.unsplash.com/photo-1535954968791-4c609653066d?q=80&w=1000&auto=format&fit=crop","Bebidas",true
+"Pudim de Leite Condensado","Sobremesa caseira tradicional com calda de caramelo.",2800.00,"https://images.unsplash.com/photo-1528975604071-b4dc52a2d18c?q=80&w=1000&auto=format&fit=crop","Sobremesas",true
+"Mousse de Maracujá","Creme leve de maracujá com sementes crocantes.",2500.00,"https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?q=80&w=1000&auto=format&fit=crop","Sobremesas",true
+"Cheesecake de Frutas Vermelhas","Base de bolacha, creme de queijo e cobertura de frutos vermelhos.",4200.00,"https://images.unsplash.com/photo-1524351199679-46cdd7340CA7?q=80&w=1000&auto=format&fit=crop","Sobremesas",true
+"Salada de Fruta Tropical","Mix de frutas da época frescas e suculentas.",2200.00,"https://images.unsplash.com/photo-1519996529931-28324d5a630e?q=80&w=1000&auto=format&fit=crop","Sobremesas",true

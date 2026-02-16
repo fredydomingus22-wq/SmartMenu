@@ -13,11 +13,6 @@ export default async function OnboardingPage() {
         return redirect("/login");
     }
 
-    // Quick check if already onboarded (secondary check to middleware)
-    if (user.user_metadata?.organization_id) {
-        return redirect("/dashboard");
-    }
-
     return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 px-4 py-12 dark:bg-black sm:px-6 lg:px-8">
             <div className="w-full max-w-2xl space-y-8">

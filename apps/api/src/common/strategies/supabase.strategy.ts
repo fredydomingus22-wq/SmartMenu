@@ -58,7 +58,8 @@ export class SupabaseStrategy extends PassportStrategy(Strategy, 'supabase') {
     const tenantId: string | undefined =
       payload.app_metadata?.tenant_id || payload.user_metadata?.tenant_id;
     const organizationId: string | undefined =
-      payload.app_metadata?.organization_id || payload.user_metadata?.organization_id;
+      payload.app_metadata?.organization_id ||
+      payload.user_metadata?.organization_id;
 
     // We allow missing tenantId here so the /users/sync endpoint can handle it.
     // However, other controllers will still check for it if they need it.

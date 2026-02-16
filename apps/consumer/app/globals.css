@@ -3,85 +3,84 @@
 @tailwind utilities;
 
 :root {
-    --radius: 0.625rem;
-    --background: 1 0 0;
-    --foreground: 0.145 0 0;
-    --card: 1 0 0;
-    --card-foreground: 0.145 0 0;
-    --popover: 1 0 0;
-    --popover-foreground: 0.145 0 0;
-    /* Brand Theme (Default Orange) */
-    --primary: 0.6 0.22 45;
-    --primary-foreground: 0.985 0 0;
-    --secondary: 0.97 0 0;
-    --secondary-foreground: 0.6 0.22 45;
-    --muted: 0.97 0 0;
-    --muted-foreground: 0.556 0 0;
-    --accent: 0.97 0 0;
-    --accent-foreground: 0.6 0.22 45;
-    --destructive: 0.577 0.245 27.325;
-    --destructive-foreground: 0.985 0 0;
-    --border: 0.922 0 0;
-    --input: 0.922 0 0;
-    --ring: 0.6 0.22 45;
+  --radius: 1.25rem;
+  --background: 1 0 0;
+  --foreground: 0.145 0 0;
+  --card: 1 0 0;
+  --card-foreground: 0.145 0 0;
+  --popover: 1 0 0;
+  --popover-foreground: 0.145 0 0;
+  /* Brand Theme (Foodgo Red) */
+  --primary: 0.59 0.25 28; /* oklch vibrant red #EF2A39 */
+  --primary-foreground: 0.985 0 0;
+  --secondary: 0.97 0 0;
+  --secondary-foreground: 0.6 0.22 45;
+  --muted: 0.97 0 0;
+  --muted-foreground: 0.556 0 0;
+  --accent: 0.97 0 0;
+  --accent-foreground: 0.6 0.22 45;
+  --destructive: 0.577 0.245 27.325;
+  --destructive-foreground: 0.985 0 0;
+  --border: 0.922 0 0;
+  --input: 0.922 0 0;
+  --ring: 0.6 0.22 45;
 
-    /* Z-Index Hierarchy (NC-03) */
-    --z-flying-item: 9999;
-    --z-toast: 200;
-    --z-portal: 100;
-    --z-sticky-cta: 60;
-    --z-header: 50;
-    --z-category-nav: 40;
+  /* Z-Index Hierarchy (NC-03) */
+  --z-flying-item: 9999;
+  --z-toast: 200;
+  --z-portal: 100;
+  --z-sticky-cta: 60;
+  --z-header: 50;
+  --z-category-nav: 40;
 }
 
 .dark {
-    --background: 0.145 0 0;
-    --foreground: 0.985 0 0;
-    --card: 0.205 0 0;
-    --card-foreground: 0.985 0 0;
-    --popover: 0.205 0 0;
-    --popover-foreground: 0.985 0 0;
-    --primary: 0.922 0 0;
-    --primary-foreground: 0.205 0 0;
-    --secondary: 0.269 0 0;
-    --secondary-foreground: 0.985 0 0;
-    --muted: 0.269 0 0;
-    --muted-foreground: 0.708 0 0;
-    --accent: 0.269 0 0;
-    --accent-foreground: 0.985 0 0;
-    --destructive: 0.704 0.191 22.216;
-    --destructive-foreground: 0.985 0 0;
-    --border: 1 0 0 / 10%;
-    --input: 1 0 0 / 15%;
-    --ring: 0.556 0 0;
+  --background: 0.145 0 0;
+  --foreground: 0.985 0 0;
+  --card: 0.205 0 0;
+  --card-foreground: 0.985 0 0;
+  --popover: 0.205 0 0;
+  --popover-foreground: 0.985 0 0;
+  --primary: 0.922 0 0;
+  --primary-foreground: 0.205 0 0;
+  --secondary: 0.269 0 0;
+  --secondary-foreground: 0.985 0 0;
+  --muted: 0.269 0 0;
+  --muted-foreground: 0.708 0 0;
+  --accent: 0.269 0 0;
+  --accent-foreground: 0.985 0 0;
+  --destructive: 0.704 0.191 22.216;
+  --destructive-foreground: 0.985 0 0;
+  --border: 1 0 0 / 10%;
+  --input: 1 0 0 / 15%;
+  --ring: 0.556 0 0;
 }
 
 @layer base {
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    /* Prevent rubber-banding on iOS while keeping scroll inside AppShell slots */
+    overscroll-behavior-y: none;
+    /* NC-05: Contenção global para prevenir scroll horizontal */
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-smoothing: grayscale;
+  }
 
-    html,
-    body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        /* Prevent rubber-banding on iOS while keeping scroll inside AppShell slots */
-        overscroll-behavior-y: none;
-        /* NC-05: Contenção global para prevenir scroll horizontal */
-        overflow-x: hidden;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-smoothing: grayscale;
-    }
+  * {
+    @apply border-border outline-ring/50;
+  }
 
-    * {
-        @apply border-border outline-ring/50;
-    }
+  body {
+    @apply bg-background text-foreground;
+  }
 
-    body {
-        @apply bg-background text-foreground;
-    }
-
-    /* Focus visible for keyboard navigation */
-    .focus-visible:focus-visible {
-        outline: 2px solid oklch(var(--primary));
-        outline-offset: 2px;
-    }
+  /* Focus visible for keyboard navigation */
+  .focus-visible:focus-visible {
+    outline: 2px solid oklch(var(--primary));
+    outline-offset: 2px;
+  }
 }

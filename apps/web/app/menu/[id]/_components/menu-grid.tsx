@@ -11,13 +11,16 @@ import { useState, useMemo } from "react";
 import { ProductCard } from "@smart-menu/ui"; // Shared component
 import { ProductGrid } from "./product-grid";
 import { Button, ProductCardSkeleton } from "@smart-menu/ui";
-import { Category, MenuConfig, MenuSection } from "../_types";
+import { Category, MenuConfig, MenuSection, ProductGroup, PromotionalSchedule, MarketingEvent } from "../_types";
 import { cn, getTranslatedValue } from "@/lib/utils";
 
 interface MenuGridProps {
     categories: Category[];
     config?: MenuConfig | null;
     mode?: "menu" | "group";
+    groups?: ProductGroup[];
+    promotions?: PromotionalSchedule[];
+    events?: MarketingEvent[];
 }
 
 interface ExtendedSectionConfig {
@@ -26,7 +29,14 @@ interface ExtendedSectionConfig {
     buttonText?: string;
 }
 
-export function MenuGrid({ categories, config, mode = "menu" }: MenuGridProps) {
+export function MenuGrid({ 
+    categories, 
+    config, 
+    mode = "menu",
+    groups = [],
+    promotions = [],
+    events = []
+}: MenuGridProps) {
     const params = useParams();
     const searchParams = useSearchParams();
     const { t, locale } = useTranslation();

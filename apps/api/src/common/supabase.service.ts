@@ -4,43 +4,69 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 @Injectable()
 export class SupabaseService implements OnModuleInit {
-    private readonly logger = new Logger(SupabaseService.name);
-    private supabase!: SupabaseClient;
+  private readonly logger = new Logger(SupabaseService.name);
+  private publicClient!: SupabaseClient<any, 'public'>;
+  private adminClient!: SupabaseClient<any, 'public'>;
 
-    constructor(private configService: ConfigService) { }
+  constructor(private configService: ConfigService) {}
 
-    onModuleInit() {
-        const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
-        const supabaseKey = this.configService.get<string>('SUPABASE_SERVICE_ROLE_KEY');
+  onModuleInit() {
+    const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
+    const supabaseAnonKey = this.configService.get<string>('SUPABASE_ANON_KEY');
+    const supabaseServiceKey = this.configService.get<string>(
+      'SUPABASE_SERVICE_ROLE_KEY',
+    );
 
-        if (!supabaseUrl || !supabaseKey) {
-            this.logger.error('Supabase URL or Service Role Key missing in environment variables');
-            return;
-        }
-
-        this.supabase = createClient(supabaseUrl, supabaseKey);
-        this.logger.log('Supabase Service Role Client initialized');
+    if (!supabaseUrl) {
+      this.logger.error('Supabase URL missing in environment variables');
+      return;
     }
 
-    async broadcast(channelName: string, eventName: string, payload: any) {
-        if (!this.supabase) {
-            this.logger.error('Cannot broadcast: Supabase client not initialized');
-            return;
-        }
-
-        const channel = this.supabase.channel(channelName);
-
-        try {
-            await channel.send({
-                type: 'broadcast',
-                event: eventName,
-                payload,
-            });
-            this.logger.debug(`Broadcasted ${eventName} to ${channelName}`);
-        } catch (error: any) {
-            this.logger.error(`Error broadcasting to ${channelName}: ${error.message}`);
-        } finally {
-            this.supabase.removeChannel(channel);
-        }
+    if (supabaseAnonKey) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      this.publicClient = createClient(supabaseUrl, supabaseAnonKey);
+      this.logger.log('Supabase Public Client initialized');
     }
+
+    if (supabaseServiceKey) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      this.adminClient = createClient(supabaseUrl, supabaseServiceKey);
+      this.logger.log('Supabase Admin Client initialized');
+    }
+  }
+
+  getPublicClient() {
+    return this.publicClient;
+  }
+
+  getAdminClient() {
+    return this.adminClient;
+  }
+
+  async broadcast(channelName: string, eventName: string, payload: unknown) {
+    const client = this.adminClient || this.publicClient;
+    if (!client) {
+      this.logger.error('Cannot broadcast: Supabase client not initialized');
+      return;
+    }
+
+    const channel = client.channel(channelName);
+
+    try {
+      await channel.send({
+        type: 'broadcast',
+        event: eventName,
+        payload,
+      });
+      this.logger.debug(`Broadcasted ${eventName} to ${channelName}`);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(
+        `Error broadcasting to ${channelName}: ${errorMessage}`,
+      );
+    } finally {
+      await client.removeChannel(channel);
+    }
+  }
 }

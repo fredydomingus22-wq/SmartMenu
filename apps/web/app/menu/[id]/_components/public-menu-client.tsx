@@ -34,12 +34,14 @@ export function PublicMenuClient({
     children,
     tenantId,
     organizationId,
-    branding
+    branding,
+    tableId
 }: {
     children: ReactNode;
     tenantId: string;
     organizationId: string;
     branding?: TenantBranding | null;
+    tableId?: string;
 }) {
     // Inject branding CSS variables
     const brandingStyles = useMemo(() => {

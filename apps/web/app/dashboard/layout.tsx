@@ -21,6 +21,7 @@ const navGroups: NavGroup[] = [
         items: [
             { label: "Pedidos", icon: "ShoppingBag", href: "/dashboard/orders" },
             { label: "Cozinha (KDS)", icon: "ChefHat", href: "/dashboard/kds" },
+            { label: "Mensagens", icon: "MessageSquare", href: "/dashboard/chat" },
         ]
     },
     {
