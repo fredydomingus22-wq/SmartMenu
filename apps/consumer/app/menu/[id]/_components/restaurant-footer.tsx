@@ -147,9 +147,14 @@ export function RestaurantFooter({ branding, footerConfig }: FooterProps) {
                         <Link href={`/menu/${branding?.tenantId}/allergens`} className="hover:text-primary transition-colors">{t('footer.allergens')}</Link>
                         <Link href={`/menu/${branding?.tenantId}/privacy`} className="hover:text-primary transition-colors">{t('footer.privacy')}</Link>
                         <Link href={`/menu/${branding?.tenantId}/terms`} className="hover:text-primary transition-colors">{t('footer.terms')}</Link>
-                        <span className="flex items-center gap-1.5 grayscale opacity-70">
-                            Powered by <span className="text-foreground font-black">SmartMenu</span>
-                        </span>
+                        <a 
+                            href={`https://smartmenu.co.ao?utm_source=consumer-menu&utm_medium=referral&tenant_id=${branding?.tenantId || 'unknown'}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer"
+                        >
+                            Powered by <strong className="text-foreground font-black tracking-wide">Zimbotechia</strong>
+                        </a>
                     </div>
                 </div>
             </div>

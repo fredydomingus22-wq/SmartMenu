@@ -56,11 +56,11 @@ export default function AccountPage() {
     }
 
     const menuItems = [
-        { icon: User, label: "Dados Pessoais", desc: "Nome, email e telefone" },
-        { icon: MapPin, label: "Meus Endereços", desc: "Para entregas e takeaway" },
-        { icon: Bell, label: "Notificações", desc: "Alertas de pedidos e promoções" },
-        { icon: Shield, label: "Segurança", desc: "Senha e autenticação" },
-        { icon: Settings, label: "Preferências", desc: "Idioma e tema" },
+        { icon: User, label: "Dados Pessoais", desc: "Nome, email e telefone", href: "/account/profile" },
+        { icon: MapPin, label: "Meus Endereços", desc: "Para entregas e takeaway", href: "/account/addresses" },
+        { icon: Bell, label: "Notificações", desc: "Alertas de pedidos e promoções", href: "/account/notifications" },
+        { icon: Shield, label: "Segurança", desc: "Senha e autenticação", href: "/account/security" },
+        { icon: Settings, label: "Preferências", desc: "Idioma e tema", href: "/account/preferences" },
     ];
 
     return (
@@ -102,6 +102,7 @@ export default function AccountPage() {
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: idx * 0.05 }}
+                            onClick={() => router.push(item.href)}
                             className="w-full flex items-center justify-between p-5 rounded-[2rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all group active:scale-[0.98]"
                         >
                             <div className="flex items-center gap-4">
@@ -117,6 +118,7 @@ export default function AccountPage() {
                         </motion.button>
                     ))}
                 </div>
+
 
                 {/* Sign Out Button */}
                 <Button

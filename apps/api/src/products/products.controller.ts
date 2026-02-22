@@ -15,6 +15,7 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import 'multer';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -84,7 +85,10 @@ export class ProductsController {
       );
     } catch (err: unknown) {
       if (err instanceof Error) {
-        console.error('[ProductsController] Error in importProducts:', err.message);
+        console.error(
+          '[ProductsController] Error in importProducts:',
+          err.message,
+        );
         throw new BadRequestException(err.message);
       }
       throw err;

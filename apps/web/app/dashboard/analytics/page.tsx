@@ -72,6 +72,8 @@ export default async function AnalyticsPage(props: {
         getAdvancedMetrics(startDate, endDate)
     ]);
 
+    const tenantId = tenantProfile?.id || user.user_metadata?.tenantId || user.app_metadata?.tenant_id || user.id;
+
     const initialData = {
         kpis: kpisRes.success ? kpisRes.data : null,
         trendData: trendRes.success ? trendRes.data : [],
@@ -88,6 +90,7 @@ export default async function AnalyticsPage(props: {
             initialData={initialData}
             locale={locale}
             restaurantName={restaurantName}
+            tenantId={tenantId}
         />
     );
 }

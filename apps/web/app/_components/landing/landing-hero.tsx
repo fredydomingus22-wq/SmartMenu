@@ -1,101 +1,56 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { Button } from "@smart-menu/ui";
-import { Zap } from "lucide-react";
+import { Button, BRAND_COLORS } from "@smart-menu/ui";
 import Link from "next/link";
-import Image from "next/image";
+import { HeroVideoClient } from "./hero-video-client";
+import LandingHeroAnimations from "./landing-hero-animations";
 
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.15,
-            delayChildren: 0.2
-        }
-    }
-};
-
-const itemVariants = {
-    hidden: { opacity: 0, y: 8 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            duration: 0.8,
-            ease: [0.21, 0.47, 0.32, 0.98]
-        }
-    }
-};
-
+/**
+ * LandingHero (Server Component)
+ * Strict SEO requirements handled by HeroVideoClient.
+ */
 export function LandingHero() {
-    return (
-        <section className="relative min-h-[75vh] flex items-center py-12 md:py-16 px-6 overflow-hidden">
-            <div className="absolute inset-0 -z-10">
-                <Image
-                    src="/assets/marketing/hero-luanda.png"
-                    alt="Ambiente Restaurante Luanda"
-                    fill
-                    className="object-cover opacity-30 grayscale contrast-125"
-                    priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background to-background" />
-            </div>
+  return (
+    <section className="relative min-h-[90vh] flex items-center py-12 md:py-16 px-6 overflow-hidden bg-white">
+      {/* Background Video with Controlled Layering */}
+      <div className="absolute inset-0 z-0">
+        <HeroVideoClient 
+          poster="/assets/marketing/poster.png"
+          videoSrc="/assets/marketing/hero-video.mp4"
+        />
+        {/* Subtle Overlays - Cleaner for the light theme */}
+        <div className="absolute inset-0 bg-white/40 z-[1]" />
+        <div 
+          className="absolute inset-0 z-[1] opacity-5" 
+          style={{ background: `radial-gradient(circle at 0% 0%, oklch(${BRAND_COLORS.orange}) 0%, transparent 50%)` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white z-[1]" />
+      </div>
 
-            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center text-center lg:text-left">
-                <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="space-y-8 relative z-20 flex flex-col items-center lg:items-start"
-                >
-                    <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[10px] font-bold tracking-wider uppercase text-zinc-500">
-                        <Zap className="h-3 w-3" />
-                        <span>SaaS de Próxima Geração</span>
-                    </motion.div>
-                    
-                    <motion.h1 variants={itemVariants} className="text-3xl md:text-5xl font-bold tracking-tight text-foreground leading-tight">
-                        A tecnologia que escala o <span className="text-primary">paladar</span> e o lucro do seu restaurante.
-                    </motion.h1>
-                    
-                    <motion.p variants={itemVariants} className="text-base md:text-lg text-muted-foreground max-w-lg font-normal leading-relaxed">
-                        Nascemos para eliminar a fricção entre a cozinha e a mesa. O SmartMenu centraliza a sua operação, automatiza vendas e fideliza clientes com precisão angolana.
-                    </motion.p>
-                    
-                    <motion.div variants={itemVariants} className="flex flex-wrap gap-4 pt-4 justify-center lg:justify-start">
-                        <Button size="lg" className="h-12 px-8 text-sm font-semibold rounded-lg shadow-sm" asChild>
-                            <Link href="/login">Começar Agora</Link>
-                        </Button>
-                        <Button variant="outline" size="lg" className="h-12 px-8 text-sm font-semibold rounded-lg" asChild>
-                            <Link href="#features">Recursos Técnicos</Link>
-                        </Button>
-                    </motion.div>
-                </motion.div>
+      <div className="max-w-7xl mx-auto w-full relative z-20 flex flex-col items-center justify-center text-center">
+        
+        <LandingHeroAnimations>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold tracking-wider uppercase text-zinc-600 mb-8 shadow-sm">
+            A impulsionar restaurantes de elite em Angola.
+          </div>
+          
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-zinc-950 leading-[1.1] max-w-4xl mx-auto">
+            O Menu Digital Que Aumenta os Seus Lucros <span style={{ color: `oklch(${BRAND_COLORS.orange})` }}>Sem Esforço.</span>
+          </h1>
+          
+          <p className="mt-6 text-lg md:text-xl text-zinc-800 max-w-2xl mx-auto font-medium leading-relaxed">
+            O seu restaurante está a perder 30% das vendas a cada minuto de espera. Transforme a lentidão em lucros em menos de 24 horas.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 mt-10 justify-center">
+            <Button size="lg" className="h-14 px-8 text-base font-bold rounded-xl text-zinc-950" style={{ backgroundColor: `oklch(${BRAND_COLORS.orange})` }} asChild>
+              <Link href="/login">Comece o seu Teste Gratuito Agora</Link>
+            </Button>
+            <Button size="lg" className="h-14 px-8 text-base font-bold rounded-xl border border-zinc-200 bg-white text-zinc-950 shadow-xs hover:bg-orange-500 hover:text-white hover:border-orange-500 hover:shadow-[0_0_20px_rgba(249,115,22,0.5)] transition-all duration-300" asChild>
+              <Link href="https://smart-menu-consumer.vercel.app//menu/c02dc8bc-112e-4def-9a71-dcf4950ed7bf" target="_blank">Ver Menu de Demonstração</Link>
+            </Button>
+          </div>
+        </LandingHeroAnimations>
 
-                <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ 
-                        opacity: 1, 
-                        y: [12, 0, -4, 0],
-                    }}
-                    transition={{ 
-                        opacity: { duration: 0.8, delay: 0.4 },
-                        y: { duration: 0.8, delay: 0.4, times: [0, 0.4, 0.7, 1] },
-                        rotate: { duration: 0.8, delay: 0.4 }
-                    }}
-                    className="relative w-full"
-                >
-                    <div className="relative z-10 rounded-2xl border border-border bg-card shadow-lg overflow-hidden aspect-[4/3] md:aspect-[16/9] lg:aspect-[4/3]">
-                        <Image
-                            src="/assets/marketing/friends-dining.png"
-                            alt="Equipa SmartMenu em Operação"
-                            fill
-                            className="object-cover"
-                        />
-                    </div>
-                </motion.div>
-            </div>
-        </section>
-    );
+      </div>
+    </section>
+  );
 }

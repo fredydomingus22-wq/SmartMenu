@@ -51,7 +51,46 @@ export function CartSheet() {
     const [isOrderTypeOpen, setIsOrderTypeOpen] = useState(false);
     const [selectedType, setSelectedType] = useState<OrderType>('DINE_IN_GENERAL');
     const [manualTableId, setManualTableId] = useState("");
-    const [manualAddress, setManualAddress] = useState("");
+    // Takeaway Form State
+    const [takeawayForm, setTakeawayForm] = useState({
+        municipality: "", neighborhood: "", street: "", phone: "", notes: ""
+    });
+
+    // ... rest of existing code between these sections stays the same
+
+    const handleCheckoutWithSelection = async () => {
+        if (selectedType === 'DINE_IN_GENERAL' && !manualTableId) {
+            toast.error("Por favor, selecione a sua mesa.");
+            return;
+        }
+        if (selectedType === 'TAKEAWAY') {
+            if (!takeawayForm.municipality) {
+                toast.error("Por favor, indique o município.");
+                return;
+            }
+            if (!takeawayForm.neighborhood) {
+                toast.error("Por favor, indique o bairro.");
+                return;
+            }
+            if (!takeawayForm.street) {
+                toast.error("Por favor, indique a rua ou zona de referência.");
+                return;
+            }
+            if (!takeawayForm.phone) {
+                toast.error("Por favor, indique o contacto telefónico.");
+                return;
+            }
+        }
+
+        const finalTableId = selectedType === 'DINE_IN_GENERAL' ? manualTableId : null;
+        const finalAddress = selectedType === 'TAKEAWAY'
+            ? `${takeawayForm.municipality}, ${takeawayForm.neighborhood}, ${takeawayForm.street}${takeawayForm.notes ? ` (${takeawayForm.notes})` : ''}`
+            : null;
+        const finalPhone = selectedType === 'TAKEAWAY' ? takeawayForm.phone : null;
+
+        await processCheckout(finalTableId, selectedType, finalAddress, finalPhone);
+        setIsOrderTypeOpen(false);
+    };
 
     const { appliedReward, applyReward, removeReward } = useCart();
     const [userPoints, setUserPoints] = useState(0);
@@ -158,42 +197,10 @@ export function CartSheet() {
         await processCheckout(tableId, orderType || 'DINE_IN', null);
     };
 
-    const handleCheckoutWithSelection = async () => {
-        if (selectedType === 'DINE_IN_GENERAL' && !manualTableId) {
-            toast.error("Por favor, selecione a sua mesa.");
-            return;
-        }
-        if (selectedType === 'TAKEAWAY' && !manualAddress) {
-            toast.error("Por favor, digite seu endereço.");
-            return;
-        }
 
-        // We use manualTableId as tableId here if applicable
-        // Note: The API expects tableId as UUID usually, but for general dine-in we might pass the number string if the table structure allows,
-        // OR we need to map number to ID. 
-        // For simplicity in this plan (as per prompt), we assume passing the input as tableId or tableNumber.
-        // If the API strictly requires UUID for tableId, we might need a lookup or pass it as metadata.
-        // Given current architecture likely uses UUIDs for `tableId` relation, passing "5" might fail foreign key constraints unless we resolve it.
-        // HOWEVER, the implementation plan said "Show table number input".
-        // Let's assume for now we pass it as `tableId` and the backend handles or we accept string.
-        // If strict UUID is needed, this part requires Table Lookup by Number endpoint.
 
-        // *Correction*: The tables have IDs. The user inputs a Number. 
-        // Since we don't have a lookup here, let's assume we pass it as metadata/notes OR we changed API to accept number.
-        // Actually, let's pass it as `tableId` for now, assuming the input might be the ID or backend can handle non-uuids if loosely typed, 
-        // BUT strict Prisma will fail. 
-        // **Strategy**: We will pass it in the `tableId` field. If it fails, we'll need to fetch tables.
-        // Better UX: Allow passing "Manual Table 5" in notes if ID resolution isn't ready, OR assuming the system is robust.
-        // Let's proceed with passing `manualTableId` as `tableId`.
 
-        const finalTableId = selectedType === 'DINE_IN_GENERAL' ? manualTableId : null;
-        const finalAddress = selectedType === 'TAKEAWAY' ? manualAddress : null;
-
-        await processCheckout(finalTableId, selectedType, finalAddress);
-        setIsOrderTypeOpen(false);
-    };
-
-    const processCheckout = async (finalTableId: string | null, finalOrderType: OrderType, finalAddress: string | null) => {
+    const processCheckout = async (finalTableId: string | null, finalOrderType: OrderType, finalAddress: string | null, finalPhone: string | null = null) => {
         if (!tenantId || !organizationId) return;
 
         setIsSubmitting(true);
@@ -217,6 +224,7 @@ export function CartSheet() {
                     tableId: finalTableId,
                     orderType: finalOrderType,
                     deliveryAddress: finalAddress,
+                    deliveryPhone: finalPhone,
                     loyaltyRewardId: appliedReward?.id,
                     items: items.map(item => ({
                         productId: item.productId,
@@ -525,14 +533,65 @@ export function CartSheet() {
                         )}
 
                         {selectedType === 'TAKEAWAY' && (
-                            <div className="grid gap-2">
-                                <Label htmlFor="address">Endereço de Entrega</Label>
-                                <Input
-                                    id="address"
-                                    placeholder="Rua, Número, Bairro..."
-                                    value={manualAddress}
-                                    onChange={(e) => setManualAddress(e.target.value)}
-                                />
+                            <div className="grid gap-3 pt-2">
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="municipality" className="text-xs font-bold text-zinc-500">Município</Label>
+                                        <Input
+                                            id="municipality"
+                                            placeholder="Ex: Luanda"
+                                            value={takeawayForm.municipality}
+                                            onChange={(e) => setTakeawayForm({ ...takeawayForm, municipality: e.target.value })}
+                                            className="h-12"
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="neighborhood" className="text-xs font-bold text-zinc-500">Bairro</Label>
+                                        <Input
+                                            id="neighborhood"
+                                            placeholder="Ex: Maianga"
+                                            value={takeawayForm.neighborhood}
+                                            onChange={(e) => setTakeawayForm({ ...takeawayForm, neighborhood: e.target.value })}
+                                            className="h-12"
+                                        />
+                                    </div>
+                                </div>
+                                
+                                <div className="space-y-1.5">
+                                    <Label htmlFor="street" className="text-xs font-bold text-zinc-500">Rua / Zona de Referência</Label>
+                                    <Input
+                                        id="street"
+                                        placeholder="Ex: Rua Comandante Gika, perto da..."
+                                        value={takeawayForm.street}
+                                        onChange={(e) => setTakeawayForm({ ...takeawayForm, street: e.target.value })}
+                                        className="h-12"
+                                    />
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <Label htmlFor="phone" className="text-xs font-bold text-zinc-500">Contacto Telefónico</Label>
+                                    <Input
+                                        id="phone"
+                                        type="tel"
+                                        inputMode="tel"
+                                        placeholder="+244 9..."
+                                        value={takeawayForm.phone}
+                                        onChange={(e) => setTakeawayForm({ ...takeawayForm, phone: e.target.value })}
+                                        className="h-12"
+                                    />
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <Label htmlFor="notes" className="text-xs font-bold text-zinc-500">Informações Extras (Opcional)</Label>
+                                    <textarea
+                                        id="notes"
+                                        placeholder="Portão verde, 2º andar..."
+                                        value={takeawayForm.notes}
+                                        onChange={(e) => setTakeawayForm({ ...takeawayForm, notes: e.target.value })}
+                                        className="flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+                                        rows={2}
+                                    />
+                                </div>
                             </div>
                         )}
                     </div>

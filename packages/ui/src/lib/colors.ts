@@ -1,7 +1,12 @@
-/**
- * Simple utility to convert Hex colors to OKLCH components (L C H)
- * This is a simplified version for programmatic branding.
- */
+// Brand Colors (OKLCH values for dynamic usage)
+export const BRAND_COLORS = {
+    orange: "0.6 0.22 45",
+    white: "1 0 0",
+    zinc: "0.145 0 0",
+    background: "1 0 0",
+    foreground: "0.145 0 0",
+    primary: "0.6 0.22 45",
+} as const;
 
 export function hexToRgb(hex: string) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);

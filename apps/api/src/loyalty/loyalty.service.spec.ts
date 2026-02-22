@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { LoyaltyService } from './loyalty.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -13,23 +14,23 @@ describe('LoyaltyService', () => {
           provide: PrismaService,
           useValue: {
             loyaltyConfig: {
-              findUnique: jest.fn(),
-              create: jest.fn(),
-              upsert: jest.fn(),
+              findUnique: vi.fn(),
+              create: vi.fn(),
+              upsert: vi.fn(),
             },
             loyaltyReward: {
-              findMany: jest.fn(),
-              create: jest.fn(),
-              update: jest.fn(),
-              delete: jest.fn(),
-              findFirst: jest.fn(),
+              findMany: vi.fn(),
+              create: vi.fn(),
+              update: vi.fn(),
+              delete: vi.fn(),
+              findFirst: vi.fn(),
             },
             customerProfile: {
-              findUnique: jest.fn(),
-              create: jest.fn(),
-              update: jest.fn(),
+              findUnique: vi.fn(),
+              create: vi.fn(),
+              update: vi.fn(),
             },
-            pointsTransaction: { create: jest.fn(), findMany: jest.fn() },
+            pointsTransaction: { create: vi.fn(), findMany: vi.fn() },
           },
         },
       ],
@@ -59,26 +60,21 @@ describe('LoyaltyService', () => {
       const mockProfile = { id: 'prof1', pointsBalance: 50, userId, tenantId };
 
       const mockTx = {
-        loyaltyConfig: { findUnique: jest.fn().mockResolvedValue(mockConfig) },
+        loyaltyConfig: { findUnique: vi.fn().mockResolvedValue(mockConfig) },
         customerProfile: {
-          findUnique: jest.fn().mockResolvedValue(mockProfile),
-          update: jest
+          findUnique: vi.fn().mockResolvedValue(mockProfile),
+          update: vi
             .fn()
             .mockResolvedValue({ ...mockProfile, pointsBalance: 1050 }),
         },
-        order: { update: jest.fn() },
-        pointsTransaction: { create: jest.fn() },
+        order: { update: vi.fn() },
+        pointsTransaction: { create: vi.fn() },
       };
 
-      // @ts-ignore - hacking prisma service for test
+      // @ts-expect-error - hacking prisma service for test
       service['prisma'] = mockTx;
 
-      const result = await service.earnPoints(
-        userId,
-        tenantId,
-        orderTotal,
-        orderId,
-      );
+      await service.earnPoints(userId, tenantId, orderTotal, orderId);
 
       expect(mockTx.customerProfile.update).toHaveBeenCalledWith({
         where: { id: 'prof1' },
@@ -97,13 +93,13 @@ describe('LoyaltyService', () => {
       const mockProfile = { id: 'prof1', pointsBalance: 50 };
 
       const mockTx = {
-        loyaltyReward: { findFirst: jest.fn().mockResolvedValue(mockReward) },
+        loyaltyReward: { findFirst: vi.fn().mockResolvedValue(mockReward) },
         customerProfile: {
-          findUnique: jest.fn().mockResolvedValue(mockProfile),
+          findUnique: vi.fn().mockResolvedValue(mockProfile),
         },
       };
 
-      // @ts-ignore
+      // @ts-expect-error - hacking prisma service for test
       service['prisma'] = mockTx;
 
       await expect(

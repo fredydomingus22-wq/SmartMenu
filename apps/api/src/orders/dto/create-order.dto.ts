@@ -11,7 +11,10 @@ import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateOrderItemDto {
-  @ApiProperty({ example: 'prod-uuid-123', description: 'The UUID of the product' })
+  @ApiProperty({
+    example: 'prod-uuid-123',
+    description: 'The UUID of the product',
+  })
   @IsString()
   @IsNotEmpty()
   productId!: string;
@@ -62,7 +65,10 @@ export class CreateOrderDto {
   @IsOptional()
   tableId?: string;
 
-  @ApiProperty({ enum: ['DINE_IN', 'DINE_IN_GENERAL', 'TAKEAWAY'], required: false })
+  @ApiProperty({
+    enum: ['DINE_IN', 'DINE_IN_GENERAL', 'TAKEAWAY'],
+    required: false,
+  })
   @IsEnum(['DINE_IN', 'DINE_IN_GENERAL', 'TAKEAWAY'])
   @IsOptional()
   orderType?: OrderType;

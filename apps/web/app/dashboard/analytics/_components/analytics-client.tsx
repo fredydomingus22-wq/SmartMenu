@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@smart-menu/ui";
 import { useTranslation } from "@/hooks/use-translation";
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 import { KPICard } from "@smart-menu/ui";
 // import { SalesChart } from "./sales-chart"; // Relplaced by SalesAnalysisSection
 import { SalesAnalysisSection } from "./sales-analysis-section";
@@ -49,10 +51,12 @@ interface AnalyticsClientProps {
     };
     locale: string;
     restaurantName: string;
+    tenantId: string;
 }
 
-export function AnalyticsClient({ initialData, locale }: AnalyticsClientProps) {
+export function AnalyticsClient({ initialData, locale, tenantId }: AnalyticsClientProps) {
     const { t } = useTranslation();
+    const router = useRouter();
     const [, setSelectedCustomerId] = useState<string | null>(null);
     const [customerData, setCustomerData] = useState<CustomerProfileData | null>(null);
     const [isLoadingCustomer, setIsLoadingCustomer] = useState(false);
@@ -68,6 +72,26 @@ export function AnalyticsClient({ initialData, locale }: AnalyticsClientProps) {
         }
         setIsLoadingCustomer(false);
     };
+
+    useEffect(() => {
+        if (!tenantId) return;
+
+        const supabase = createClient();
+        const channel = supabase.channel(`orders:${tenantId}`)
+            .on('broadcast', { event: 'ORDER_CREATED' }, () => {
+                console.log('[Analytics] Refreshing due to NEW_ORDER');
+                router.refresh();
+            })
+            .on('broadcast', { event: 'STATUS_UPDATED' }, () => {
+                console.log('[Analytics] Refreshing due to STATUS_UPDATE');
+                router.refresh();
+            })
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [tenantId, router]);
 
     return (
         <div className="space-y-6 pb-10">

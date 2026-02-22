@@ -90,6 +90,7 @@ export class MenuService {
           phone: true,
           email: true,
           address: true,
+          name: true,
         },
       }),
     ]);
@@ -115,7 +116,10 @@ export class MenuService {
     };
 
     return {
-      branding: branding || { primaryColor: '#2563EB', logoUrl: null },
+      branding: {
+        ...(branding || { primaryColor: '#2563EB', logoUrl: null }),
+        tenantName: branding?.tenantName || tenant?.name,
+      },
       sections:
         sections.length > 0
           ? sections

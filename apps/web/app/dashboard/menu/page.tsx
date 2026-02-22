@@ -4,7 +4,7 @@ import { Button } from "@smart-menu/ui";
 import { Card, CardContent, CardHeader, CardTitle } from "@smart-menu/ui";
 import Link from "next/link";
 import { LayoutGrid, Package, ExternalLink } from 'lucide-react';
-import prisma from "@/utils/prisma";
+import { prisma } from "@/utils/prisma";
 
 export default async function MenuDashboardPage() {
     const supabase = await createClient();

@@ -10,36 +10,36 @@ describe('MarketingService', () => {
 
   const mockPrismaService = {
     banner: {
-      findMany: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
+      findMany: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
     },
     productGroup: {
-      findMany: jest.fn(),
-      findUnique: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
     },
     promotionalSchedule: {
-      findMany: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
+      findMany: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
     },
     event: {
-      findMany: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
+      findMany: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
     },
-    marketingCampaign: { create: jest.fn() },
-    notification: { create: jest.fn() },
+    marketingCampaign: { create: vi.fn() },
+    notification: { create: vi.fn() },
   };
 
   const mockSupabaseService = {
-    broadcast: jest.fn(),
+    broadcast: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -92,7 +92,7 @@ describe('MarketingService', () => {
     it('should return all banners for a tenant', async () => {
       const tenantId = 'tenant-1';
       const mockBanners = [{ id: '1', tenantId }];
-      (prisma.banner.findMany as jest.Mock).mockResolvedValue(mockBanners);
+      (prisma.banner.findMany as vi.Mock).mockResolvedValue(mockBanners);
 
       const result = await service.findAllBanners(tenantId);
       expect(result).toEqual(mockBanners);
@@ -107,7 +107,7 @@ describe('MarketingService', () => {
     it('should return only active promotions', async () => {
       const tenantId = 'tenant-1';
       const mockPromos = [{ id: 'p1', tenantId }];
-      (prisma.promotionalSchedule.findMany as jest.Mock).mockResolvedValue(
+      (prisma.promotionalSchedule.findMany as vi.Mock).mockResolvedValue(
         mockPromos,
       );
 

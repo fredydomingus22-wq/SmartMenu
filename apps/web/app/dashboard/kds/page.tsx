@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { KDSGrid } from "./_components/kds-grid";
 import { type Order } from "./_components/kds-order-card";
 import { apiClient } from "@/utils/api-client-server";
+import { getTenantProfile } from "../../actions/settings";
 
 /**
  * KDSPage - Versão 6 (Foco em Conformidade de Specs e Design System)
@@ -36,15 +37,11 @@ export default async function KDSPage() {
         console.error('Falha ao buscar pedidos KDS:', error);
     }
 
-    const tenantId = user.user_metadata?.tenantId || user.app_metadata?.tenant_id || user.id;
+    const tenantProfile = await getTenantProfile() as { id: string, name: string } | null;
+    const tenantId = tenantProfile?.id || user.user_metadata?.tenantId || user.app_metadata?.tenant_id || user.id;
 
     return (
-        <div className="flex flex-col h-full space-y-6">
-            <div className="flex flex-col gap-1">
-                <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">Cozinha (KDS)</h2>
-                <p className="text-muted-foreground font-medium">Fluxo de pedidos em tempo real para a equipe de preparo.</p>
-            </div>
-
+        <div className="flex flex-col h-full">
             <div className="flex-1 min-h-0 bg-white/50 dark:bg-zinc-950/20 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 overflow-hidden">
                 <KDSGrid initialOrders={orders} tenantId={tenantId} />
             </div>

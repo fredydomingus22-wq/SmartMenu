@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-import prisma from '@/utils/prisma'
+import { prisma } from '@/utils/prisma'
 import { redirect } from 'next/navigation'
 
 export async function login(formData: FormData) {

@@ -19,7 +19,8 @@ const navGroups: NavGroup[] = [
     {
         title: "Operações",
         items: [
-            { label: "Pedidos", icon: "ShoppingBag", href: "/dashboard/orders" },
+            { label: "Novo Pedido", icon: "ShoppingBag", href: "/dashboard/orders/new" },
+            { label: "Pedidos", icon: "ClipboardList", href: "/dashboard/orders" },
             { label: "Cozinha (KDS)", icon: "ChefHat", href: "/dashboard/kds" },
             { label: "Mensagens", icon: "MessageSquare", href: "/dashboard/chat" },
         ]

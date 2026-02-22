@@ -102,7 +102,7 @@ export function KDSOrderCard({ order, activeSector = 'ALL', onUpdateStatus, onTo
     return (
         <Card className="flex flex-col h-full bg-white border border-zinc-200 shadow-sm transition-all hover:shadow-md">
             {/* Header com IDs e Urgência */}
-            <CardHeader className="pb-3 border-b border-zinc-100 bg-zinc-50/50">
+            <CardHeader className="py-2 px-3 border-b border-zinc-100 bg-zinc-50/50">
                 <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-bold text-zinc-500 font-mono">
                         #{order.id.slice(0, 8).toUpperCase()}
@@ -112,25 +112,25 @@ export function KDSOrderCard({ order, activeSector = 'ALL', onUpdateStatus, onTo
                     </Badge>
                 </div>
 
-                <div className="flex items-center justify-between gap-3">
-                    <Badge className="bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1.5 text-sm font-bold flex-1 justify-center">
-                        <MapPin className="w-3.5 h-3.5 mr-2" />
+                <div className="flex items-center justify-between gap-1.5">
+                    <Badge className="bg-primary text-primary-foreground hover:bg-primary/90 px-2 py-1 text-[11px] font-bold flex-1 justify-center">
+                        <MapPin className="w-3 h-3 mr-1.5" />
                         MESA {order.table?.number || "BALCÃO"}
                     </Badge>
-                    <Badge className={cn("px-3 py-1.5 text-sm font-bold flex-1 justify-center font-mono", getUrgencyColor())}>
-                        <Clock className="w-3.5 h-3.5 mr-2" />
+                    <Badge className={cn("px-2 py-1 text-[11px] font-bold flex-1 justify-center font-mono", getUrgencyColor())}>
+                        <Clock className="w-3 h-3 mr-1.5" />
                         {formatTime(elapsed)}
                     </Badge>
                 </div>
 
                 {/* Tempo de Aceitação (Legal para KDS) */}
-                <p className="text-[10px] text-zinc-400 mt-2 text-right italic font-medium">
+                <p className="text-[10px] text-zinc-400 mt-1 text-right italic font-medium">
                     Aceite às {new Date(order.createdAt).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' })}
                 </p>
             </CardHeader>
 
             {/* Itens do Pedido - Max legibilidade */}
-            <CardContent className="flex-grow py-4 space-y-4 max-h-[400px] overflow-y-auto">
+            <CardContent className="flex-grow py-2 px-3 space-y-2 max-h-[300px] overflow-y-auto">
                 {localItems
                     .filter(item => activeSector === 'ALL' || item.product.category?.preparationSector === activeSector)
                     .map((item) => (
@@ -146,7 +146,7 @@ export function KDSOrderCard({ order, activeSector = 'ALL', onUpdateStatus, onTo
                                     <label
                                         htmlFor={`item-${item.id}`}
                                         className={cn(
-                                            "text-lg font-bold leading-tight cursor-pointer",
+                                            "text-base font-bold leading-tight cursor-pointer",
                                             item.isDone ? "line-through text-zinc-300" : "text-zinc-900"
                                         )}
                                     >
@@ -179,21 +179,21 @@ export function KDSOrderCard({ order, activeSector = 'ALL', onUpdateStatus, onTo
                     ))}
             </CardContent>
 
-            {/* Rodapé - Botões GRANDES (Spec 14.10) */}
-            <CardFooter className="pt-2 pb-4 px-4 border-t border-zinc-100">
+            {/* Rodapé - Botões compactos */}
+            <CardFooter className="pt-2 pb-2 px-3 border-t border-zinc-100">
                 {order.status === 'READY' ? (
                     <Button
-                        size="lg"
-                        className="w-full h-14 text-base font-black uppercase tracking-widest transition-all bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/20"
+                        size="sm"
+                        className="w-full h-10 text-xs font-black uppercase tracking-widest transition-all bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/20"
                         onClick={() => onUpdateStatus(order.id, 'DELIVERED')}
                     >
                         ✓ {t('kds.deliver')}
                     </Button>
                 ) : (
                     <Button
-                        size="lg"
+                        size="sm"
                         className={cn(
-                            "w-full h-14 text-base font-black uppercase tracking-widest transition-all",
+                            "w-full h-10 text-xs font-black uppercase tracking-widest transition-all",
                             allItemsDone
                                 ? "bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 text-primary-foreground"
                                 : "bg-muted text-muted-foreground hover:bg-muted/80 border-none cursor-not-allowed"

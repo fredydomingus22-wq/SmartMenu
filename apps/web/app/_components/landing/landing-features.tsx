@@ -1,43 +1,42 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { TrendingUp, QrCode, ClipboardList, ChevronRight, Zap, BarChart3 } from "lucide-react";
-import Link from "next/link";
+import { Clock, TrendingDown, Users, AlertCircle } from "lucide-react";
 
 const container = {
     hidden: { opacity: 0 },
     show: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.1
+            staggerChildren: 0.15
         }
     }
 };
 
 const item = {
-    hidden: { y: 8, opacity: 0 },
+    hidden: { y: 20, opacity: 0 },
     show: { y: 0, opacity: 1 }
 };
 
 export function LandingFeatures() {
     return (
-        <section id="features" className="py-16 md:py-24 px-6 bg-white dark:bg-zinc-950 border-y border-zinc-100 dark:border-zinc-900">
-            <div className="max-w-7xl mx-auto space-y-16">
-                <div className="text-center space-y-6">
+        <section id="pain" className="py-12 md:py-16 px-6 bg-white relative">
+            <div className="max-w-7xl mx-auto space-y-16 lg:space-y-24">
+                <div className="text-center space-y-6 max-w-3xl mx-auto">
                     <motion.div 
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[10px] font-bold tracking-wider uppercase text-zinc-500"
+                        viewport={{ once: true, margin: "-100px" }}
+                        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 text-red-600 text-[11px] font-bold tracking-widest uppercase"
                     >
-                        <Zap className="h-3 w-3 text-primary" />
-                        <span>Módulos de Transformação</span>
+                        <AlertCircle className="h-4 w-4" />
+                        <span>A Realidade do Mercado</span>
                     </motion.div>
-                    <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-foreground">
-                        Engenharia de precisão para <span className="text-primary">servir</span> melhor.
+                    <h2 className="text-3xl md:text-5xl font-black tracking-tight text-zinc-950 leading-[1.1]">
+                        O serviço lento está a <span className="text-red-600">destruir</span> as suas avaliações.
                     </h2>
-                    <p className="text-muted-foreground max-w-2xl mx-auto text-lg font-normal leading-relaxed">
-                        Desenhamos cada módulo para ser invisível na operação, mas visível nos resultados. Tecnologia nativa que resolve problemas reais.
+                    <p className="text-zinc-800 text-lg md:text-xl font-medium leading-relaxed">
+                        Em Angola, um cliente insatisfeito com a demora não reclama: ele simplesmente nunca mais volta e fala mal de si no grupo do WhatsApp.
                     </p>
                 </div>
 
@@ -45,61 +44,61 @@ export function LandingFeatures() {
                     variants={container}
                     initial="hidden"
                     whileInView="show"
-                    viewport={{ once: true }}
-                    className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
+                    viewport={{ once: true, margin: "-100px" }}
+                    className="grid md:grid-cols-3 gap-8 md:gap-12"
                 >
-                    {/* Feature cards simplified */}
                     {[
                         {
-                            title: "Upsell Inteligente",
-                            desc: "Sugestões automáticas baseadas em IA no momento exato do pedido.",
-                            tag: "+15% Ticket",
-                            icon: TrendingUp,
-                            link: "/features/upsell"
+                            title: "Falta de Mão de Obra",
+                            desc: "Mais garçons não resolvem processos caóticos. A conta nunca fecha.",
+                            stat: "-15%",
+                            statDesc: "Margem de lucro engolida por custos",
+                            icon: Users,
+                            color: "text-amber-600",
+                            bg: "bg-amber-50"
                         },
                         {
-                            title: "Smart BI",
-                            desc: "Dashboards de Power BI nativo para decisões baseadas em dados reais.",
-                            tag: "Real-time",
-                            icon: BarChart3,
-                            link: "/dashboard/analytics"
+                            title: "Demora nos Pedidos",
+                            desc: "20 minutos para anotar um pedido numa sexta-feira à noite é inaceitável.",
+                            stat: "40%",
+                            statDesc: "Dos clientes desistem de pedir sobremesa",
+                            icon: Clock,
+                            color: "text-red-600",
+                            bg: "bg-red-50"
                         },
                         {
-                            title: "Loyalty Club",
-                            desc: "Programa de fidelização customizável para reter os seus melhores clientes.",
-                            tag: "Fidelização",
-                            icon: QrCode,
-                            link: "/features/loyalty"
-                        },
-                        {
-                            title: "Multi-Canal",
-                            desc: "Gestão unificada de Dine-in, Takeaway e Delivery numa única tela.",
-                            tag: "Gestão 360",
-                            icon: ClipboardList,
-                            link: "/features/context-ordering"
+                            title: "Perda de Upsell",
+                            desc: "O garçom na pressa esquece de oferecer a bebida premium ou o extra.",
+                            stat: "-30%",
+                            statDesc: "De receita perdida por esquecimento",
+                            icon: TrendingDown,
+                            color: "text-orange-600",
+                            bg: "bg-orange-50"
                         }
-                    ].map((f, i) => (
-                        <Link key={i} href={f.link} className="group">
-                            <motion.div variants={item} className="p-8 h-full bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 hover:border-primary/20 rounded-2xl transition-all duration-300 flex flex-col justify-between space-y-8">
-                                <div className="space-y-6">
-                                    <div className="h-12 w-12 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors duration-300 shadow-sm">
-                                        <f.icon className="h-5 w-5" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <h3 className="text-xl font-bold leading-tight">{f.title}</h3>
-                                        <p className="text-sm text-zinc-500 dark:text-zinc-400 font-normal leading-relaxed">
-                                            {f.desc}
-                                        </p>
+                    ].map((pain, i) => (
+                        <motion.div key={i} variants={item} className="relative p-8 rounded-3xl bg-zinc-50 border border-zinc-100 shadow-sm hover:shadow-md transition-all duration-300">
+                            <div className="space-y-6">
+                                <div className={`h-14 w-14 rounded-2xl ${pain.bg} flex items-center justify-center`}>
+                                    <pain.icon className={`h-6 w-6 ${pain.color}`} />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                    <h3 className="text-2xl font-bold text-zinc-950">{pain.title}</h3>
+                                    <p className="text-zinc-800 font-medium leading-relaxed">
+                                        {pain.desc}
+                                    </p>
+                                </div>
+
+                                <div className="pt-6 border-t border-zinc-200">
+                                    <div className="flex items-center gap-4">
+                                        <span className={`text-3xl font-black ${pain.color}`}>{pain.stat}</span>
+                                        <span className="text-xs font-bold uppercase tracking-wide text-zinc-700 w-1/2 leading-tight">
+                                            {pain.statDesc}
+                                        </span>
                                     </div>
                                 </div>
-                                <div className="flex items-center justify-between pt-4">
-                                    <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
-                                        {f.tag}
-                                    </span>
-                                    <ChevronRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
-                                </div>
-                            </motion.div>
-                        </Link>
+                            </div>
+                        </motion.div>
                     ))}
                 </motion.div>
             </div>

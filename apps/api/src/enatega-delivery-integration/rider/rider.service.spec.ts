@@ -8,18 +8,18 @@ describe('RiderService', () => {
 
   const mockPrismaService = {
     rider: {
-      findFirst: jest.fn(),
-      create: jest.fn(),
-      findMany: jest.fn(),
-      findUnique: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
+      findFirst: vi.fn(),
+      create: vi.fn(),
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
     },
-    deliveryAssignment: { findMany: jest.fn() },
+    deliveryAssignment: { findMany: vi.fn() },
   };
 
   const mockSupabaseService = {
-    broadcast: jest.fn(),
+    broadcast: vi.fn(),
   };
 
   beforeEach(async () => {

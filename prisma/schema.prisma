@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["multiSchema"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -11,24 +10,24 @@ datasource db {
 }
 
 model Organization {
-  id         String        @id @default(uuid())
-  name       String
-  createdAt  DateTime      @default(now()) @map("created_at")
-  updatedAt  DateTime      @updatedAt @map("updated_at")
-  taxId      String?       @map("tax_id")
-  address    String?
-  city       String?
-  country    String?
-  phone      String?
-  email      String?
-  categories Category[]
-  orderItems OrderItem[]
-  orders     Order[]
-  products   Product[]
-  tables     Table[]
-  tenants    Tenant[]
-  users      UserProfile[]
-  serviceRequests ServiceRequest[]
+  id                 String              @id @default(uuid())
+  name               String
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  taxId              String?             @map("tax_id")
+  address            String?
+  city               String?
+  country            String?
+  phone              String?
+  email              String?
+  categories         Category[]
+  orderItems         OrderItem[]
+  orders             Order[]
+  products           Product[]
+  tables             Table[]
+  tenants            Tenant[]
+  users              UserProfile[]
+  serviceRequests    ServiceRequest[]
   marketingCampaigns MarketingCampaign[]
 
   @@map("organizations")
@@ -36,52 +35,52 @@ model Organization {
 }
 
 model Tenant {
-  id             String        @id @default(uuid())
-  organizationId String        @map("organization_id")
-  name           String
-  slug           String        @unique
-  plan           PlanTier      @default(FREE)
-  createdAt      DateTime      @default(now()) @map("created_at")
-  updatedAt      DateTime      @updatedAt @map("updated_at")
-  description    String?
-  address        String?
-  city           String?
-  phone          String?
-  email          String?
-  whatsapp       String?
-  instagram      String?
-  facebook       String?
-  website        String?
-  images         String[]      @default([])
-  latitude       Float?
-  longitude      Float?
-  fiscalName     String?       @map("fiscal_name")
-  nif            String?
-  categories     Category[]
-  orderItems     OrderItem[]
-  orders         Order[]
-  products       Product[]
-  tables         Table[]
-  organization   Organization  @relation(fields: [organizationId], references: [id])
-  users          UserProfile[]
-  branding       TenantBranding?
-  loyaltyConfig  LoyaltyConfig?
-  customers      CustomerProfile[]
-  loyaltyRewards LoyaltyReward[]
-  recommendations ProductRecommendation[]
-  upsells         ProductUpsell[]
-  menuSections    MenuSection[]
-  footerConfig    FooterConfig?
-  settings        TenantSettings?
-  serviceRequests ServiceRequest[]
-  banners         Banner[]
-  productGroups   ProductGroup[]
+  id                   String                  @id @default(uuid())
+  organizationId       String                  @map("organization_id")
+  name                 String
+  slug                 String                  @unique
+  plan                 PlanTier                @default(FREE)
+  createdAt            DateTime                @default(now()) @map("created_at")
+  updatedAt            DateTime                @updatedAt @map("updated_at")
+  description          String?
+  address              String?
+  city                 String?
+  phone                String?
+  email                String?
+  whatsapp             String?
+  instagram            String?
+  facebook             String?
+  website              String?
+  images               String[]                @default([])
+  latitude             Float?
+  longitude            Float?
+  fiscalName           String?                 @map("fiscal_name")
+  nif                  String?
+  categories           Category[]
+  orderItems           OrderItem[]
+  orders               Order[]
+  products             Product[]
+  tables               Table[]
+  organization         Organization            @relation(fields: [organizationId], references: [id])
+  users                UserProfile[]
+  branding             TenantBranding?
+  loyaltyConfig        LoyaltyConfig?
+  customers            CustomerProfile[]
+  loyaltyRewards       LoyaltyReward[]
+  recommendations      ProductRecommendation[]
+  upsells              ProductUpsell[]
+  menuSections         MenuSection[]
+  footerConfig         FooterConfig?
+  settings             TenantSettings?
+  serviceRequests      ServiceRequest[]
+  banners              Banner[]
+  productGroups        ProductGroup[]
   promotionalSchedules PromotionalSchedule[]
-  events          Event[]
-  marketingCampaigns MarketingCampaign[]
-  notifications   Notification[]
-  riders          Rider[]
-  conversations   Conversation[]
+  events               Event[]
+  marketingCampaigns   MarketingCampaign[]
+  notifications        Notification[]
+  riders               Rider[]
+  conversations        Conversation[]
 
   @@map("tenants")
   @@schema("public")
@@ -105,17 +104,17 @@ model TenantBranding {
 }
 
 model CustomerProfile {
-  id             String              @id @default(uuid())
-  userId         String              @map("user_id") @db.Uuid
-  tenantId       String              @map("tenant_id")
-  pointsBalance  Int                 @default(0) @map("points_balance")
-  createdAt      DateTime            @default(now()) @map("created_at")
-  updatedAt      DateTime            @updatedAt @map("updated_at")
-  tenant         Tenant              @relation(fields: [tenantId], references: [id])
-  user           users               @relation(fields: [userId], references: [id])
-  transactions   PointsTransaction[]
-  orders         Order[]
-  notifications  Notification[]
+  id            String              @id @default(uuid())
+  userId        String              @map("user_id") @db.Uuid
+  tenantId      String              @map("tenant_id")
+  pointsBalance Int                 @default(0) @map("points_balance")
+  createdAt     DateTime            @default(now()) @map("created_at")
+  updatedAt     DateTime            @updatedAt @map("updated_at")
+  tenant        Tenant              @relation(fields: [tenantId], references: [id])
+  user          users               @relation(fields: [userId], references: [id])
+  transactions  PointsTransaction[]
+  orders        Order[]
+  notifications Notification[]
 
   @@unique([userId, tenantId])
   @@index([tenantId])
@@ -125,14 +124,14 @@ model CustomerProfile {
 }
 
 model LoyaltyConfig {
-  id             String   @id @default(uuid())
-  tenantId       String   @unique @map("tenant_id")
-  isActive       Boolean  @default(false) @map("is_active")
-  pointsPerUnit  Decimal  @default(1.0) @map("points_per_unit") @db.Decimal(10, 2)
-  currencyUnit   Decimal  @default(1.0) @map("currency_unit") @db.Decimal(10, 2)
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-  tenant         Tenant   @relation(fields: [tenantId], references: [id])
+  id            String   @id @default(uuid())
+  tenantId      String   @unique @map("tenant_id")
+  isActive      Boolean  @default(false) @map("is_active")
+  pointsPerUnit Decimal  @default(1.0) @map("points_per_unit") @db.Decimal(10, 2)
+  currencyUnit  Decimal  @default(1.0) @map("currency_unit") @db.Decimal(10, 2)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  tenant        Tenant   @relation(fields: [tenantId], references: [id])
 
   @@map("loyalty_configs")
   @@schema("public")
@@ -157,16 +156,16 @@ model LoyaltyReward {
 }
 
 model PointsTransaction {
-  id                String            @id @default(uuid())
-  customerProfileId String            @map("customer_profile_id")
-  tenantId          String            @map("tenant_id")
+  id                String          @id @default(uuid())
+  customerProfileId String          @map("customer_profile_id")
+  tenantId          String          @map("tenant_id")
   amount            Int
   type              TransactionType
   description       String?
-  orderId           String?           @map("order_id")
-  createdAt         DateTime          @default(now()) @map("created_at")
-  customerProfile   CustomerProfile   @relation(fields: [customerProfileId], references: [id], onDelete: Cascade)
-  order             Order?            @relation(fields: [orderId], references: [id])
+  orderId           String?         @map("order_id")
+  createdAt         DateTime        @default(now()) @map("created_at")
+  customerProfile   CustomerProfile @relation(fields: [customerProfileId], references: [id], onDelete: Cascade)
+  order             Order?          @relation(fields: [orderId], references: [id])
 
   @@index([tenantId])
   @@index([customerProfileId])
@@ -248,48 +247,48 @@ model UserProfile {
 }
 
 model Category {
-  id             String       @id @default(uuid())
-  name           Json
+  id                String            @id @default(uuid())
+  name              Json
   preparationSector PreparationSector @default(KITCHEN) @map("preparation_sector")
-  organizationId String       @map("organization_id")
-  tenantId       String       @map("tenant_id")
-  createdAt      DateTime     @default(now()) @map("created_at")
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  tenant         Tenant       @relation(fields: [tenantId], references: [id])
-  products       Product[]
+  organizationId    String            @map("organization_id")
+  tenantId          String            @map("tenant_id")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  organization      Organization      @relation(fields: [organizationId], references: [id])
+  tenant            Tenant            @relation(fields: [tenantId], references: [id])
+  products          Product[]
 
   @@map("categories")
   @@schema("public")
 }
 
 model Product {
-  id             String       @id @default(uuid())
-  name           Json
-  description    Json?
-  price          Decimal      @db.Decimal(10, 2)
-  imageUrl       String?      @map("image_url")
-  isAvailable    Boolean      @default(true) @map("is_available")
-  isFeatured     Boolean      @default(false) @map("is_featured")
-  isNew          Boolean      @default(false) @map("is_new")
-  isBestSeller   Boolean      @default(false) @map("is_best_seller")
-  categoryId     String       @map("category_id")
-  organizationId String       @map("organization_id")
-  tenantId       String       @map("tenant_id")
-  createdAt      DateTime     @default(now()) @map("created_at")
-  category       Category       @relation(fields: [categoryId], references: [id])
-  organization   Organization   @relation(fields: [organizationId], references: [id])
-  tenant         Tenant         @relation(fields: [tenantId], references: [id])
-  orderItems     OrderItem[]
-  images         ProductImage[]
-  options        ProductOption[]
-  recommendations ProductRecommendation[] @relation("ProductRecommendations")
-  recommendedBy   ProductRecommendation[] @relation("RecommendedTo")
-  upsells         ProductUpsell[] @relation("ProductUpsells")
-  upsoldBy        ProductUpsell[] @relation("UpsellTo")
-  minPrepTime     Int?            @map("min_prep_time")
-  maxPrepTime     Int?            @map("max_prep_time")
-  metadata        Json?           @map("metadata")
-  productGroupItems ProductGroupItem[]
+  id                   String                  @id @default(uuid())
+  name                 Json
+  description          Json?
+  price                Decimal                 @db.Decimal(10, 2)
+  imageUrl             String?                 @map("image_url")
+  isAvailable          Boolean                 @default(true) @map("is_available")
+  isFeatured           Boolean                 @default(false) @map("is_featured")
+  isNew                Boolean                 @default(false) @map("is_new")
+  isBestSeller         Boolean                 @default(false) @map("is_best_seller")
+  categoryId           String                  @map("category_id")
+  organizationId       String                  @map("organization_id")
+  tenantId             String                  @map("tenant_id")
+  createdAt            DateTime                @default(now()) @map("created_at")
+  category             Category                @relation(fields: [categoryId], references: [id])
+  organization         Organization            @relation(fields: [organizationId], references: [id])
+  tenant               Tenant                  @relation(fields: [tenantId], references: [id])
+  orderItems           OrderItem[]
+  images               ProductImage[]
+  options              ProductOption[]
+  recommendations      ProductRecommendation[] @relation("ProductRecommendations")
+  recommendedBy        ProductRecommendation[] @relation("RecommendedTo")
+  upsells              ProductUpsell[]         @relation("ProductUpsells")
+  upsoldBy             ProductUpsell[]         @relation("UpsellTo")
+  minPrepTime          Int?                    @map("min_prep_time")
+  maxPrepTime          Int?                    @map("max_prep_time")
+  metadata             Json?                   @map("metadata")
+  productGroupItems    ProductGroupItem[]
   promotionalSchedules PromotionalSchedule[]
 
   @@map("products")
@@ -316,16 +315,16 @@ model ProductOption {
 }
 
 model ProductOptionValue {
-  id             String            @id @default(uuid())
-  optionId       String            @map("option_id")
-  name           Json
-  price          Decimal           @default(0) @db.Decimal(10, 2)
-  isAvailable    Boolean           @default(true) @map("is_available")
-  tenantId       String            @map("tenant_id")
-  organizationId String            @map("organization_id")
-  createdAt      DateTime          @default(now()) @map("created_at")
-  updatedAt      DateTime          @updatedAt @map("updated_at")
-  option         ProductOption     @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  id               String            @id @default(uuid())
+  optionId         String            @map("option_id")
+  name             Json
+  price            Decimal           @default(0) @db.Decimal(10, 2)
+  isAvailable      Boolean           @default(true) @map("is_available")
+  tenantId         String            @map("tenant_id")
+  organizationId   String            @map("organization_id")
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  option           ProductOption     @relation(fields: [optionId], references: [id], onDelete: Cascade)
   orderItemOptions OrderItemOption[]
 
   @@map("product_option_values")
@@ -333,14 +332,14 @@ model ProductOptionValue {
 }
 
 model OrderItemOption {
-  id                  String             @id @default(uuid())
-  orderItemId         String             @map("order_item_id")
+  id                   String             @id @default(uuid())
+  orderItemId          String             @map("order_item_id")
   productOptionValueId String             @map("product_option_value_id")
-  price               Decimal            @db.Decimal(10, 2)
-  tenantId            String             @map("tenant_id")
-  organizationId      String             @map("organization_id")
-  orderItem           OrderItem          @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
-  optionValue         ProductOptionValue @relation(fields: [productOptionValueId], references: [id])
+  price                Decimal            @db.Decimal(10, 2)
+  tenantId             String             @map("tenant_id")
+  organizationId       String             @map("organization_id")
+  orderItem            OrderItem          @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  optionValue          ProductOptionValue @relation(fields: [productOptionValueId], references: [id])
 
   @@map("order_item_options")
   @@schema("public")
@@ -359,42 +358,42 @@ model ProductImage {
 }
 
 model Table {
-  id             String       @id @default(uuid())
-  number         Int
-  qrCode         String?      @map("qr_code")
-  organizationId String       @map("organization_id")
-  tenantId       String       @map("tenant_id")
-  orders         Order[]
+  id              String           @id @default(uuid())
+  number          Int
+  qrCode          String?          @map("qr_code")
+  organizationId  String           @map("organization_id")
+  tenantId        String           @map("tenant_id")
+  orders          Order[]
   serviceRequests ServiceRequest[]
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  tenant         Tenant       @relation(fields: [tenantId], references: [id])
+  organization    Organization     @relation(fields: [organizationId], references: [id])
+  tenant          Tenant           @relation(fields: [tenantId], references: [id])
 
   @@map("tables")
   @@schema("public")
 }
 
 model Order {
-  id              String       @id @default(uuid())
-  status          OrderStatus  @default(PENDING)
-  orderType       OrderType    @default(DINE_IN) @map("order_type")
-  total           Decimal      @db.Decimal(10, 2)
-  tableId         String?      @map("table_id")
-  userId          String?      @map("user_id") @db.Uuid
-  customerProfileId String?    @map("customer_profile_id")
-  organizationId  String       @map("organization_id")
-  tenantId        String       @map("tenant_id")
-  deliveryAddress String?      @map("delivery_address")
-  cancellationReason String?   @map("cancellation_reason")
-  loyaltyRewardId String?      @map("loyalty_reward_id")
-  createdAt       DateTime     @default(now()) @map("created_at")
-  updatedAt       DateTime     @updatedAt @map("updated_at")
-  items          OrderItem[]
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  table          Table?       @relation(fields: [tableId], references: [id])
-  tenant         Tenant       @relation(fields: [tenantId], references: [id])
-  user           users?       @relation(fields: [userId], references: [id])
-  customerProfile CustomerProfile? @relation(fields: [customerProfileId], references: [id])
-  loyaltyReward  LoyaltyReward? @relation(fields: [loyaltyRewardId], references: [id])
+  id                 String              @id @default(uuid())
+  status             OrderStatus         @default(PENDING)
+  orderType          OrderType           @default(DINE_IN) @map("order_type")
+  total              Decimal             @db.Decimal(10, 2)
+  tableId            String?             @map("table_id")
+  userId             String?             @map("user_id") @db.Uuid
+  customerProfileId  String?             @map("customer_profile_id")
+  organizationId     String              @map("organization_id")
+  tenantId           String              @map("tenant_id")
+  deliveryAddress    String?             @map("delivery_address")
+  cancellationReason String?             @map("cancellation_reason")
+  loyaltyRewardId    String?             @map("loyalty_reward_id")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  items              OrderItem[]
+  organization       Organization        @relation(fields: [organizationId], references: [id])
+  table              Table?              @relation(fields: [tableId], references: [id])
+  tenant             Tenant              @relation(fields: [tenantId], references: [id])
+  user               users?              @relation(fields: [userId], references: [id])
+  customerProfile    CustomerProfile?    @relation(fields: [customerProfileId], references: [id])
+  loyaltyReward      LoyaltyReward?      @relation(fields: [loyaltyRewardId], references: [id])
   pointsTransactions PointsTransaction[]
   deliveryAssignment DeliveryAssignment?
   conversation       Conversation?
@@ -438,19 +437,19 @@ model Rider {
   currentLat     Float?      @map("current_lat")
   currentLng     Float?      @map("current_lng")
   lastLocationAt DateTime?   @map("last_location_at")
-  
+
   // Earnings & Stats
-  totalDeliveries Int        @default(0) @map("total_deliveries")
-  totalEarnings   Decimal    @default(0) @map("total_earnings") @db.Decimal(10, 2)
-  rating          Float      @default(5.0)
+  totalDeliveries Int     @default(0) @map("total_deliveries")
+  totalEarnings   Decimal @default(0) @map("total_earnings") @db.Decimal(10, 2)
+  rating          Float   @default(5.0)
 
-  createdAt      DateTime    @default(now()) @map("created_at")
-  updatedAt      DateTime    @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  user           users       @relation(fields: [userId], references: [id])
-  tenant         Tenant      @relation(fields: [tenantId], references: [id])
-  vehicle        Vehicle?
-  assignments    DeliveryAssignment[]
+  user        users                @relation(fields: [userId], references: [id])
+  tenant      Tenant               @relation(fields: [tenantId], references: [id])
+  vehicle     Vehicle?
+  assignments DeliveryAssignment[]
 
   @@index([tenantId])
   @@index([status])
@@ -459,38 +458,38 @@ model Rider {
 }
 
 model Vehicle {
-  id        String   @id @default(uuid())
-  riderId   String   @unique @map("rider_id")
-  type      String   // moto, bike, scooter, car
-  plate     String?
-  model     String?
-  color     String?
-  
+  id      String  @id @default(uuid())
+  riderId String  @unique @map("rider_id")
+  type    String // moto, bike, scooter, car
+  plate   String?
+  model   String?
+  color   String?
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  rider     Rider    @relation(fields: [riderId], references: [id], onDelete: Cascade)
+  rider Rider @relation(fields: [riderId], references: [id], onDelete: Cascade)
 
   @@map("vehicles")
   @@schema("public")
 }
 
 model DeliveryAssignment {
-  id          String         @id @default(uuid())
-  orderId     String         @unique @map("order_id")
-  riderId     String         @map("rider_id")
-  status      DeliveryStatus @default(ASSIGNED)
-  
-  assignedAt  DateTime       @default(now()) @map("assigned_at")
-  pickedUpAt  DateTime?      @map("picked_up_at")
-  deliveredAt DateTime?      @map("delivered_at")
+  id      String         @id @default(uuid())
+  orderId String         @unique @map("order_id")
+  riderId String         @map("rider_id")
+  status  DeliveryStatus @default(ASSIGNED)
 
-  deliveryFee Decimal        @default(0) @map("delivery_fee") @db.Decimal(10, 2)
-  distance    Float?         // in km or meters
-  duration    Int?           // estimated minutes
-  
-  order       Order          @relation(fields: [orderId], references: [id])
-  rider       Rider          @relation(fields: [riderId], references: [id])
+  assignedAt  DateTime  @default(now()) @map("assigned_at")
+  pickedUpAt  DateTime? @map("picked_up_at")
+  deliveredAt DateTime? @map("delivered_at")
+
+  deliveryFee Decimal @default(0) @map("delivery_fee") @db.Decimal(10, 2)
+  distance    Float? // in km or meters
+  duration    Int? // estimated minutes
+
+  order Order @relation(fields: [orderId], references: [id])
+  rider Rider @relation(fields: [riderId], references: [id])
 
   @@index([riderId])
   @@index([status])
@@ -499,14 +498,14 @@ model DeliveryAssignment {
 }
 
 model ProductRecommendation {
-  id             String   @id @default(uuid())
-  tenantId       String   @map("tenant_id")
-  productId      String   @map("product_id")
-  recommendedId  String   @map("recommended_id")
-  createdAt      DateTime @default(now()) @map("created_at")
-  tenant         Tenant   @relation(fields: [tenantId], references: [id])
-  product        Product  @relation("ProductRecommendations", fields: [productId], references: [id])
-  recommended    Product  @relation("RecommendedTo", fields: [recommendedId], references: [id])
+  id            String   @id @default(uuid())
+  tenantId      String   @map("tenant_id")
+  productId     String   @map("product_id")
+  recommendedId String   @map("recommended_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  tenant        Tenant   @relation(fields: [tenantId], references: [id])
+  product       Product  @relation("ProductRecommendations", fields: [productId], references: [id])
+  recommended   Product  @relation("RecommendedTo", fields: [recommendedId], references: [id])
 
   @@unique([productId, recommendedId])
   @@map("product_recommendations")
@@ -514,14 +513,14 @@ model ProductRecommendation {
 }
 
 model ProductUpsell {
-  id             String   @id @default(uuid())
-  tenantId       String   @map("tenant_id")
-  productId      String   @map("product_id")
-  upsellId       String   @map("upsell_id")
-  createdAt      DateTime @default(now()) @map("created_at")
-  tenant         Tenant   @relation(fields: [tenantId], references: [id])
-  product        Product  @relation("ProductUpsells", fields: [productId], references: [id])
-  upsell         Product  @relation("UpsellTo", fields: [upsellId], references: [id])
+  id        String   @id @default(uuid())
+  tenantId  String   @map("tenant_id")
+  productId String   @map("product_id")
+  upsellId  String   @map("upsell_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  product   Product  @relation("ProductUpsells", fields: [productId], references: [id])
+  upsell    Product  @relation("UpsellTo", fields: [upsellId], references: [id])
 
   @@unique([productId, upsellId])
   @@map("product_upsells")
@@ -529,30 +528,30 @@ model ProductUpsell {
 }
 
 model MenuSection {
-  id             String   @id @default(uuid())
-  tenantId       String   @map("tenant_id")
-  name           String
-  type           String   // e.g., "hero", "featured", "category_grid"
-  order          Int      @default(0)
-  isActive       Boolean  @default(true) @map("is_active")
-  config         Json?    @map("config")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-  tenant         Tenant   @relation(fields: [tenantId], references: [id])
+  id        String   @id @default(uuid())
+  tenantId  String   @map("tenant_id")
+  name      String
+  type      String // e.g., "hero", "featured", "category_grid"
+  order     Int      @default(0)
+  isActive  Boolean  @default(true) @map("is_active")
+  config    Json?    @map("config")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
 
   @@map("menu_sections")
   @@schema("public")
 }
 
 model FooterConfig {
-  id             String   @id @default(uuid())
-  tenantId       String   @unique @map("tenant_id")
-  socials        Json?    // { "instagram": "...", "facebook": "..." }
-  links          Json?    // [{ "label": "...", "url": "..." }]
-  contactInfo    Json?    @map("contact_info") // { "phone": "...", "email": "..." }
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-  tenant         Tenant   @relation(fields: [tenantId], references: [id])
+  id          String   @id @default(uuid())
+  tenantId    String   @unique @map("tenant_id")
+  socials     Json? // { "instagram": "...", "facebook": "..." }
+  links       Json? // [{ "label": "...", "url": "..." }]
+  contactInfo Json?    @map("contact_info") // { "phone": "...", "email": "..." }
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  tenant      Tenant   @relation(fields: [tenantId], references: [id])
 
   @@map("footer_configs")
   @@schema("public")
@@ -576,35 +575,35 @@ model TenantSettings {
 // ========== MARKETING & PROMOTIONS ==========
 
 model Banner {
-  id           String   @id @default(uuid())
-  tenantId     String   @map("tenant_id")
-  type         String   // 'hero' | 'footer'
-  title        Json?
-  subtitle     Json?
-  buttonText   Json?    @map("button_text")
-  buttonLink   String?  @map("button_link")
-  imageUrl     String?  @map("image_url")
-  isActive     Boolean  @default(true) @map("is_active")
-  order        Int      @default(0)
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-  tenant       Tenant   @relation(fields: [tenantId], references: [id])
+  id         String   @id @default(uuid())
+  tenantId   String   @map("tenant_id")
+  type       String // 'hero' | 'footer'
+  title      Json?
+  subtitle   Json?
+  buttonText Json?    @map("button_text")
+  buttonLink String?  @map("button_link")
+  imageUrl   String?  @map("image_url")
+  isActive   Boolean  @default(true) @map("is_active")
+  order      Int      @default(0)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  tenant     Tenant   @relation(fields: [tenantId], references: [id])
 
   @@map("banners")
   @@schema("public")
 }
 
 model ProductGroup {
-  id          String   @id @default(uuid())
-  tenantId    String   @map("tenant_id")
+  id          String             @id @default(uuid())
+  tenantId    String             @map("tenant_id")
   name        Json
   slug        String
   description Json?
-  imageUrl    String?  @map("image_url")
-  isActive    Boolean  @default(true) @map("is_active")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+  imageUrl    String?            @map("image_url")
+  isActive    Boolean            @default(true) @map("is_active")
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
+  tenant      Tenant             @relation(fields: [tenantId], references: [id])
   items       ProductGroupItem[]
 
   @@unique([tenantId, slug])
@@ -613,30 +612,30 @@ model ProductGroup {
 }
 
 model ProductGroupItem {
-  id          String       @id @default(uuid())
-  groupId     String       @map("group_id")
-  productId   String       @map("product_id")
-  order       Int          @default(0)
-  group       ProductGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  product     Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id        String       @id @default(uuid())
+  groupId   String       @map("group_id")
+  productId String       @map("product_id")
+  order     Int          @default(0)
+  group     ProductGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  product   Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("product_group_items")
   @@schema("public")
 }
 
 model PromotionalSchedule {
-  id          String    @id @default(uuid())
-  tenantId    String    @map("tenant_id")
-  productId   String    @map("product_id")
-  startDate   DateTime  @map("start_date")
-  endDate     DateTime? @map("end_date")
-  isSpecial   Boolean   @default(false) @map("is_special")
-  label       String?
-  discount    Decimal?  @db.Decimal(5, 2)
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  tenant      Tenant    @relation(fields: [tenantId], references: [id])
-  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id        String    @id @default(uuid())
+  tenantId  String    @map("tenant_id")
+  productId String    @map("product_id")
+  startDate DateTime  @map("start_date")
+  endDate   DateTime? @map("end_date")
+  isSpecial Boolean   @default(false) @map("is_special")
+  label     String?
+  discount  Decimal?  @db.Decimal(5, 2)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("promotional_schedules")
   @@schema("public")
@@ -662,18 +661,18 @@ model Event {
 }
 
 model OrderItem {
-  id             String       @id @default(uuid())
-  orderId        String       @map("order_id")
-  productId      String       @map("product_id")
-  organizationId String       @map("organization_id")
-  tenantId       String       @map("tenant_id")
+  id             String            @id @default(uuid())
+  orderId        String            @map("order_id")
+  productId      String            @map("product_id")
+  organizationId String            @map("organization_id")
+  tenantId       String            @map("tenant_id")
   quantity       Int
-  price          Decimal      @db.Decimal(10, 2)
+  price          Decimal           @db.Decimal(10, 2)
   notes          String?
-  order          Order        @relation(fields: [orderId], references: [id])
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  tenant         Tenant       @relation(fields: [tenantId], references: [id])
-  product        Product      @relation(fields: [productId], references: [id])
+  order          Order             @relation(fields: [orderId], references: [id])
+  organization   Organization      @relation(fields: [organizationId], references: [id])
+  tenant         Tenant            @relation(fields: [tenantId], references: [id])
+  product        Product           @relation(fields: [productId], references: [id])
   options        OrderItemOption[]
 
   @@map("order_items")
@@ -708,6 +707,7 @@ model flow_state {
   updated_at             DateTime?             @db.Timestamptz(6)
   authentication_method  String
   auth_code_issued_at    DateTime?             @db.Timestamptz(6)
+  email_optional         Boolean?              @default(false)
   saml_relay_states      saml_relay_states[]
 
   @@index([created_at(sort: Desc)])
@@ -1035,41 +1035,41 @@ model sso_providers {
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model users {
-  instance_id                 String?                @db.Uuid
-  id                          String                 @id @db.Uuid
-  aud                         String?                @db.VarChar(255)
-  role                        String?                @db.VarChar(255)
-  email                       String?                @db.VarChar(255)
-  encrypted_password          String?                @db.VarChar(255)
-  email_confirmed_at          DateTime?              @db.Timestamptz(6)
-  invited_at                  DateTime?              @db.Timestamptz(6)
-  confirmation_token          String?                @db.VarChar(255)
-  confirmation_sent_at        DateTime?              @db.Timestamptz(6)
-  recovery_token              String?                @db.VarChar(255)
-  recovery_sent_at            DateTime?              @db.Timestamptz(6)
-  email_change_token_new      String?                @db.VarChar(255)
-  email_change                String?                @db.VarChar(255)
-  email_change_sent_at        DateTime?              @db.Timestamptz(6)
-  last_sign_in_at             DateTime?              @db.Timestamptz(6)
+  instance_id                 String?                   @db.Uuid
+  id                          String                    @id @db.Uuid
+  aud                         String?                   @db.VarChar(255)
+  role                        String?                   @db.VarChar(255)
+  email                       String?                   @db.VarChar(255)
+  encrypted_password          String?                   @db.VarChar(255)
+  email_confirmed_at          DateTime?                 @db.Timestamptz(6)
+  invited_at                  DateTime?                 @db.Timestamptz(6)
+  confirmation_token          String?                   @db.VarChar(255)
+  confirmation_sent_at        DateTime?                 @db.Timestamptz(6)
+  recovery_token              String?                   @db.VarChar(255)
+  recovery_sent_at            DateTime?                 @db.Timestamptz(6)
+  email_change_token_new      String?                   @db.VarChar(255)
+  email_change                String?                   @db.VarChar(255)
+  email_change_sent_at        DateTime?                 @db.Timestamptz(6)
+  last_sign_in_at             DateTime?                 @db.Timestamptz(6)
   raw_app_meta_data           Json?
   raw_user_meta_data          Json?
   is_super_admin              Boolean?
-  created_at                  DateTime?              @db.Timestamptz(6)
-  updated_at                  DateTime?              @db.Timestamptz(6)
-  phone                       String?                @unique
-  phone_confirmed_at          DateTime?              @db.Timestamptz(6)
-  phone_change                String?                @default("")
-  phone_change_token          String?                @default("") @db.VarChar(255)
-  phone_change_sent_at        DateTime?              @db.Timestamptz(6)
-  confirmed_at                DateTime?              @default(dbgenerated("LEAST(email_confirmed_at, phone_confirmed_at)")) @db.Timestamptz(6)
-  email_change_token_current  String?                @default("") @db.VarChar(255)
-  email_change_confirm_status Int?                   @default(0) @db.SmallInt
-  banned_until                DateTime?              @db.Timestamptz(6)
-  reauthentication_token      String?                @default("") @db.VarChar(255)
-  reauthentication_sent_at    DateTime?              @db.Timestamptz(6)
-  is_sso_user                 Boolean                @default(false)
-  deleted_at                  DateTime?              @db.Timestamptz(6)
-  is_anonymous                Boolean                @default(false)
+  created_at                  DateTime?                 @db.Timestamptz(6)
+  updated_at                  DateTime?                 @db.Timestamptz(6)
+  phone                       String?                   @unique
+  phone_confirmed_at          DateTime?                 @db.Timestamptz(6)
+  phone_change                String?                   @default("")
+  phone_change_token          String?                   @default("") @db.VarChar(255)
+  phone_change_sent_at        DateTime?                 @db.Timestamptz(6)
+  confirmed_at                DateTime?                 @default(dbgenerated("LEAST(email_confirmed_at, phone_confirmed_at)")) @db.Timestamptz(6)
+  email_change_token_current  String?                   @default("") @db.VarChar(255)
+  email_change_confirm_status Int?                      @default(0) @db.SmallInt
+  banned_until                DateTime?                 @db.Timestamptz(6)
+  reauthentication_token      String?                   @default("") @db.VarChar(255)
+  reauthentication_sent_at    DateTime?                 @db.Timestamptz(6)
+  is_sso_user                 Boolean                   @default(false)
+  deleted_at                  DateTime?                 @db.Timestamptz(6)
+  is_anonymous                Boolean                   @default(false)
   conversations               ConversationParticipant[]
   identities                  identities[]
   mfa_factors                 mfa_factors[]
@@ -1226,9 +1226,9 @@ model MarketingCampaign {
   tenant       Tenant       @relation(fields: [tenantId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id])
 
+  @@index([tenantId])
   @@map("marketing_campaigns")
   @@schema("public")
-  @@index([tenantId])
 }
 
 model Notification {
@@ -1246,53 +1246,53 @@ model Notification {
   tenant          Tenant          @relation(fields: [tenantId], references: [id])
   customerProfile CustomerProfile @relation(fields: [customerProfileId], references: [id])
 
-  @@map("notifications")
-  @@schema("public")
   @@index([customerProfileId])
   @@index([tenantId])
+  @@map("notifications")
+  @@schema("public")
 }
 
 model Conversation {
-  id             String                   @id @default(uuid())
-  tenantId       String                   @map("tenant_id")
-  orderId        String?                  @unique @map("order_id")
-  type           ConversationType         @default(SUPPORT)
-  createdAt      DateTime                 @default(now()) @map("created_at")
-  updatedAt      DateTime                 @updatedAt @map("updated_at")
-  
-  tenant         Tenant                   @relation(fields: [tenantId], references: [id])
-  order          Order?                   @relation(fields: [orderId], references: [id])
-  messages       Message[]
-  participants   ConversationParticipant[]
+  id        String           @id @default(uuid())
+  tenantId  String           @map("tenant_id")
+  orderId   String?          @unique @map("order_id")
+  type      ConversationType @default(SUPPORT)
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+
+  tenant       Tenant                    @relation(fields: [tenantId], references: [id])
+  order        Order?                    @relation(fields: [orderId], references: [id])
+  messages     Message[]
+  participants ConversationParticipant[]
 
   @@map("conversations")
   @@schema("public")
 }
 
 model Message {
-  id             String       @id @default(uuid())
-  conversationId String       @map("conversation_id")
-  senderId       String       @map("sender_id") @db.Uuid
-  senderType     SenderType   @map("sender_type")
+  id             String     @id @default(uuid())
+  conversationId String     @map("conversation_id")
+  senderId       String     @map("sender_id") @db.Uuid
+  senderType     SenderType @map("sender_type")
   content        String
-  metadata       Json?        @default("{}")
-  createdAt      DateTime     @default(now()) @map("created_at")
-  readAt         DateTime?    @map("read_at")
-  
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  metadata       Json?      @default("{}")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  readAt         DateTime?  @map("read_at")
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@map("messages")
   @@schema("public")
 }
 
 model ConversationParticipant {
-  id             String       @id @default(uuid())
-  conversationId String       @map("conversation_id")
-  userId         String       @map("user_id") @db.Uuid
-  lastReadAt     DateTime?    @map("last_read_at")
-  
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  user           users        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String    @id @default(uuid())
+  conversationId String    @map("conversation_id")
+  userId         String    @map("user_id") @db.Uuid
+  lastReadAt     DateTime? @map("last_read_at")
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         users        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([conversationId, userId])
   @@map("conversation_participants")
@@ -1311,5 +1311,19 @@ enum SenderType {
   RIDER
   ADMIN
 
+  @@schema("public")
+}
+
+model Lead {
+  id             String   @id @default(uuid())
+  name           String
+  email          String
+  phone          String
+  restaurantName String   @map("restaurant_name")
+  tenantSource   String?  @map("tenant_source")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@map("leads")
   @@schema("public")
 }

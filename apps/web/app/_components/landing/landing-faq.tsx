@@ -31,13 +31,13 @@ export function LandingFAQ() {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
 
     return (
-        <section className="py-16 md:py-20 px-6 bg-zinc-50 dark:bg-zinc-950/40">
+        <section id="faq" className="py-12 md:py-16 px-6 bg-zinc-50 relative overflow-hidden">
             <div className="max-w-4xl mx-auto space-y-12">
                 <div className="text-center space-y-6">
-                    <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-foreground">
+                    <h2 className="text-3xl md:text-5xl font-black tracking-tight text-zinc-950 leading-[1.1]">
                         Respostas para a sua <span className="text-primary">operação</span>.
                     </h2>
-                    <p className="text-muted-foreground max-w-2xl mx-auto text-lg font-normal leading-relaxed">
+                    <p className="text-zinc-800 text-lg md:text-xl font-medium leading-relaxed">
                         Tudo o que precisa de saber sobre a implementação do ecossistema SmartMenu no seu restaurante.
                     </p>
                 </div>
@@ -46,16 +46,16 @@ export function LandingFAQ() {
                     {faqs.map((faq, i) => (
                         <motion.div
                             key={i}
-                            className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-white/5 overflow-hidden shadow-sm"
+                            className="bg-white rounded-2xl border border-zinc-100 overflow-hidden shadow-sm"
                         >
                             <button
                                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
                                 className="w-full p-6 text-left flex items-center justify-between gap-4 group"
                             >
-                                <span className="font-bold text-lg text-zinc-900 dark:text-zinc-50 group-hover:text-primary transition-colors">
+                                <span className="font-bold text-lg text-zinc-950 group-hover:text-primary transition-colors">
                                     {faq.question}
                                 </span>
-                                <ChevronDown className={`w-5 h-5 text-zinc-400 transition-transform duration-300 ${openIndex === i ? "rotate-180 text-primary" : ""}`} />
+                                <ChevronDown className={`w-5 h-5 text-zinc-700 transition-transform duration-300 ${openIndex === i ? "rotate-180 text-primary" : ""}`} />
                             </button>
                             <AnimatePresence>
                                 {openIndex === i && (
@@ -65,7 +65,7 @@ export function LandingFAQ() {
                                         exit={{ height: 0, opacity: 0 }}
                                         transition={{ duration: 0.3, ease: "easeInOut" }}
                                     >
-                                        <div className="px-6 pb-6 text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed">
+                                        <div className="px-6 pb-6 text-zinc-700 font-medium leading-relaxed">
                                             {faq.answer}
                                         </div>
                                     </motion.div>

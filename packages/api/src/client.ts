@@ -30,6 +30,7 @@ export function createCoreApiClient(baseUrl: string, options: RequestOptions = {
         }
 
         try {
+            console.log(`[apiClient:core] 🚀 Fetching: ${url}`);
             const response = await fetch(url, {
                 ...fetchOptions,
                 headers,

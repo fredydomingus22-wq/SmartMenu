@@ -1,7 +1,7 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
-import prisma from '@/utils/prisma';
+import { prisma } from '@/utils/prisma';
 import { Prisma } from '@prisma/client';
 
 interface OnboardingData {
