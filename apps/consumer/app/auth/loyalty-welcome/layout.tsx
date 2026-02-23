@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Clube de Recompensas | SmartMenu",
+    title: "Clube de Recompensas",
     description: "Crie sua conta em 1 minuto e transforme cada pedido em pontos, descontos e pratos grátis.",
     openGraph: {
-        title: "Ganhe Recompensas no SmartMenu",
+        title: "Ganhe Recompensas",
         description: "O jeito mais inteligente de pedir e ganhar.",
         type: "website",
     }

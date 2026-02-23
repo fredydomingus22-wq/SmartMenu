@@ -80,7 +80,7 @@ function LoyaltyWelcomeContent() {
                     transition={{ delay: 0.1 }}
                     className="text-zinc-500 font-medium max-w-[280px] mx-auto text-sm"
                 >
-                    O Clube SmartMenu é a sua chave para experiências exclusivas e pratos por conta da casa.
+                    O nosso Clube de Recompensas é a sua chave para experiências exclusivas e pratos por conta da casa.
                 </motion.p>
 
                 {/* Social Proof Badge */}

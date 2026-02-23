@@ -99,7 +99,7 @@ export function PublicMenuHeader({ branding, tableId, enabledLanguages }: Public
                     unoptimized
                 />
             ) : undefined}
-            title={branding?.tenantName || "SmartMenu"}
+            title={branding?.tenantName || "Menu Digital"}
             subtitle={tableId ? (
                 <div className="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-primary uppercase tracking-widest mt-1">
                     <MapPin className="h-3 w-3" />

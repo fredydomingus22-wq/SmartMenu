@@ -7,6 +7,7 @@
 **Status:** Ativo - TODAS AS NCs RESOLVIDAS ✅ | Deploy Seguro Pronto 🚀
 
 ### 🎯 OBJETIVOS
+
 - ✅ Corrigir 4 violações críticas identificadas na auditoria (3/4 corrigidas)
 - ✅ Restaurar conformidade de segurança e arquitetura
 - Preparar base para deploy seguro
@@ -18,37 +19,46 @@
 **Data:** Janeiro 2026  
 **Progresso Atual:** 85% Completo  
 **Fase Atual:** FASE MOBILE AVANÇADO — Sprints 7-10 Concluídos | Sprint 11 Planejado  
-**Status:** Ativo - Apps Mobile Funcionais ✅ | PWA Implementado ✅ | Próximo: Integração Final  
+**Status:** Ativo - Apps Mobile Funcionais ✅ | PWA Implementado ✅ | Próximo: Integração Final
 
 ### ✅ FASES CONCLUÍDAS
+
 - **FASE EMERGÊNCIA:** Segurança e isolamento de packages ✅
-- **FASE ARQUITETURA:** App mobile MVP e packages otimizados ✅  
+- **FASE ARQUITETURA:** App mobile MVP e packages otimizados ✅
 - **FASE INFRAESTRUTURA:** Segurança avançada e performance ✅
 - **FASE MOBILE AVANÇADO:** Sprints 7-10 (Apps consumidor, admin, KDS e PWA) ✅ | Sprint 11 Planejado
 
 ### 🚧 PRÓXIMA FASE
+
 - **FASE MOBILE AVANÇADO:** Completar Sprints 7,9-11 (Fevereiro 2026)
 - **Objetivo:** Finalizar funcionalidades avançadas dos apps móveis
 - **Prioridade:** ALTA - Apps móveis precisam de todas as funcionalidades
 
 ### 🎯 PRÓXIMOS PASSOS
+
 1. **Sprint 9:** App Mobile KDS (1 semana) ✅ CONCLUÍDO - Interface para cozinha
-2. **Sprint 10:** PWA Integration (1 semana) ✅ CONCLUÍDO - Dashboard como PWA  
+2. **Sprint 10:** PWA Integration (1 semana) ✅ CONCLUÍDO - Dashboard como PWA
 3. **Sprint 11:** Integração e Testes (1.5 semanas) - Validação completa
 4. **Sprint 12: Advanced BI & Orders Upgrade (ATUAL)**
    - [ ] Implementação de BI (Horários de pico, Rankings)
    - [ ] Refatoração de Orders (Ações, Filtros Avançados)
    - [ ] Otimização Mobile (Gestos, Bottom Sheets)
-5. **FASE BACKEND:** Setup APIs NestJS + Database (4 semanas)
+5. **Sprint 12b: Remediation & Tech Debt (2 semanas - URGENTE)**
+   - [ ] Unificação do Tailwind CSS (Downgrade Root v4 -> v3 ou Upgrade Apps).
+   - [ ] Alinhamento de versões React e TypeScript em todo o monorepo.
+   - [ ] Upgrade do Supabase Client para v2.95 em todas as apps/packages.
+6. **FASE BACKEND:** Setup APIs NestJS + Database (4 semanas)
 
 ---
 
 ### Sprint 1: Secrets Hardcoded (2-3 dias) ✅ CONCLUÍDO
+
 **Responsável:** Security Engineer + Code Quality Specialist
 **Status:** ✅ Finalizado
 **Data:** Janeiro 2026
 
 **Tarefas Concluídas:**
+
 - [x] **Identificar todos os arquivos** com chaves hardcoded
   - `scripts/setup-storage.js` - service role key
   - `apps/consumer/proxy.ts` - anon key fallback
@@ -67,17 +77,20 @@
 - [x] **Auditar logs** para exposição histórica
 
 **Critérios de Aceitação:** ✅ ATINGIDOS
+
 - ✅ Nenhum arquivo contém chaves reais
 - ✅ Builds passam com variáveis undefined
 - ✅ Documentação de configuração atualizada
 
 ### Sprint 2: Isolamento de Packages (3-5 dias) ✅ CONCLUÍDO
+
 **Responsável:** System Architect + Code Quality Specialist
 **Status:** ✅ Finalizado
 **Data:** Janeiro 2026
 **Objetivo:** Corrigir side-effects em packages compartilhados
 
 **Tarefas Concluídas:**
+
 - [x] **Refatorar packages/ui/src/lib/supabase-client.ts**
   - Remover acesso direto a `process.env`
   - Criar função que recebe parâmetros (supabaseUrl, supabaseKey)
@@ -93,6 +106,7 @@
   - Builds isolados funcionando
 
 **Critérios de Aceitação:** ✅ ATINGIDOS
+
 - ✅ Packages não acessam `process.env`
 - ✅ Sem imports relativos entre packages
 - ✅ Tests de isolamento passando
@@ -102,12 +116,14 @@
 ## 🏗️ FASE ARQUITETURA — MOBILE & PACKAGES (Semanas 3-6)
 
 ### Sprint 3: App Mobile MVP (2-3 semanas) ✅ CONCLUÍDO
+
 **Responsável:** UI/UX Designer + Mobile Layout Specialist + System Architect
 **Status:** ✅ Finalizado
 **Data:** Janeiro 2026
 **Objetivo:** Implementar app mobile conforme requisitos
 
 **Tarefas Concluídas:**
+
 - [x] **Setup Expo + React Native**
   - Criar `apps/mobile/` com Expo + TypeScript
   - Configurar estrutura de pastas (src/screens, src/components, etc.)
@@ -132,18 +148,21 @@
   - Build funcionando sem erros
 
 **Critérios de Aceitação:** ✅ ATINGIDOS
+
 - ✅ App mobile funcional no iOS/Android (Expo)
 - ✅ UI própria (não web wrapped) - componentes nativos
 - ✅ Tokens compartilhados - integração com @smart-menu/ui
 - ✅ SecureStore implementado - autenticação segura
 
 ### Sprint 4: Otimização de Packages (1 semana) ✅ CONCLUÍDO
+
 **Responsável:** Code Quality Specialist + Automation Specialist
 **Status:** ✅ Finalizado
 **Data:** Janeiro 2026
 **Objetivo:** Melhorar qualidade e performance dos packages
 
 **Tarefas:**
+
 - [ ] **Configurar turbo.json**
   - Pipeline de build otimizado
   - Cache inteligente
@@ -162,12 +181,14 @@
 ## 🛡️ FASE INFRAESTRUTURA — SEGURANÇA & PERFORMANCE (Semanas 7-8)
 
 ### Sprint 5: Segurança Avançada (1 semana) ✅ CONCLUÍDO
+
 **Responsável:** Security Engineer + System Architect
 **Status:** ✅ Finalizado
 **Data:** Janeiro 2026
 **Objetivo:** Implementar proteções críticas
 
 **Tarefas Concluídas:**
+
 - [x] **Content Security Policy (CSP)**
   - Configurar headers CSP no Next.js via proxy.ts
   - Políticas para scripts, estilos, conexões e frames
@@ -185,16 +206,19 @@
   - Credentials habilitados apenas para domínios autorizados
 
 **Critérios de Aceitação:** ✅ ATINGIDOS
+
 - ✅ CSP configurado e ativo em todas as rotas
 - ✅ Rate limiting funcional (100 req/min)
 - ✅ Headers de segurança presentes em todas as respostas
 - ✅ Zero vulnerabilidades críticas restantes
 
 ### Sprint 6: Performance & Qualidade (1 semana)
+
 **Responsável:** QA Engineer + Code Quality Specialist
 **Objetivo:** Otimizar performance e qualidade
 
 **Tarefas:**
+
 - [ ] **Layout Shift Zero**
   - Implementar skeletons consistentes
   - Lazy loading otimizado
@@ -217,16 +241,19 @@
 ## 📊 MÉTRICAS DE SUCESSO
 
 ### Segurança (Dia 5)
+
 - ✅ Zero chaves hardcoded
 - ✅ Packages isolados
 - ✅ CSP ativo
 
 ### Arquitetura (Semana 6)
+
 - ✅ App mobile funcional
 - ✅ turbo.json configurado
 - ✅ Bundle otimizado
 
 ### Infraestrutura (Semana 8)
+
 - ✅ Rate limiting implementado
 - ✅ Performance baseline estabelecido
 - ✅ Cobertura de testes >80%
@@ -236,11 +263,13 @@
 ## 🚨 DEPENDÊNCIAS & BLOQUEADORES
 
 ### Dependências Técnicas
+
 - **Segurança:** Deve ser feita ANTES de qualquer deploy
 - **Mobile:** Pode ser paralelo após isolamento de packages
 - **Performance:** Depende de arquitetura corrigida
 
 ### Bloqueadores Potenciais
+
 - **Deploy Bloqueado:** Até correção de secrets
 - **Mobile Release:** Depende de design system estável
 - **CI/CD:** Quebrado até isolamento de packages
@@ -250,25 +279,30 @@
 ## 👥 RESPONSABILIDADES POR AGENT
 
 ### Security Engineer (`agents/07_Security_Engineer.md`)
+
 - Secrets hardcoded (Sprint 1)
 - CSP & Headers (Sprint 5)
 - Auditoria de segurança
 
 ### System Architect (`agents/02_System_Architect.md`)
+
 - Isolamento de packages (Sprint 2)
 - Rate limiting (Sprint 5)
 - Arquitetura mobile (Sprint 3)
 
 ### Code Quality Specialist (`agents/08_Code_Quality_Specialist.md`)
+
 - Refatoração de imports (Sprint 2)
 - Turbo & bundle optimization (Sprint 4)
 - Testes e qualidade (Sprint 6)
 
 ### UI/UX Designer + Mobile Layout (`agents/03_UI_UX_Designer.md` + `agents/14_Mobile_Layout_Specialist.md`)
+
 - App mobile design (Sprint 3)
 - UI/UX mobile-first (Sprint 3)
 
 ### QA Engineer (`agents/06_QA_Engineer.md`)
+
 - Testes abrangentes (Sprint 6)
 - Performance validation (Sprint 6)
 
@@ -278,20 +312,22 @@
 
 **Status:** Planejamento concluído  
 **Próximo:** Executar Sprint 1 (Segurança)  
-**Deadline:** Correções críticas em 2 semanas  
+**Deadline:** Correções críticas em 2 semanas
 
 **Comando para iniciar:**
+
 ```bash
 # Act as @agents/14_Mobile_Layout_Specialist.md and start Sprint 9: App Mobile KDS
 ```
+
 - [x] **Internationalization (i18n):** Migração completa de UI strings para `pt.json` e suporte a tradução básica no cliente.
 - [ ] **Backend i18n Strategy:** Migrar campos `name/description` para JSONB para suporte total a múltiplos idiomas. (High Priority)
 - [ ] **E-commerce Showcase Refactor:** Implementar vitrine por seções (Shopify-style), recomendações, upsells e rodapé global na PDP e Home Cliente. (High Priority)
 - [ ] **KDS 2.0 Hardening (P0):**
-    - [ ] **Backend Filtering:** Implementar `?scope=active` para remover pedidos finalizados/entregues.
-    - [ ] **Mobile Retrofit:** Auditoria de UI para garantir uso em smartphones (1-col grid, 48px buttons).
-    - [ ] **Workflow Logic:** Validar transições de estado no backend (`PATCH /status`).
-    - [ ] **Zero Distraction:** Garantir que o KDS limpa pedidos concluídos em tempo real.
+  - [ ] **Backend Filtering:** Implementar `?scope=active` para remover pedidos finalizados/entregues.
+  - [ ] **Mobile Retrofit:** Auditoria de UI para garantir uso em smartphones (1-col grid, 48px buttons).
+  - [ ] **Workflow Logic:** Validar transições de estado no backend (`PATCH /status`).
+  - [ ] **Zero Distraction:** Garantir que o KDS limpa pedidos concluídos em tempo real.
 - [ ] **Marketing Management UI:** Painel para o gerente configurar Upsells e Recomendações vinculadas a produtos.
 - [x] **Technical Sweep:** Implementação de Error Boundaries, Type Safety e eliminação de `any` (Dashboard & Menu).
 - [ ] **UI Refactor:** Implementar `ScrollArea` em todos os forms e Migrar Cadastro de Produto para Página Dedicada (Framer Motion).
@@ -300,6 +336,7 @@
 - [ ] **Customization Engine:** Sistema de Extras (pagos) e Remoções (ingredientes/observações) no fluxo de pedido.
 
 ### Fase 3: Fidelização e Inteligência ✅ (Parcialmente Antecipada)
+
 - [x] **Login de Cliente:** Fluxo de identificação Supabase Auth.
 - [x] **Loyalty Core:** Tabelas e lógica de cálculo de pontos.
 - [x] **Resgate UI:** Catálogo de recompensas no Client Web App.
@@ -316,12 +353,14 @@
 **Objetivo:** Implementar funcionalidades avançadas no app consumidor e criar apps móveis para admin com PWA integration
 
 ### Sprint 7: Melhorias App Consumidor (2 semanas)
+
 **Responsável:** Mobile Layout Specialist + System Architect + Security Engineer + QA Engineer  
 **Status:** ✅ CONCLUÍDO - IMPLEMENTADO  
 **Data:** Fevereiro 2026  
 **Objetivo:** Adicionar notificações push, pagamento integrado e melhorar offline-first no app mobile consumidor
 
 **Tarefas Concluídas:**
+
 - [x] **Notificações Push**
   - Configurar Expo Notifications com analytics de engajamento ✅
   - Backend endpoint para registro de tokens de dispositivo (com rotação automática) ✅
@@ -346,18 +385,21 @@
   - Error boundaries e logging estruturado ✅
 
 **Critérios de Aceitação:** ✅ ATINGIDOS
+
 - ✅ Notificações push funcionais com entrega >95% e analytics integrados
 - ✅ Checkout seguro com conversão >70% e compliance PCI-DSS/LGPD
 - ✅ App funcional offline 100% com sincronização automática e performance mantida
 - ✅ Testes passando >80% cobertura, acessibilidade validada
 
 ### Sprint 8: App Mobile Admin - Setup (1 semana)
+
 **Responsável:** System Architect + UI/UX Designer + Code Quality Specialist  
 **Status:** ✅ CONCLUÍDO  
 **Data:** Fevereiro 2026  
 **Objetivo:** Criar estrutura base para app mobile admin (gerente) com RBAC e design system
 
 **Tarefas Concluídas:**
+
 - [x] **Setup Expo Admin App**
   - Criar `apps/admin-mobile/` com Expo + TypeScript + ESLint configurado
   - Configurar navegação (React Navigation) e estrutura de pastas
@@ -379,6 +421,7 @@
   - Auditoria de bundle size e performance baseline
 
 **Critérios de Aceitação:** ✅ ATINGIDOS
+
 - ✅ App admin compilando sem erros com linting/typecheck passando
 - ✅ Autenticação RBAC funcional com isolamento de dados validado
 - ✅ UI base implementada com design system consistente
@@ -386,18 +429,21 @@
   - Auditoria de bundle size e performance baseline
 
 **Critérios de Aceitação:**
+
 - ✅ App admin compilando sem erros com linting/typecheck passando
 - ✅ Autenticação RBAC funcional com isolamento de dados validado
 - ✅ UI base implementada com design system consistente
 - ✅ Testes unitários >70% cobertura inicial
 
 ### Sprint 9: App Mobile KDS (1 semana)
+
 **Responsável:** Mobile Layout Specialist + System Architect + QA Engineer  
 **Status:** Planejado  
 **Data:** Fevereiro 2026  
 **Objetivo:** Implementar app mobile para cozinha (KDS) com responsividade crítica
 
 **Tarefas:**
+
 - [ ] **KDS Mobile Interface**
   - Lista de pedidos ativos (filtragem por setor) com Zero Distraction Policy
   - Transições de estado por toque (Pendente → Preparando → Pronto) com haptic feedback
@@ -418,18 +464,21 @@
   - Acessibilidade validada (TalkBack/VoiceOver)
 
 **Critérios de Aceitação:**
+
 - ✅ KDS funcional em tablets/smartphones com real-time <2s
 - ✅ Interface touch-optimized com responsividade validada
 - ✅ Segurança e isolamento de dados confirmados
 - ✅ Testes E2E passando com performance benchmarks atingidos
 
 ### Sprint 10: PWA Integration (1 semana) ✅ CONCLUÍDO
+
 **Responsável:** System Architect + Code Quality Specialist + QA Engineer  
 **Status:** ✅ Finalizado  
 **Data:** Fevereiro 2026  
 **Objetivo:** Transformar dashboard web em PWA com offline capabilities
 
 **Tarefas Concluídas:**
+
 - [x] **PWA Setup**
   - Service Worker customizado para cache offline com estratégias de cache
   - Manifest.json com ícones, install prompt e compatibilidade iOS Safari
@@ -448,18 +497,21 @@
   - Build production funcionando com PWA
 
 **Critérios de Aceitação:**
+
 - ✅ Dashboard instalável como PWA com offline funcional
 - ✅ Compatibilidade iOS Safari e performance otimizada
 - ✅ Segurança validada e build production OK
 - ✅ Taxa de adoção PWA preparada para >50%
 
 ### Sprint 11: Integração e Testes (1.5 semanas)
+
 **Responsável:** QA Engineer + Implementation Lead + Todos os Agentes  
 **Status:** Planejado  
 **Data:** Fevereiro 2026  
 **Objetivo:** Integrar todos os apps e validar funcionamento completo
 
 **Tarefas:**
+
 - [ ] **Integração Cross-App**
   - APIs compartilhadas e sincronização segura entre apps
   - Comunicação via WebSockets isolados
@@ -479,6 +531,7 @@
   - Métricas finais de qualidade (>80% cobertura, crash-free >99%)
 
 **Critérios de Aceitação:**
+
 - ✅ Todos os apps integrados e funcionais com isolamento tenant
 - ✅ Testes E2E/performance passando com cobertura >80%
 - ✅ Segurança auditada e compliance validada
@@ -489,21 +542,25 @@
 ## 📊 MÉTRICAS DE SUCESSO - FASE MOBILE AVANÇADO
 
 ### App Consumidor (Sprint 7)
+
 - ✅ Notificações push com taxa de entrega >95% e analytics integrados
 - ✅ Conversão de checkout >70% e compliance PCI-DSS/LGPD
 - ✅ Funcionalidade offline 100% para carrinho com sincronização automática
 
 ### Apps Admin (Sprints 8-9)
+
 - ✅ App gerente com todas as funcionalidades web e isolamento tenant (Sprint 8)
 - ⏳ KDS mobile com tempo de resposta <2s e touch-optimized (Sprint 9 - Planejado)
 - ✅ Uso em tablets e smartphones com acessibilidade validada
 
 ### PWA (Sprint 10)
+
 - ✅ Lighthouse score >90 mobile e compatibilidade iOS Safari
 - ✅ Install rate >50% em mobile com offline completo
 - ✅ Segurança validada e performance otimizada
 
 ### Integração Geral (Sprint 11)
+
 - ✅ Cobertura de testes >80% com E2E abrangente
 - ✅ Crash-free users >99% e builds de produção prontos
 - ✅ Compliance LGPD/PCI-DSS auditada e isolamento tenant confirmado
@@ -513,31 +570,37 @@
 ## 👥 RESPONSABILIDADES POR AGENT - FASE MOBILE AVANÇADO
 
 ### System Architect (`agents/02_System_Architect.md`)
+
 - Arquitetura geral dos apps móveis
 - Integração PWA
 - Segurança cross-app
 
 ### Mobile Layout Specialist (`agents/14_Mobile_Layout_Specialist.md`)
+
 - UI/UX dos apps móveis
 - Responsividade e performance
 - KDS mobile optimization
 
 ### UI/UX Designer (`agents/03_UI_UX_Designer.md`)
+
 - Design system para apps admin
 - User flows mobile
 - PWA experience
 
 ### Security Engineer (`agents/07_Security_Engineer.md`)
+
 - Autenticação e RBAC nos apps admin
 - Segurança de pagamentos
 - Isolamento de dados
 
 ### QA Engineer (`agents/06_QA_Engineer.md`)
+
 - Testes de integração
 - Performance validation
 - E2E testing
 
 ### Implementation Lead (`agents/10_Implementation_Lead.md`)
+
 - Coordenação de sprints
 - Deploy e release management
 - Troubleshooting
@@ -547,11 +610,13 @@
 ## 🚨 DEPENDÊNCIAS & BLOQUEADORES - FASE MOBILE AVANÇADO
 
 ### Dependências Técnicas
+
 - **APIs Estáveis:** Backend deve estar completo antes
 - **Packages Compartilhados:** @smart-menu/ui deve suportar todos os apps
 - **Segurança:** RBAC implementado
 
 ### Bloqueadores Potenciais
+
 - **Expo Limitations:** Verificar suporte a notificações/pagamentos
 - **PWA Browser Support:** Compatibilidade com iOS Safari
 - **Performance:** Apps móveis podem exigir otimizações adicionais
@@ -566,12 +631,14 @@
 **Nota:** Esta fase foi planejada mas não foi implementada. Os apps móveis atuais usam dados mock e precisam de backend real para funcionar.
 
 ### Sprint 12: Setup Backend & Database (2 semanas)
+
 **Responsável:** System Architect + Implementation Lead + Security Engineer  
 **Status:** Planejado  
 **Data:** Março 2026  
 **Objetivo:** Configurar infraestrutura backend com NestJS, Prisma e schema Supabase
 
 **Tarefas:**
+
 - [ ] **Setup NestJS Project**
   - Criar `apps/api/` com NestJS + TypeScript + ESLint configurado
   - Configurar estrutura de módulos (Auth, Menu, Orders, Analytics)
@@ -594,18 +661,21 @@
   - Configuração de variáveis de ambiente seguras
 
 **Critérios de Aceitação:**
+
 - ✅ Backend compilando sem erros com linting/typecheck passando
 - ✅ Schema Prisma criado com RLS policies implementadas
 - ✅ Autenticação JWT funcional com RBAC validado
 - ✅ Infraestrutura base configurada e segura
 
 ### Sprint 13: Core APIs - Menu & Orders (2 semanas)
+
 **Responsável:** Implementation Lead + System Architect + QA Engineer  
 **Status:** Planejado  
 **Data:** Março 2026  
 **Objetivo:** Implementar APIs core para menu e pedidos com validação completa
 
 **Tarefas:**
+
 - [ ] **Menu Management API**
   - CRUD completo para categorias e produtos (tenant isolated)
   - Upload de imagens com Supabase Storage e validação
@@ -627,18 +697,21 @@
   - Documentação OpenAPI completa
 
 **Critérios de Aceitação:**
+
 - ✅ APIs de menu e pedidos funcionais com isolamento tenant
 - ✅ Real-time funcionando com WebSockets
 - ✅ Testes passando >80% cobertura
 - ✅ Documentação API completa e validada
 
 ### Sprint 14: Analytics & User Management (1.5 semanas)
+
 **Responsável:** Implementation Lead + Code Quality Specialist + QA Engineer  
 **Status:** Planejado  
 **Data:** Março 2026  
 **Objetivo:** Implementar analytics e gerenciamento de usuários
 
 **Tarefas:**
+
 - [ ] **Analytics API**
   - Métricas de vendas, pedidos e performance por período
   - Relatórios customizáveis com filtros por tenant
@@ -660,18 +733,21 @@
   - Load testing com 1000+ usuários simultâneos
 
 **Critérios de Aceitação:**
+
 - ✅ Analytics API funcional com relatórios completos
 - ✅ User management seguro e compliant
 - ✅ Sistema de notificações operacional
 - ✅ Performance e segurança validadas
 
 ### Sprint 15: Integration & Deploy (1 semana)
+
 **Responsável:** Implementation Lead + QA Engineer + Security Engineer  
 **Status:** Planejado  
 **Data:** Março 2026  
 **Objetivo:** Integrar backend com apps móveis e preparar deploy
 
 **Tarefas:**
+
 - [ ] **Mobile Integration**
   - Conectar apps móveis às APIs reais (remover mocks)
   - Testes de integração end-to-end (mobile ↔ backend)
@@ -689,6 +765,7 @@
   - Go-live checklist e rollback procedures
 
 **Critérios de Aceitação:**
+
 - ✅ Apps móveis conectados às APIs reais
 - ✅ Produção configurada e segura
 - ✅ Auditoria de segurança passando
@@ -699,24 +776,28 @@
 ## 📊 MÉTRICAS DE SUCESSO - FASE BACKEND
 
 ### Setup & Database (Sprint 12)
+
 - ✅ NestJS project configurado com TypeScript e segurança
 - ✅ Schema Prisma com RLS implementado e migrations funcionando
 - ✅ Autenticação JWT com RBAC validada
 - ✅ Infraestrutura base com monitoring ativo
 
 ### Core APIs (Sprint 13)
+
 - ✅ APIs de menu/pedidos com isolamento tenant e real-time
 - ✅ WebSocket funcionando com baixa latência (<100ms)
 - ✅ Cobertura de testes >80% e documentação completa
 - ✅ Performance otimizada (<200ms response time)
 
 ### Analytics & Users (Sprint 14)
+
 - ✅ Analytics API com relatórios em tempo real
 - ✅ User management GDPR compliant
 - ✅ Notifications system com alta deliverability (>95%)
 - ✅ Load testing passando 1000+ usuários
 
 ### Integration (Sprint 15)
+
 - ✅ Integração mobile/backend funcional e testada
 - ✅ Produção deployada com CI/CD ativo
 - ✅ Segurança auditada e compliance validada
@@ -727,26 +808,31 @@
 ## 👥 RESPONSABILIDADES POR AGENT - FASE BACKEND
 
 ### System Architect (`agents/02_System_Architect.md`)
+
 - Arquitetura backend e database design
 - Integração com Supabase e RLS
 - Performance e escalabilidade
 
 ### Implementation Lead (`agents/10_Implementation_Lead.md`)
+
 - Desenvolvimento das APIs core
 - Coordenação de sprints e integração
 - Deploy e produção setup
 
 ### Security Engineer (`agents/07_Security_Engineer.md`)
+
 - Autenticação e autorização
 - Security audits e compliance
 - Rate limiting e proteção
 
 ### QA Engineer (`agents/06_QA_Engineer.md`)
+
 - Testes unitários e integração
 - Performance e load testing
 - E2E validation
 
 ### Code Quality Specialist (`agents/08_Code_Quality_Specialist.md`)
+
 - Code reviews e linting
 - Documentação e OpenAPI
 - Bundle optimization
@@ -756,11 +842,13 @@
 ## 🚨 DEPENDÊNCIAS & BLOQUEADORES - FASE BACKEND
 
 ### Dependências Técnicas
+
 - **Mobile Apps Completos:** Apps móveis devem estar finalizados
 - **Supabase Setup:** Database e storage configurados
 - **Security Baseline:** Secrets e CSP implementados
 
 ### Bloqueadores Potenciais
+
 - **API Complexity:** Múltiplas integrações (Stripe, Expo, Supabase)
 - **Real-time Requirements:** WebSocket scaling para múltiplos tenants
 - **Compliance:** LGPD/PCI-DSS requirements rigorosos
@@ -770,6 +858,7 @@
 ## 19. Roadmap de Implementação (Detalhado)
 
 ### Fase 1 – MVP (8 semanas)
+
 - QR por mesa e menu digital completo
 - CRUD de menu items (tenant isolated)
 - Envio de pedidos + notificações básicas
@@ -778,6 +867,7 @@
 - Integração mínima de backend e WebSockets
 
 ### Fase 2 – Operação Completa (12 semanas)
+
 - KDS para cozinha com filtragem por setor
 - Dashboard gerente com métricas principais
 - Estoque e disponibilidade avançada
@@ -786,6 +876,7 @@
 - UX Writing e animações refinadas
 
 ### Fase 3 – Escala e Inteligência (8–12 semanas)
+
 - Fidelização e pontos de cliente
 - Upsell automático e recomendações de combos
 - Analytics avançado e relatórios por período/turno
@@ -794,21 +885,24 @@
 - Deploy CI/CD completo + Storybook integrado
 
 ### Fase 4 – Mobile Avançado (6 semanas) ⭐ PARCIALMENTE CONCLUÍDO
+
 - Notificações push e pagamentos no app consumidor (Sprint 7 - ✅ Concluído)
 - Apps móveis para gerente e cozinha (KDS) (Sprint 8 - ✅ Concluído | Sprint 9 - Planejado)
 - PWA integration para dashboard web (Sprint 10 - Planejado)
 - Offline-first completo em todos os apps (Sprint 11 - Planejado)
 
 ### Fase 5 – Experiência de Entrada (Universal Landing) ⭐ NOVO
+
 - **Sprint 16: Consumer Landing Page (1 semana):**
-    - [x] UI/UX para entrada sem QR carregado. ✅
-    - [x] Integração de Biblioteca de Scan de QR Code (`html5-qrcode`). ✅
-    - [x] Lógica de Histórico de Visitas (LocalStorage + Sync DB). ✅
-    - [x] Card de Sumário Global de Fidelidade (Cross-tenant). ✅
-    - [x] Micro-animações de entrada e transição para o scanner. ✅
-    - [x] **Geolocalização (Discovery):** Implementação de busca por raio via PostGIS. ✅
+  - [x] UI/UX para entrada sem QR carregado. ✅
+  - [x] Integração de Biblioteca de Scan de QR Code (`html5-qrcode`). ✅
+  - [x] Lógica de Histórico de Visitas (LocalStorage + Sync DB). ✅
+  - [x] Card de Sumário Global de Fidelidade (Cross-tenant). ✅
+  - [x] Micro-animações de entrada e transição para o scanner. ✅
+  - [x] **Geolocalização (Discovery):** Implementação de busca por raio via PostGIS. ✅
 
 ### Fase 6 – Expansão Delivery (Opcional - Não Prioritário)
+
 - **Status:** Planejado para Futuro - Caso decidamos expandir
 - **Objetivo:** Adicionar módulo opcional de delivery para tenants que optarem, mantendo foco no core QR
 - **Funcionalidades Opcionais:**

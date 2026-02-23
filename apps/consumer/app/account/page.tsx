@@ -132,7 +132,7 @@ export default function AccountPage() {
 
                 {/* Version Info */}
                 <p className="text-center text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                    SmartMenu v0.8.0-alpha • Angola
+                    Versão v0.8.0-alpha • Angola
                 </p>
             </PageContainer>
 

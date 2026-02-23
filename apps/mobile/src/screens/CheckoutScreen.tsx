@@ -13,10 +13,12 @@ import { RootState } from '../store';
 import { clearCart } from '../store/slices/cartSlice';
 import { useConnectivity } from '../hooks/useConnectivity';
 import { PaymentService } from '../services/paymentService';
+import { apiClient } from '@smart-menu/api';
 
 export default function CheckoutScreen() {
   const dispatch = useDispatch();
   const { items: cartItems, isOffline } = useSelector((state: RootState) => state.cart);
+  const { tenantId, tableId, id: userId } = useSelector((state: RootState) => state.user);
   const { isConnected } = useConnectivity();
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -42,7 +44,6 @@ export default function CheckoutScreen() {
       return;
     }
 
-    // Validação básica dos campos
     if (!paymentData.cardNumber || !paymentData.expiryDate || !paymentData.cvv || !paymentData.cardholderName) {
       Alert.alert('Erro', 'Preencha todos os campos do cartão.');
       return;
@@ -51,6 +52,7 @@ export default function CheckoutScreen() {
     setIsProcessing(true);
 
     try {
+      // 1. Process Payment (keeping existing service for now)
       const result = await PaymentService.processCardPayment({
         amount: finalTotal,
         currency: 'brl',
@@ -61,20 +63,33 @@ export default function CheckoutScreen() {
       });
 
       if (result.success) {
-        Alert.alert('Sucesso', 'Pagamento processado com sucesso!', [
+        // 2. Submit Order to NestJS API
+        await apiClient.post('/orders', {
+          tableId: tableId || undefined,
+          items: cartItems.map(item => ({
+            productId: item.id,
+            quantity: item.quantity,
+            // Assuming no options for now in the simple mobile view
+          })),
+          orderType: tableId ? 'DINE_IN' : 'TAKEAWAY',
+          // deliveryAddress: resolved from profile or input if needed
+        });
+
+        Alert.alert('Sucesso', 'Pedido realizado com sucesso!', [
           {
             text: 'OK',
             onPress: () => {
               dispatch(clearCart());
-              // TODO: Navegar para tela de confirmação
+              // Navigation logic would go here
             },
           },
         ]);
       } else {
         Alert.alert('Erro', result.error || 'Erro no processamento do pagamento.');
       }
-    } catch (error) {
-      Alert.alert('Erro', 'Falha ao processar pagamento. Tente novamente.');
+    } catch (error: any) {
+      console.error('[CheckoutScreen] Order submission failed:', error);
+      Alert.alert('Erro', 'Falha ao processar pedido. Tente novamente.');
     } finally {
       setIsProcessing(false);
     }

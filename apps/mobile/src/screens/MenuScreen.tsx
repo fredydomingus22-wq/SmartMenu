@@ -1,31 +1,56 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
-
-interface MenuItem {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  emoji: string;
-  category: string;
-}
-
-const mockMenuItems: MenuItem[] = [
-  { id: '1', name: 'Pizza Margherita', description: 'Molho de tomate, mussarela, manjericão', price: 45, emoji: '🍕', category: 'Pizzas' },
-  { id: '2', name: 'Hambúrguer Clássico', description: 'Carne 180g, queijo, alface, tomate', price: 32, emoji: '🍔', category: 'Hambúrgueres' },
-  { id: '3', name: 'Salada Caesar', description: 'Alface romana, croutons, parmesão, molho caesar', price: 28, emoji: '🥗', category: 'Saladas' },
-  { id: '4', name: 'Sushi Combo', description: '12 peças variadas + sashimi', price: 65, emoji: '🍱', category: 'Japonês' },
-  { id: '5', name: 'Lasanha Bolonhesa', description: 'Massa fresca, molho bolonhesa, queijo', price: 38, emoji: '🍝', category: 'Massas' },
-];
-
-const categories = ['Todos', 'Pizzas', 'Hambúrgueres', 'Saladas', 'Japonês', 'Massas'];
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { useSelector } from 'react-redux';
+import { apiClient } from '@smart-menu/api';
+import { Product, Category } from '@smart-menu/ui';
 
 export default function MenuScreen() {
+  const [categories, setCategories] = useState<string[]>(['Todos']);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  const tenantId = useSelector((state: any) => state.user.tenantId);
+
+  useEffect(() => {
+    async function fetchMenu() {
+      if (!tenantId) {
+        setLoading(false);
+        return;
+      }
+      
+      try {
+        setLoading(true);
+        // Using the public menu endpoint as per implementation_plan
+        const data = await apiClient.get<Category[]>(`/public/menu/${tenantId}`);
+        
+        if (data && Array.isArray(data)) {
+          const allProducts = data.flatMap(cat => cat.products || []);
+          setProducts(allProducts);
+          
+          const catNames = ['Todos', ...data.map(cat => 
+            typeof cat.name === 'string' ? cat.name : (cat.name?.pt || cat.name?.en || 'Sem Nome')
+          )];
+          setCategories(catNames);
+        }
+      } catch (error) {
+        console.error('[MenuScreen] Failed to fetch menu:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchMenu();
+  }, [tenantId]);
 
   const filteredItems = selectedCategory === 'Todos'
-    ? mockMenuItems
-    : mockMenuItems.filter(item => item.category === selectedCategory);
+    ? products
+    : products.filter(item => {
+        const catName = typeof item.category?.name === 'string' 
+          ? item.category.name 
+          : (item.category?.name?.pt || item.category?.name?.en);
+        return catName === selectedCategory;
+      });
 
   const renderCategoryButton = (category: string) => (
     <TouchableOpacity
@@ -45,21 +70,37 @@ export default function MenuScreen() {
     </TouchableOpacity>
   );
 
-  const renderMenuItem = ({ item }: { item: MenuItem }) => (
-    <TouchableOpacity style={styles.menuItem}>
-      <View style={styles.menuItemContent}>
-        <Text style={styles.menuItemEmoji}>{item.emoji}</Text>
-        <View style={styles.menuItemDetails}>
-          <Text style={styles.menuItemName}>{item.name}</Text>
-          <Text style={styles.menuItemDescription}>{item.description}</Text>
-          <Text style={styles.menuItemPrice}>R$ {item.price.toFixed(2)}</Text>
+  const renderMenuItem = ({ item }: { item: Product }) => {
+    const name = typeof item.name === 'string' ? item.name : (item.name?.pt || item.name?.en || 'Produto');
+    const description = typeof item.description === 'string' 
+      ? item.description 
+      : (item.description?.pt || item.description?.en || '');
+    const price = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
+
+    return (
+      <TouchableOpacity style={styles.menuItem}>
+        <View style={styles.menuItemContent}>
+          <Text style={styles.menuItemEmoji}>🍴</Text>
+          <View style={styles.menuItemDetails}>
+            <Text style={styles.menuItemName}>{name}</Text>
+            <Text style={styles.menuItemDescription}>{description}</Text>
+            <Text style={styles.menuItemPrice}>AOA {price.toLocaleString()}</Text>
+          </View>
         </View>
-      </View>
-      <TouchableOpacity style={styles.addButton}>
-        <Text style={styles.addButtonText}>+</Text>
+        <TouchableOpacity style={styles.addButton}>
+          <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
       </TouchableOpacity>
-    </TouchableOpacity>
-  );
+    );
+  };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.center]}>
+        <ActivityIndicator size="large" color="#2563eb" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -67,11 +108,13 @@ export default function MenuScreen() {
         <Text style={styles.title}>Cardápio</Text>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categories}>
-        <View style={styles.categoriesContainer}>
-          {categories.map(renderCategoryButton)}
-        </View>
-      </ScrollView>
+      <View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categories}>
+          <View style={styles.categoriesContainer}>
+            {categories.map(renderCategoryButton)}
+          </View>
+        </ScrollView>
+      </View>
 
       <FlatList
         data={filteredItems}
@@ -79,6 +122,11 @@ export default function MenuScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.menuList}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>Nenhum produto encontrado.</Text>
+          </View>
+        }
       />
     </View>
   );
@@ -130,6 +178,19 @@ const styles = StyleSheet.create({
   },
   menuList: {
     padding: 20,
+    paddingBottom: 40,
+  },
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyContainer: {
+    padding: 40,
+    alignItems: 'center',
+  },
+  emptyText: {
+    color: '#64748b',
+    fontSize: 16,
   },
   menuItem: {
     backgroundColor: 'white',

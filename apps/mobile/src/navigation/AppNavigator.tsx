@@ -10,11 +10,13 @@ import CartScreen from '../screens/CartScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import LoginScreen from '../screens/LoginScreen';
+import OrderHistoryScreen from '../screens/OrderHistoryScreen';
 
 export type RootStackParamList = {
   MainTabs: undefined;
   Login: undefined;
   Checkout: undefined;
+  OrderHistory: undefined;
 };
 
 export type MainTabParamList = {
@@ -59,9 +61,11 @@ function MainTabs() {
   );
 }
 
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
+
 export default function AppNavigator() {
-  // TODO: Add authentication state management
-  const isAuthenticated = false;
+  const isAuthenticated = useSelector((state: RootState) => state.user.isAuthenticated);
 
   return (
     <NavigationContainer>
@@ -70,6 +74,7 @@ export default function AppNavigator() {
           <>
             <Stack.Screen name="MainTabs" component={MainTabs} />
             <Stack.Screen name="Checkout" component={CheckoutScreen} />
+            <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} options={{ headerShown: true, title: 'Histórico' }} />
           </>
         ) : (
           <Stack.Screen name="Login" component={LoginScreen} />

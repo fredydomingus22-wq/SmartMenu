@@ -29,16 +29,17 @@ A segurança do SmartMenu é baseada num modelo "Zero Trust" entre tenants e pro
 - **Zero Trust:** A `service_role` (admin) é restrita ao backend (NestJS/Analytics), nunca exposta ao frontend.
 
 ### 16.2.1 Segurança de Mesas & QR
+
 - **Gestão:** Apenas users com role `MANAGER` ou superior podem Criar/Deletar mesas.
 - **Acesso QR:** O endpoint público de menu valida o `tenantId` e `tableId` antes de iniciar a sessão.
 
 ### 16.2.2 Isolamento de Dados do Cliente (Client-Side RLS)
+
 - **Princípio:** Um cliente nunca deve conseguir listar dados de outro tenant, mesmo que esteja autenticado na plataforma.
 - **Implementation:**
   - Todas as queries de `Orders`, `LoyaltyPoints` e `CustomerProfile` devem conter filtro obrigatório `WHERE tenant_id = :currentTenantId`.
   - A API deve rejeitar tokens válidos se o `tenant_id` da requisição não corresponder ao contexto da sessão do cliente.
 - **Isolamento de Recomendações:** O motor de recomendações deve filtrar estritamente por `tenant_id` ativo, prevenindo que produtos de outros estabelecimentos sejam sugeridos.
-
 
 ---
 
@@ -61,6 +62,7 @@ A segurança do SmartMenu é baseada num modelo "Zero Trust" entre tenants e pro
   - **Sanitização:** Proteção contra SQL Injection (Prisma) e XSS (Next.js).
 
 ### 16.3.1 Prevenção de Fraude em Fidelidade
+
 - **Pontos Imutáveis:** O saldo de pontos só pode ser alterado via triggers de transação no banco ou endpoints assinados.
 - **Validação de Resgate:** Toda tentativa de resgate de pontos deve ser validada contra o saldo atualizado no banco de dados (Server-Side) antes da aplicação no pedido.
 - **Double-Spending:** Utilização de transações ACID para garantir que pontos não sejam gastos duas vezes simultaneamente.
@@ -71,8 +73,10 @@ A segurança do SmartMenu é baseada num modelo "Zero Trust" entre tenants e pro
 
 - **Audit Logs:** Registo automático de alterações críticas (preços, deleções, permissões) na tabela `audit_logs`.
 - **Monitoramento:** Alertas para acessos suspeitos ou falhas consecutivas de login.
+- **Dependency Integrity:** Verificação rigorosa de SHA/Versions no `package-lock.json` para prevenir ataques de substituição de pacotes em builds monorepo.
 
 ### 16.3.2 Segurança de Acesso a Periféricos
+
 - **Câmera:** O acesso deve ser solicitado apenas no gatilho do usuário. O stream de vídeo deve ser encerrado imediatamente após o sucesso ou cancelamento do scan. Nenhum dado de imagem é enviado ao servidor; o processamento do QR é local (Client-Side).
 - **Geolocalização:** Uso estrito de HTTPS para acesso à API de Geo. Dados de localização do usuário nunca são armazenados, servindo apenas para filtragem instantânea de restaurantes próximos.
 

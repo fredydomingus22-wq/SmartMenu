@@ -48,7 +48,7 @@ export default async function ConsumerLoginPage({
                             <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
                                 {tenantId
                                     ? `Junte-se ao clube e comece a ganhar pontos no ${restaurantName}.`
-                                    : "Entre para o universo SmartMenu e ganhe benefícios reais."}
+                                    : "Entre para ganhar benefícios reais no seu restaurante favorito."}
                             </p>
                         </div>
                     </div>

@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { supabase } from '../services/supabase';
+import { login } from '../store/slices/userSlice';
+import { apiClient } from '@smart-menu/api';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -15,12 +19,35 @@ export default function LoginScreen() {
 
     setLoading(true);
     try {
-      // TODO: Implement actual authentication
-      // For now, just store a mock token
-      await SecureStore.setItemAsync('auth_token', 'mock_token');
-      // Navigate to main app
-    } catch (error) {
-      Alert.alert('Erro', 'Falha no login. Tente novamente.');
+      // 1. Authenticate with Supabase
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      if (data.session) {
+        // 2. Fetch Profile from NestJS API to get Tenant/Org info
+        // The API client in @smart-menu/api doesn't automatically inject the token here yet
+        // since we are in the middle of logging in.
+        const profile = await apiClient.get<any>('/profile', {
+          headers: {
+            Authorization: `Bearer ${data.session.access_token}`
+          }
+        });
+
+        // 3. Update Redux State
+        dispatch(login({
+          id: data.user.id,
+          name: profile.name || data.user.email?.split('@')[0] || 'User',
+          email: data.user.email || '',
+          tenantId: profile.tenantId || '', // Need to ensure these come from API
+          tableId: profile.lastTableId || '',
+        }));
+      }
+    } catch (error: any) {
+      Alert.alert('Erro de Login', error.message || 'Falha no login. Tente novamente.');
     } finally {
       setLoading(false);
     }

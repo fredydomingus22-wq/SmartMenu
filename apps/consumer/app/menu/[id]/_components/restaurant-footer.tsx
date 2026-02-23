@@ -37,7 +37,7 @@ export function RestaurantFooter({ branding, footerConfig }: FooterProps) {
                                 </div>
                             )}
                             <h2 className="text-xl font-black tracking-tight uppercase">
-                                {branding?.tenantName || "SmartMenu"}
+                                {branding?.tenantName || "Menu Digital"}
                             </h2>
                         </div>
                         <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
@@ -141,7 +141,7 @@ export function RestaurantFooter({ branding, footerConfig }: FooterProps) {
                 </div>
 
                 <div className="mt-16 pt-8 border-t flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] uppercase font-bold tracking-widest text-muted-foreground/60">
-                    <p>{t('footer.rights', { year: currentYear, name: branding?.tenantName || 'SmartMenu' })}</p>
+                    <p>{t('footer.rights', { year: currentYear, name: branding?.tenantName || 'Menu Digital' })}</p>
                     <div className="flex flex-wrap justify-center gap-3 sm:gap-6">
                         <Link href={`/menu/${branding?.tenantId}/about`} className="hover:text-primary transition-colors">{t('footer.about')}</Link>
                         <Link href={`/menu/${branding?.tenantId}/allergens`} className="hover:text-primary transition-colors">{t('footer.allergens')}</Link>

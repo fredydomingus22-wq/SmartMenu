@@ -129,7 +129,7 @@ export function ChatWindow({ tenantId, orderId, riderId, openByDefault = false }
           </Avatar>
           <div>
             <div className="flex items-center gap-2">
-              <p className="text-sm font-bold leading-none">Suporte SmartMenu</p>
+              <p className="text-sm font-bold leading-none">Suporte ao Cliente</p>
               <div 
                 className={cn(
                   "h-2 w-2 rounded-full",

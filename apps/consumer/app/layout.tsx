@@ -5,11 +5,11 @@ import { CartProvider } from "@/components/cart/cart-context";
 import { Toaster } from "@smart-menu/ui";
 
 export const metadata: Metadata = {
-    title: "SmartMenu - O Seu Menu Digital",
+    title: "Menu Digital",
     description: "Peça o seu prato favorito diretamente da mesa.",
     authors: [{ name: "SmartMenu Team" }],
     openGraph: {
-        title: "SmartMenu - O Seu Menu Digital",
+        title: "Menu Digital",
         description: "Peça o seu prato favorito diretamente da mesa.",
         type: "website",
         locale: "pt_AO",

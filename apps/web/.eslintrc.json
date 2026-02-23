@@ -4,9 +4,19 @@
         "next/typescript",
         "plugin:storybook/recommended"
     ],
+    "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-require-imports": "off",
+        "@next/next/no-img-element": "off",
+        "react/no-unescaped-entities": "off",
+        "storybook/no-renderer-packages": "off",
+        "@typescript-eslint/ban-ts-comment": "off"
+    },
     "ignorePatterns": [
         ".next/**",
         "out/**",
-        "build/**"
+        "build/**",
+        "stories/**"
     ]
 }

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button, Input, Label, Card, CardContent, CardDescription, CardHeader, CardTitle, Switch, Badge, Dialog, DialogContent, DialogHeader, DialogTitle, Textarea } from "@smart-menu/ui";
 import { toast } from "sonner";
-import { PartyPopper, Plus, Trash2, Save, Edit, Calendar, MapPin, Ticket, ExternalLink } from "lucide-react";
+import { PartyPopper, Plus, Trash2, Save, Edit, Calendar, MapPin, Ticket } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { apiClient } from "@/utils/api-client";
 

@@ -50,10 +50,8 @@ export async function submitContactForm(data: {
                     `
                 });
             } catch (emailError) {
-                console.warn("Aviso: Falha ao enviar email do Resend (ContactMessage gravada na DB).", emailError);
+                console.error("[ContactAction] Failed to send email via Resend:", emailError);
             }
-        } else {
-             console.warn("Aviso: RESEND_API_KEY não está configurada no .env. Email não enviado, mas gravado na BD.");
         }
 
         return { success: true };

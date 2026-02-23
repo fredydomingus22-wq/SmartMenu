@@ -28,12 +28,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         const config = await apiClient.get<MenuConfig>(`/public/menu/${id}/config`);
         const restaurantName = config?.branding?.tenantName || "Restaurante";
         return {
-            title: `${restaurantName} | SmartMenu`,
-            description: `Peça online no ${restaurantName} via SmartMenu.`,
+            title: `${restaurantName} | Menu Digital`,
+            description: `Peça online no ${restaurantName} via Menu Digital.`,
         };
     } catch {
         return {
-            title: "Menu Digital | SmartMenu",
+            title: "Menu Digital",
         };
     }
 }
