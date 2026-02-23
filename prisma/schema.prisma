@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
   schemas  = ["auth", "public"]
 }
 
@@ -1083,6 +1084,14 @@ model users {
   @@index([instance_id])
   @@index([is_anonymous])
   @@schema("auth")
+}
+
+enum LoyaltyTier {
+  SILVER
+  GOLD
+  PLATINUM
+
+  @@schema("public")
 }
 
 enum PlanTier {
