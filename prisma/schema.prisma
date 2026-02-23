@@ -28,6 +28,7 @@ model Organization {
   users              UserProfile[]
   serviceRequests    ServiceRequest[]
   marketingCampaigns MarketingCampaign[]
+  analyticsInsights  AnalyticsInsight[]
 
   @@map("organizations")
   @@schema("public")
@@ -80,6 +81,7 @@ model Tenant {
   notifications        Notification[]
   riders               Rider[]
   conversations        Conversation[]
+  analyticsInsights    AnalyticsInsight[]
 
   @@map("tenants")
   @@schema("public")
@@ -103,22 +105,43 @@ model TenantBranding {
 }
 
 model CustomerProfile {
-  id            String              @id @default(uuid())
-  userId        String              @map("user_id") @db.Uuid
-  tenantId      String              @map("tenant_id")
-  pointsBalance Int                 @default(0) @map("points_balance")
-  createdAt     DateTime            @default(now()) @map("created_at")
-  updatedAt     DateTime            @updatedAt @map("updated_at")
-  tenant        Tenant              @relation(fields: [tenantId], references: [id])
-  user          users               @relation(fields: [userId], references: [id])
-  transactions  PointsTransaction[]
-  orders        Order[]
-  notifications Notification[]
+  id             String              @id @default(uuid())
+  userId         String              @map("user_id") @db.Uuid
+  tenantId       String              @map("tenant_id")
+  pointsBalance  Int                 @default(0) @map("points_balance")
+  totalSpent     Decimal             @default(0) @map("total_spent") @db.Decimal(10, 2)
+  tier           LoyaltyTier         @default(SILVER)
+  tierMultiplier Float               @default(1.0) @map("tier_multiplier")
+  createdAt      DateTime            @default(now()) @map("created_at")
+  updatedAt      DateTime            @updatedAt @map("updated_at")
+  tenant         Tenant              @relation(fields: [tenantId], references: [id])
+  user           users               @relation(fields: [userId], references: [id])
+  transactions   PointsTransaction[]
+  orders         Order[]
+  notifications  Notification[]
 
   @@unique([userId, tenantId])
   @@index([tenantId])
   @@index([userId])
   @@map("customer_profiles")
+  @@schema("public")
+}
+
+model AnalyticsInsight {
+  id             String       @id @default(uuid())
+  tenantId       String       @map("tenant_id")
+  organizationId String       @map("organization_id")
+  title          String
+  content        String
+  type           String       @default("INFO") // INFO, REVENUE, RETENTION
+  actionableUrl  String?      @map("actionable_url")
+  isRead         Boolean      @default(false) @map("is_read")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  tenant         Tenant       @relation(fields: [tenantId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([tenantId])
+  @@map("analytics_insights")
   @@schema("public")
 }
 
