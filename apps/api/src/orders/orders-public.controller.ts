@@ -81,4 +81,13 @@ export class OrdersPublicController {
   async findOne(@Param('id') id: string) {
     return this.ordersService.findOnePublic(id);
   }
+
+  @Public()
+  @Get('tenant/:tenantId/kitchen')
+  async findAllForKitchenByTenant(@Param('tenantId') tenantId: string) {
+    console.log(
+      `[OrdersPublicController] Public kitchen orders requested for tenant: ${tenantId}`,
+    );
+    return this.ordersService.findAllForKitchenPublic(tenantId);
+  }
 }

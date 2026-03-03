@@ -38,7 +38,19 @@ export default async function KDSPage() {
     }
 
     const tenantProfile = await getTenantProfile() as { id: string, name: string } | null;
-    const tenantId = tenantProfile?.id || user.user_metadata?.tenantId || user.app_metadata?.tenant_id || user.id;
+    
+    // Robust tenantId resolution: check profile first (source of truth), then metadata fallbacks
+    const tenantId = tenantProfile?.id 
+        || user.user_metadata?.tenantId 
+        || user.user_metadata?.tenant_id 
+        || user.app_metadata?.tenant_id 
+        || user.app_metadata?.tenantId;
+
+    console.log(`[KDSPage] Initializing KDS for user: ${user.email}`);
+    console.log(`[KDSPage] Resolved Tenant ID: ${tenantId}`);
+    if (!tenantId) {
+        console.warn("[KDSPage] WARNING: Could not resolve a valid tenantId. KDS will not receive real-time updates.");
+    }
 
     return (
         <div className="flex flex-col h-full">

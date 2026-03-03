@@ -290,42 +290,49 @@ export function MenuGrid({
                         );
 
                     case "marketing_group": {
-                        const group = groups.find(g => g.id === section.config?.groupId);
-                        if (!group || !group.isActive) return null;
+                        const targetGroupIds = section.config?.groupIds || (section.config?.groupId ? [section.config.groupId] : []);
+                        if (targetGroupIds.length === 0) return null;
+
+                        const activeGroups = groups.filter(g => targetGroupIds.includes(g.id) && g.isActive);
+                        if (activeGroups.length === 0) return null;
 
                         return (
-                            <div key={`section-${idx}`} className="space-y-8 mt-12">
-                                <div className="flex items-center gap-4 px-4 sm:px-0">
-                                    <div className="space-y-1">
-                                        <h2 className="text-2xl sm:text-4xl font-bold tracking-tight uppercase italic flex items-center gap-2">
-                                            <ShoppingBag className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
-                                            {section.config?.title || getTranslatedValue(group.name, locale)}
-                                        </h2>
-                                        {section.config?.subtitle && (
-                                            <p className="text-muted-foreground text-sm font-medium uppercase tracking-wider">
-                                                {section.config.subtitle}
-                                            </p>
-                                        )}
-                                    </div>
-                                    <div className="h-px bg-border flex-1" />
-                                </div>
-
-                                <div className="relative -mx-4 sm:mx-0">
-                                    <div className="flex overflow-x-auto pb-8 px-4 sm:px-0 gap-4 snap-x no-scrollbar">
-                                        {group.items?.map((item) => (
-                                            <div key={item.id} className="min-w-[280px] sm:min-w-[320px] snap-start">
-                                                {item.product && (
-                                                    <ProductCard 
-                                                        product={item.product} 
-                                                        tenantId={tenantId} 
-                                                        locale={locale} 
-                                                        t={t} 
-                                                    />
+                            <div key={`section-${idx}`} className="space-y-16">
+                                {activeGroups.map((group) => (
+                                    <div key={group.id} className="space-y-8 mt-12">
+                                        <div className="flex items-center gap-4 px-4 sm:px-0">
+                                            <div className="space-y-1">
+                                                <h2 className="text-2xl sm:text-4xl font-bold tracking-tight uppercase italic flex items-center gap-2">
+                                                    <ShoppingBag className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                                                    {getTranslatedValue(group.name, locale)}
+                                                </h2>
+                                                {group.description && (
+                                                    <p className="text-muted-foreground text-sm font-medium uppercase tracking-wider">
+                                                        {getTranslatedValue(group.description, locale)}
+                                                    </p>
                                                 )}
                                             </div>
-                                        ))}
+                                            <div className="h-px bg-border flex-1" />
+                                        </div>
+
+                                        <div className="relative -mx-4 sm:mx-0">
+                                            <div className="flex overflow-x-auto pb-8 px-4 sm:px-0 gap-4 snap-x no-scrollbar">
+                                                {group.items?.map((item) => (
+                                                    <div key={item.id} className="min-w-[280px] sm:min-w-[320px] snap-start">
+                                                        {item.product && (
+                                                            <ProductCard 
+                                                                product={item.product} 
+                                                                tenantId={tenantId} 
+                                                                locale={locale} 
+                                                                t={t} 
+                                                            />
+                                                        )}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                ))}
                             </div>
                         );
                     }

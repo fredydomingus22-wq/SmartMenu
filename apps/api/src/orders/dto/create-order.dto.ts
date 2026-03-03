@@ -78,6 +78,11 @@ export class CreateOrderDto {
   @IsOptional()
   deliveryAddress?: string;
 
+  @ApiProperty({ example: '+244 923 000 000', required: false })
+  @IsString()
+  @IsOptional()
+  deliveryPhone?: string;
+
   @ApiProperty({ type: [CreateOrderItemDto] })
   @IsArray()
   @ValidateNested({ each: true })

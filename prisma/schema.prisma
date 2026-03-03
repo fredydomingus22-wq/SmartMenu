@@ -405,6 +405,7 @@ model Order {
   organizationId     String              @map("organization_id")
   tenantId           String              @map("tenant_id")
   deliveryAddress    String?             @map("delivery_address")
+  deliveryPhone      String?             @map("delivery_phone")
   cancellationReason String?             @map("cancellation_reason")
   loyaltyRewardId    String?             @map("loyalty_reward_id")
   createdAt          DateTime            @default(now()) @map("created_at")

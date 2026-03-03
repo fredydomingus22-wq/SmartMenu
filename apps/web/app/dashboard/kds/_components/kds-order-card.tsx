@@ -179,17 +179,27 @@ export function KDSOrderCard({ order, activeSector = 'ALL', onUpdateStatus, onTo
                     ))}
             </CardContent>
 
-            {/* Rodapé - Botões compactos */}
+            {/* Rodapé - Botão de Ação por Status */}
             <CardFooter className="pt-2 pb-2 px-3 border-t border-zinc-100">
-                {order.status === 'READY' ? (
+                {order.status === 'PENDING' && (
                     <Button
                         size="sm"
-                        className="w-full h-10 text-xs font-black uppercase tracking-widest transition-all bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/20"
-                        onClick={() => onUpdateStatus(order.id, 'DELIVERED')}
+                        className="w-full h-10 text-xs font-black uppercase tracking-widest transition-all bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+                        onClick={() => onUpdateStatus(order.id, 'CONFIRMED')}
                     >
-                        ✓ {t('kds.deliver')}
+                        ✓ {t('kds.confirm') ?? 'Confirmar Pedido'}
                     </Button>
-                ) : (
+                )}
+                {order.status === 'CONFIRMED' && (
+                    <Button
+                        size="sm"
+                        className="w-full h-10 text-xs font-black uppercase tracking-widest transition-all bg-orange-500 hover:bg-orange-600 text-white shadow-lg"
+                        onClick={() => onUpdateStatus(order.id, 'PREPARING')}
+                    >
+                        🍳 {t('kds.start_preparing') ?? 'Iniciar Preparo'}
+                    </Button>
+                )}
+                {order.status === 'PREPARING' && (
                     <Button
                         size="sm"
                         className={cn(
@@ -201,7 +211,16 @@ export function KDSOrderCard({ order, activeSector = 'ALL', onUpdateStatus, onTo
                         onClick={() => onUpdateStatus(order.id, 'READY')}
                         disabled={!allItemsDone}
                     >
-                        {allItemsDone ? t('kds.order_ready') : t('kds.items_missing')}
+                        {allItemsDone ? (t('kds.order_ready') ?? '✓ Pedido Pronto') : (t('kds.items_missing') ?? 'Itens em falta')}
+                    </Button>
+                )}
+                {order.status === 'READY' && (
+                    <Button
+                        size="sm"
+                        className="w-full h-10 text-xs font-black uppercase tracking-widest transition-all bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20"
+                        onClick={() => onUpdateStatus(order.id, 'DELIVERED')}
+                    >
+                        ✓ {t('kds.deliver') ?? 'Entregue'}
                     </Button>
                 )}
             </CardFooter>

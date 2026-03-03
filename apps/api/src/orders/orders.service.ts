@@ -4,7 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { LoyaltyService } from '../loyalty/loyalty.service';
-import { OrderStatus, Product } from '@prisma/client';
+import { OrderStatus, Product, Prisma } from '@prisma/client';
 import { OrderStatusUpdatedEvent } from '../workflows/events/order-status-updated.event';
 import { OrderCreatedEvent } from '../workflows/events/order-created.event';
 import { SupabaseService } from '../common/supabase.service';
@@ -22,12 +22,33 @@ export class OrdersService {
   private async broadcastOrderEvent(
     tenantId: string,
     event: 'ORDER_CREATED' | 'STATUS_UPDATED',
-    payload: unknown,
+    order: Record<string, unknown>,
   ) {
     console.log(
-      `[OrdersService] Requesting broadcast for event ${event} to channel orders:${tenantId}`,
+      `[OrdersService] Broadcasting ${event} for tenant ${tenantId}. Order ID: ${String((order as { id?: string })?.id || 'unknown')}`,
     );
-    await this.supabaseService.broadcast(`orders:${tenantId}`, event, payload);
+
+    // Standardize payload: The frontend expects { "payload": [the_order_object] }
+    // We wrap it explicitly so both broadcast and postgres_changes feel similar to the client.
+    const broadcastPayload = { payload: order };
+
+    // Small delay (100ms) to ensure database commit is 100% final before
+    // the frontend receives the event and potentially tries to re-fetch the order.
+    // This prevents race conditions with Postgres INSERT listeners.
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    try {
+      await this.supabaseService.broadcast(
+        `orders:${tenantId}`,
+        event,
+        broadcastPayload,
+      );
+      console.log(
+        `[OrdersService] Broadcast SENT: ${event} -> orders:${tenantId}`,
+      );
+    } catch (err) {
+      console.error(`[OrdersService] Broadcast FAILED:`, err);
+    }
   }
 
   async create(
@@ -204,60 +225,79 @@ export class OrdersService {
         customerProfileId = profile.id;
       }
 
-      // Create the order (single atomic operation)
-      const order = await this.prisma.order.create({
-        data: {
-          tenant: { connect: { id: tenantId } },
-          organization: { connect: { id: organizationId } },
-          ...(finalTableId && { table: { connect: { id: finalTableId } } }),
-          ...(userId && { user: { connect: { id: userId } } }),
-          ...(customerProfileId && {
-            customerProfile: { connect: { id: customerProfileId } },
-          }),
-          total,
-          status: 'PENDING',
-          orderType: orderType || 'DINE_IN',
-          deliveryAddress: deliveryAddress || null,
-          ...(loyaltyRewardId && {
-            loyaltyReward: { connect: { id: loyaltyRewardId } },
-          }),
-          items: {
-            create: orderItemsData,
-          },
-        },
-        include: {
-          items: {
-            include: {
-              product: true,
-              options: {
-                include: { optionValue: true },
+      // 2. Create the order & redeem reward in a Transaction
+      const order = await this.prisma.$transaction(
+        async (tx) => {
+          const orderRecord = await tx.order.create({
+            data: {
+              tenant: { connect: { id: tenantId } },
+              organization: { connect: { id: organizationId } },
+              ...(finalTableId && { table: { connect: { id: finalTableId } } }),
+              ...(userId && { user: { connect: { id: userId } } }),
+              ...(customerProfileId && {
+                customerProfile: { connect: { id: customerProfileId } },
+              }),
+              total,
+              status: 'PENDING',
+              orderType: orderType || 'DINE_IN',
+              deliveryAddress: deliveryAddress || null,
+              deliveryPhone: createOrderDto.deliveryPhone || null,
+              ...(loyaltyRewardId && {
+                loyaltyReward: { connect: { id: loyaltyRewardId } },
+              }),
+              items: {
+                create: orderItemsData,
               },
             },
-          },
-          table: true,
-        },
-      });
+            include: {
+              items: {
+                include: {
+                  product: {
+                    include: {
+                      category: true,
+                    },
+                  },
+                  options: {
+                    include: { optionValue: true },
+                  },
+                },
+              },
+              table: true,
+            },
+          });
 
-      // Trigger points deduction (sequential, after order created)
-      if (loyaltyRewardId && userId) {
-        await this.loyaltyService.redeemReward(
-          userId,
-          tenantId,
-          loyaltyRewardId,
-        );
-      }
+          // Trigger points deduction within the same transaction
+          if (loyaltyRewardId && userId) {
+            await this.loyaltyService.redeemReward(
+              userId,
+              tenantId,
+              loyaltyRewardId,
+              tx,
+            );
+          }
+
+          return orderRecord;
+        },
+        {
+          timeout: 15000,
+        },
+      );
 
       // Broadcast event
       await this.broadcastOrderEvent(tenantId, 'ORDER_CREATED', order);
 
       // Emit internal event for automation
+      const orderWithItems = order as Prisma.OrderGetPayload<{
+        include: { items: true };
+      }>;
+
       this.eventEmitter.emit(
         'order.created',
         new OrderCreatedEvent(
           order.id,
           tenantId,
           userId || null,
-          order.items.map((i: { productId: string; quantity: number }) => ({
+          orderWithItems.items.map((i) => ({
             productId: i.productId,
             quantity: i.quantity,
           })),
@@ -302,7 +342,11 @@ export class OrdersService {
       where: { id, tenantId, organizationId },
       include: {
         items: {
-          include: { product: true },
+          include: {
+            product: {
+              include: { category: true },
+            },
+          },
         },
         table: true,
       },
@@ -364,7 +408,9 @@ export class OrdersService {
       include: {
         items: {
           include: {
-            product: true,
+            product: {
+              include: { category: true },
+            },
             options: {
               include: { optionValue: true },
             },
@@ -415,6 +461,31 @@ export class OrdersService {
         table: true,
       },
       orderBy: { createdAt: 'asc' }, // Older first (FIFO)
+    });
+  }
+
+  async findAllForKitchenPublic(tenantId: string) {
+    return this.prisma.order.findMany({
+      where: {
+        tenantId,
+        status: {
+          in: ['PENDING', 'CONFIRMED', 'PREPARING', 'READY'],
+        },
+      },
+      include: {
+        items: {
+          include: {
+            product: {
+              include: { category: true },
+            },
+            options: {
+              include: { optionValue: true },
+            },
+          },
+        },
+        table: true,
+      },
+      orderBy: { createdAt: 'asc' },
     });
   }
 }

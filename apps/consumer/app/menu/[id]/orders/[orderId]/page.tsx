@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -40,6 +40,7 @@ interface OrderItem {
 
 interface Order {
     id: string;
+    tenantId: string;
     status: "PENDING" | "CONFIRMED" | "PREPARING" | "READY" | "DELIVERED" | "CANCELLED";
     total: string;
     createdAt: string;
@@ -65,38 +66,80 @@ export default function OrderStatusPage() {
     const { locale } = useTranslation();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const tenantIdRef = useRef<string | null>(null);
+
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
     const fetchOrder = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
             const res = await fetch(`${API_URL}/public/orders/${params.orderId}`);
             if (!res.ok) throw new Error("Pedido não encontrado");
-            const data = await res.json();
+            const data: Order = await res.json();
             setOrder(data);
             setError(null);
+            // Store tenantId for the channel subscription
+            if (data.tenantId && !tenantIdRef.current) {
+                tenantIdRef.current = data.tenantId;
+            }
+            return data;
         } catch (err) {
             setError((err as Error).message);
+            return null;
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchOrder();
+        // 1. Load order initially
+        fetchOrder().then((data) => {
+            if (!data) return;
+            const supabase = createClient();
+            const tenantId = data.tenantId;
 
-        const supabase = createClient();
-        const channel = supabase.channel(`orders:${params.id}`)
-            .on('broadcast', { event: 'STATUS_UPDATED' }, (payload: { payload: Order }) => {
-                console.log('Evento de status recebido:', payload);
-                if (payload.payload.id === params.orderId) {
-                    setOrder(payload.payload);
-                }
-            })
-            .subscribe();
+            // 2. Subscribe via broadcast (works without auth — backend sends to this channel)
+            // Channel name must match what the backend sends: `orders:{tenantId-UUID}`
+            console.log(`[OrderStatus] Subscribing broadcast channel: orders:${tenantId}`);
+            const broadcastChannel = supabase
+                .channel(`orders:${tenantId}`)
+                .on("broadcast", { event: "STATUS_UPDATED" }, (event) => {
+                    console.log("[OrderStatus] Broadcast STATUS_UPDATED:", event);
+                    const updated: Order | undefined = event.payload?.payload ?? event.payload;
+                    if (updated?.id === params.orderId) {
+                        setOrder(updated);
+                    }
+                })
+                .subscribe((status) => {
+                    console.log(`[OrderStatus] Broadcast subscription: ${status}`);
+                });
 
-        return () => {
-            supabase.removeChannel(channel);
-        };
+            // 3. Also subscribe via Postgres Changes as additional safety net
+            // (works because RLS is disabled on orders and table is in supabase_realtime)
+            console.log(`[OrderStatus] Subscribing Postgres Changes for order: ${params.orderId}`);
+            const pgChannel = supabase
+                .channel(`order-pg-${params.orderId}`)
+                .on(
+                    "postgres_changes",
+                    {
+                        event: "UPDATE",
+                        schema: "public",
+                        table: "orders",
+                        filter: `id=eq.${params.orderId}`,
+                    },
+                    async () => {
+                        console.log("[OrderStatus] Postgres Changes UPDATE received — re-fetching");
+                        await fetchOrder();
+                    }
+                )
+                .subscribe((status) => {
+                    console.log(`[OrderStatus] Postgres Changes subscription: ${status}`);
+                });
+
+            return () => {
+                supabase.removeChannel(broadcastChannel);
+                supabase.removeChannel(pgChannel);
+            };
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params.orderId]);
 
@@ -126,7 +169,6 @@ export default function OrderStatusPage() {
 
     return (
         <div className="min-h-[100dvh] bg-background pb-20">
-            {/* Header */}
             <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b">
                 <div className="container mx-auto px-4 h-16 flex items-center gap-4">
                     <Button variant="ghost" size="icon" onClick={() => router.push(`/menu/${params.id}`)}>
@@ -137,7 +179,6 @@ export default function OrderStatusPage() {
             </header>
 
             <main className="container mx-auto px-4 py-8 space-y-6">
-                {/* Status Card */}
                 <Card className={cn("border-2", statusConfig.bg)}>
                     <CardContent className="py-8 flex flex-col items-center text-center">
                         <AnimatePresence mode="wait">
@@ -158,21 +199,18 @@ export default function OrderStatusPage() {
                             Pedido #{order.id.slice(-6).toUpperCase()}
                         </p>
                         {order.table && (
-                            <p className="text-sm font-semibold mt-1">
-                                Mesa {order.table.number}
-                            </p>
+                            <p className="text-sm font-semibold mt-1">Mesa {order.table.number}</p>
                         )}
                     </CardContent>
                 </Card>
 
-                {/* Real-time Tracking Map */}
-                {(order.status === 'PREPARING' || order.status === 'READY' || order.status === 'DELIVERED') && order.deliveryAssignment?.riderId && (
+                {(order.status === "PREPARING" || order.status === "READY" || order.status === "DELIVERED") && order.deliveryAssignment?.riderId && (
                     <div className="space-y-4">
                         <div className="flex items-center justify-between px-1">
                             <h3 className="font-bold text-sm">Acompanhe seu pedido</h3>
-                            <Button 
-                                variant="outline" 
-                                size="sm" 
+                            <Button
+                                variant="outline"
+                                size="sm"
                                 className="rounded-full gap-2 border-primary text-primary hover:bg-primary/5"
                                 onClick={() => setChatOpen(true)}
                             >
@@ -181,17 +219,15 @@ export default function OrderStatusPage() {
                             </Button>
                         </div>
                         <TrackingMap riderId={order.deliveryAssignment.riderId} />
-                        
-                        <ChatWindow 
-                            tenantId={params.id} 
-                            orderId={params.orderId} 
+                        <ChatWindow
+                            tenantId={params.id}
+                            orderId={params.orderId}
                             riderId={order.deliveryAssignment.riderId}
                             openByDefault={chatOpen}
                         />
                     </div>
                 )}
 
-                {/* Items List */}
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-base">Itens do Pedido</CardTitle>
@@ -230,7 +266,6 @@ export default function OrderStatusPage() {
                     </CardContent>
                 </Card>
 
-                {/* Total */}
                 <Card>
                     <CardContent className="py-4 flex justify-between items-center">
                         <span className="text-lg font-bold">Total</span>
@@ -243,5 +278,3 @@ export default function OrderStatusPage() {
         </div>
     );
 }
-
-
